@@ -811,6 +811,22 @@
       object-position: center 18%;
       display: block;
     }
+        .admin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #fff;
+      background: linear-gradient(135deg, #ff334d, #b80f27);
+      border: 1px solid rgba(255, 160, 172, 0.45);
+      box-shadow: 0 4px 12px rgba(255, 45, 70, 0.35);
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .off-avatar.readonly { cursor: pointer; }
     .chip-mini-avatar {
       width: 18px;
       height: 18px;
@@ -1196,18 +1212,21 @@
         <section id="view-officials" class="view">
           <div class="feed-header">
             <div>
-              <div class="feed-brand-name" style="font-size:18px;">بانک مسئولان فارس</div>
+              <div class="feed-brand-name" style="font-size:18px;">
+                بانک مسئولان فارس
+                <span id="adminRoleBadge" class="admin-badge hidden">مدیر ارشد</span>
+              </div>
               <div id="officialsCountLabel" class="muted">۶۵ مدیر ارشد استان، شورا و شهرداری + لیست شخصی</div>
             </div>
             <button class="pill-btn pill-red pill-sm" onclick="openAddOfficialModal()">+ مسئول جدید</button>
           </div>
-          <div class="photo-sync-bar">
+          <div id="adminPhotoSyncBar" class="photo-sync-bar hidden">
             <div class="photo-sync-top">
               <div>
-                <div style="font-size:12.5px; font-weight:800;">عکس پروفایل چهره مسئولان</div>
-                <div id="photoSyncStatus" class="muted" style="font-size:11px;">روی عکس هر مسئول بزنید تا چهره را انتخاب کنید</div>
+                <div style="font-size:12.5px; font-weight:800;">مدیریت سراسری عکس مسئولان (برای همه کاربران)</div>
+                <div id="photoSyncStatus" class="muted" style="font-size:11px;">هر عکسی تغییر دهید برای تمام کاربران ثبت می‌شود</div>
               </div>
-              <button id="syncAllPhotosBtn" class="pill-btn pill-red pill-sm" onclick="toggleAutoFetchPhotos()">دریافت خودکار عکس‌ها</button>
+              <button id="syncAllPhotosBtn" class="pill-btn pill-red pill-sm" onclick="toggleAutoFetchPhotos()">دریافت و انتشار همه</button>
             </div>
             <div class="sync-progress-track"><div id="photoSyncFill" class="sync-progress-fill"></div></div>
           </div>
@@ -1317,6 +1336,7 @@
       </div>
       <div class="sheet-body">
         <input id="editOfficialId" type="hidden" value="" />
+        <input id="editOfficialSharedKey" type="hidden" value="" />
         <div class="field">
           <label>نام و نام خانوادگی مسئول</label>
           <input id="offName" class="glass-input" type="text" placeholder="مثال: محمدحسن اسدی" />
@@ -1325,6 +1345,10 @@
           <label>سمت رسمی</label>
           <input id="offRole" class="glass-input" type="text" placeholder="مثال: شهردار شیراز" />
         </div>
+        <label id="adminGlobalToggleWrap" class="toggle-pill hidden">
+          <span>انتشار عمومی این مسئول برای تمام کاربران</span>
+          <input id="offIsGlobalToggle" type="checkbox" checked />
+        </label>
         <button id="saveOfficialBtn" class="pill-btn pill-red" style="width:100%;" onclick="saveOfficial()">ذخیره در بانک مسئولان</button>
       </div>
     </div>
@@ -1345,32 +1369,39 @@
           </div>
         </div>
 
-        <div class="search-box-row" style="margin-bottom:10px;">
-          <input
-            id="pickerCustomQuery"
-            class="glass-input"
-            style="padding:9px 12px; font-size:12.5px;"
-            type="text"
-            placeholder="جستجوی دقیق‌تر چهره..."
-            onkeydown="if(event.key==='Enter'){event.preventDefault(); searchPickerFaces();}"
-          />
-          <button class="pill-btn pill-red pill-sm" style="flex:0 0 auto; padding:0 14px;" onclick="searchPickerFaces()">جستجو</button>
+        <div id="pickerEditSection">
+          <div class="search-box-row" style="margin-bottom:10px;">
+            <input
+              id="pickerCustomQuery"
+              class="glass-input"
+              style="padding:9px 12px; font-size:12.5px;"
+              type="text"
+              placeholder="جستجوی دقیق‌تر چهره..."
+              onkeydown="if(event.key==='Enter'){event.preventDefault(); searchPickerFaces();}"
+            />
+            <button class="pill-btn pill-red pill-sm" style="flex:0 0 auto; padding:0 14px;" onclick="searchPickerFaces()">جستجو</button>
+          </div>
+
+          <div class="dual-pills" style="margin-bottom:10px;">
+            <label class="pill-btn pill-glass pill-sm" style="margin:0;">
+              آپلود از گالری
+              <input id="officialGalleryInput" type="file" accept="image/*" class="hidden" onchange="handleOfficialGalleryPhoto(event)" />
+            </label>
+            <button class="pill-btn pill-glass pill-sm" onclick="openOfficialInPhotoTab()">عکس باکیفیت خبری</button>
+          </div>
+
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:6px;">
+            <span id="pickerModeHint" class="muted" style="font-weight:700;">چهره‌های یافت‌شده (برای ثبت سراسری لمس کنید):</span>
+            <button id="pickerRemovePhotoBtn" class="pill-btn pill-glass pill-sm hidden" style="color:#ff5b6f; padding:4px 10px;" onclick="removeCurrentOfficialPhoto()">حذف عکس</button>
+          </div>
+
+          <div id="faceCandidatesGrid" class="face-grid"></div>
         </div>
 
-        <div class="dual-pills" style="margin-bottom:10px;">
-          <label class="pill-btn pill-glass pill-sm" style="margin:0;">
-            آپلود از گالری
-            <input id="officialGalleryInput" type="file" accept="image/*" class="hidden" onchange="handleOfficialGalleryPhoto(event)" />
-          </label>
-          <button class="pill-btn pill-glass pill-sm" onclick="openOfficialInPhotoTab()">عکس باکیفیت خبری</button>
+        <div id="pickerReadonlySection" class="hidden">
+          <p class="muted" style="margin:0 0 12px; line-height:1.7;">عکس پروفایل مسئولان استانی توسط مدیر ارشد اتاق خبر تنظیم می‌شود.</p>
+          <button class="pill-btn pill-red" style="width:100%;" onclick="openOfficialInPhotoTab()">یافتن عکس باکیفیت خبری این مسئول</button>
         </div>
-
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:6px;">
-          <span class="muted" style="font-weight:700;">چهره‌های یافت‌شده (برای ثبت لمس کنید):</span>
-          <button id="pickerRemovePhotoBtn" class="pill-btn pill-glass pill-sm hidden" style="color:#ff5b6f; padding:4px 10px;" onclick="removeCurrentOfficialPhoto()">حذف عکس</button>
-        </div>
-
-        <div id="faceCandidatesGrid" class="face-grid"></div>
       </div>
     </div>
   </div>
@@ -1478,8 +1509,14 @@
       document.getElementById("authScreen").classList.toggle("hidden", !!currentUser);
       document.getElementById("mainApp").classList.toggle("hidden", !currentUser);
       if (currentUser) {
-        loadOfficials();
-        loadArchive();
+        setTimeout(async () => {
+          await checkAdminStatus();
+          loadOfficials();
+          loadArchive();
+        }, 0);
+      } else {
+        isAdminUser = false;
+        applyAdminUI();
       }
     });
 
@@ -2409,11 +2446,21 @@
 ];
 
     const PHOTO_CACHE_KEY = "shiraz_official_photos_v1";
-    let officialPhotoMap = {};
+    const SHARED_CACHE_KEY = "shiraz_shared_officials_cache_v9";
+
+    let isAdminUser = false;
+    let sharedOfficialsMap = {};
+    let personalPhotoMap = {};
+
     try {
-      officialPhotoMap = JSON.parse(localStorage.getItem(PHOTO_CACHE_KEY) || "{}");
+      personalPhotoMap = JSON.parse(localStorage.getItem(PHOTO_CACHE_KEY) || "{}");
     } catch {
-      officialPhotoMap = {};
+      personalPhotoMap = {};
+    }
+    try {
+      sharedOfficialsMap = JSON.parse(localStorage.getItem(SHARED_CACHE_KEY) || "{}");
+    } catch {
+      sharedOfficialsMap = {};
     }
 
     let selectedOfficialCat = "all";
@@ -2426,16 +2473,68 @@
     let lazyActiveWorkers = 0;
     let officialAvatarObserver = null;
 
-    function getOfficialPhotoKey(name) {
-      return String(name || "").trim();
+    function applyAdminUI() {
+      const badge = document.getElementById("adminRoleBadge");
+      const bar = document.getElementById("adminPhotoSyncBar");
+      if (badge) badge.classList.toggle("hidden", !isAdminUser);
+      if (bar) bar.classList.toggle("hidden", !isAdminUser);
     }
 
-    function savePhotoMapToStorage() {
-      try {
-        localStorage.setItem(PHOTO_CACHE_KEY, JSON.stringify(officialPhotoMap));
-      } catch {
-        // ignore storage quota error
+    async function checkAdminStatus() {
+      isAdminUser = false;
+      if (!currentUser?.email) {
+        applyAdminUI();
+        return;
       }
+      try {
+        const { data, error } = await sb
+          .from("app_admins")
+          .select("email")
+          .ilike("email", currentUser.email.trim())
+          .maybeSingle();
+        if (!error && data) {
+          isAdminUser = true;
+        }
+      } catch {
+        isAdminUser = false;
+      }
+      applyAdminUI();
+    }
+
+    function savePersonalPhotosToStorage() {
+      try {
+        localStorage.setItem(PHOTO_CACHE_KEY, JSON.stringify(personalPhotoMap));
+      } catch {}
+    }
+
+    function saveSharedCacheToStorage() {
+      try {
+        localStorage.setItem(SHARED_CACHE_KEY, JSON.stringify(sharedOfficialsMap));
+      } catch {}
+    }
+
+    function getOfficialPhoto(o) {
+      if (o.isShared) {
+        return sharedOfficialsMap[o.sharedKey]?.photo_data || null;
+      }
+      return personalPhotoMap[o.personalPhotoKey] || null;
+    }
+
+    async function upsertSharedOfficial(sharedKey, name, role, photoData) {
+      const existing = sharedOfficialsMap[sharedKey] || {};
+      const payload = {
+        official_key: sharedKey,
+        name: name || existing.name || "",
+        role: role || existing.role || "",
+        photo_data: photoData !== undefined ? photoData : (existing.photo_data ?? null),
+        updated_at: new Date().toISOString()
+      };
+      const { error } = await sb
+        .from("shared_officials")
+        .upsert(payload, { onConflict: "official_key" });
+      if (error) throw error;
+      sharedOfficialsMap[sharedKey] = payload;
+      saveSharedCacheToStorage();
     }
 
     function buildOfficialSearchQuery(o) {
@@ -2459,7 +2558,7 @@
             const sx = Math.max(0, (img.width - minSide) / 2);
             const sy = img.height > img.width ? Math.round((img.height - minSide) * 0.14) : 0;
             ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
-            resolve(canvas.toDataURL("image/jpeg", 0.82));
+            resolve(canvas.toDataURL("image/jpeg", 0.78));
           } catch (err) {
             reject(err);
           }
@@ -2469,13 +2568,24 @@
       });
     }
 
-    async function fetchAndCacheSingleOfficialPhoto(o) {
-      const key = getOfficialPhotoKey(o.name);
-      if (officialPhotoMap[key] || fetchingOfficialKeys.has(key)) return !!officialPhotoMap[key];
+    async function fetchAndPublishOfficialPhoto(o) {
+      if (!isAdminUser || !o.isShared) return false;
+      const key = o.sharedKey;
+      if (sharedOfficialsMap[key]?.photo_data || fetchingOfficialKeys.has(key)) {
+        return !!sharedOfficialsMap[key]?.photo_data;
+      }
+
       fetchingOfficialKeys.add(key);
       updateSingleAvatarDom(key);
 
       try {
+        // اگر مدیر قبلاً این عکس را در حافظه گوشی خودش ذخیره کرده باشد، مستقیم همان را در دیتابیس برای همه منتشر می‌کند
+        const legacyLocal = personalPhotoMap[String(o.name || "").trim()];
+        if (legacyLocal) {
+          await upsertSharedOfficial(key, o.name, o.role, legacyLocal);
+          return true;
+        }
+
         const query = buildOfficialSearchQuery(o);
         const res = await callNewsApi({ action: "search_images", query, category: "auto" });
         const list = res.images || [];
@@ -2498,13 +2608,16 @@
             rawSrc = null;
           }
         }
-        if (!rawSrc) return false;
+        if (!rawSrc) {
+          failedOfficialKeys.add(key);
+          return false;
+        }
 
         const compressed = await compressFaceDataUrl(rawSrc, 180);
-        officialPhotoMap[key] = compressed;
-        savePhotoMapToStorage();
+        await upsertSharedOfficial(key, o.name, o.role, compressed);
         return true;
       } catch {
+        failedOfficialKeys.add(key);
         return false;
       } finally {
         fetchingOfficialKeys.delete(key);
@@ -2513,22 +2626,31 @@
       }
     }
 
-    function updateSingleAvatarDom(key) {
+    function updateSingleAvatarDom(domKey) {
+      const all = window._mergedOfficials || getMergedOfficials();
+      const target = all.find(x => x.domKey === domKey);
+      if (!target) return;
+      const photo = getOfficialPhoto(target);
+      const canEditPhoto = target.isShared ? isAdminUser : true;
+      const camSvg = canEditPhoto
+        ? `<span class="off-cam-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></span>`
+        : "";
+
       document.querySelectorAll("[data-avatar-key]").forEach(el => {
-        if (el.getAttribute("data-avatar-key") !== key) return;
-        const photo = officialPhotoMap[key];
-        el.classList.toggle("loading", fetchingOfficialKeys.has(key));
+        if (el.getAttribute("data-avatar-key") !== domKey) return;
+        el.classList.toggle("loading", fetchingOfficialKeys.has(domKey));
         if (photo) {
           el.classList.add("has-photo");
-          el.innerHTML = `<img src="${photo}" class="off-avatar-img" alt="چهره" /><span class="off-cam-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></span>`;
+          el.innerHTML = `<img src="${photo}" class="off-avatar-img" alt="چهره" />${camSvg}`;
         }
       });
     }
 
     function updatePhotoSyncStatusUI() {
-      const all = getMergedOfficials();
-      const total = all.length;
-      const done = all.filter(o => !!officialPhotoMap[getOfficialPhotoKey(o.name)]).length;
+      if (!isAdminUser) return;
+      const sharedList = getMergedOfficials().filter(o => o.isShared);
+      const total = sharedList.length;
+      const done = sharedList.filter(o => !!sharedOfficialsMap[o.sharedKey]?.photo_data).length;
       const pct = total ? Math.round((done / total) * 100) : 0;
 
       const statusEl = document.getElementById("photoSyncStatus");
@@ -2538,26 +2660,27 @@
       if (fillEl) fillEl.style.width = pct + "%";
       if (statusEl) {
         if (isAutoFetchingPhotos) {
-          statusEl.textContent = `در حال دریافت عکس چهره‌ها... (${done} از ${total})`;
+          statusEl.textContent = `در حال ذخیره سراسری برای همه کاربران... (${done} از ${total})`;
         } else if (done === total && total > 0) {
-          statusEl.textContent = `عکس چهره همه ${total} مسئول ذخیره شد • برای تغییر روی عکس بزنید`;
+          statusEl.textContent = `عکس همه ${total} مسئول برای تمام کاربران منتشر شد`;
         } else {
-          statusEl.textContent = `${done} از ${total} عکس آماده • روی عکس هر فرد برای انتخاب بزنید`;
+          statusEl.textContent = `${done} از ${total} عکس در سرور ثبت شده • برای تغییر روی عکس بزنید`;
         }
       }
       if (btn) {
         if (isAutoFetchingPhotos) {
           btn.textContent = "توقف";
         } else if (done === total && total > 0) {
-          btn.textContent = "تکمیل شد ✓";
+          btn.textContent = "منتشر شد ✓";
         } else {
-          btn.textContent = done > 0 ? "تکمیل بقیه عکس‌ها" : "دریافت خودکار عکس‌ها";
+          btn.textContent = done > 0 ? "تکمیل و انتشار بقیه" : "دریافت و انتشار همه";
         }
       }
     }
 
     async function toggleAutoFetchPhotos() {
       haptic();
+      if (!isAdminUser) return;
       if (isAutoFetchingPhotos) {
         cancelAutoFetch = true;
         showToast("دریافت خودکار متوقف شد");
@@ -2566,23 +2689,23 @@
 
       failedOfficialKeys.clear();
       lazyPhotoQueue = [];
-      const all = getMergedOfficials();
-      const missing = all.filter(o => !officialPhotoMap[getOfficialPhotoKey(o.name)]);
+      const sharedList = getMergedOfficials().filter(o => o.isShared);
+      const missing = sharedList.filter(o => !sharedOfficialsMap[o.sharedKey]?.photo_data);
       if (!missing.length) {
-        showToast("عکس چهره همه مسئولان قبلاً ذخیره شده است");
+        showToast("عکس چهره همه مسئولان قبلاً برای تمام کاربران منتشر شده است");
         return;
       }
 
       isAutoFetchingPhotos = true;
       cancelAutoFetch = false;
       updatePhotoSyncStatusUI();
-      showToast(`شروع دریافت عکس چهره ${missing.length} مسئول...`);
+      showToast(`شروع ثبت و انتشار عکس ${missing.length} مسئول برای تمام کاربران...`);
 
       const BATCH = 3;
       for (let i = 0; i < missing.length; i += BATCH) {
         if (cancelAutoFetch) break;
         const slice = missing.slice(i, i + BATCH);
-        await Promise.all(slice.map(o => fetchAndCacheSingleOfficialPhoto(o)));
+        await Promise.all(slice.map(o => fetchAndPublishOfficialPhoto(o)));
         if (i + BATCH < missing.length && !cancelAutoFetch) {
           await new Promise(r => setTimeout(r, 180));
         }
@@ -2591,26 +2714,27 @@
       isAutoFetchingPhotos = false;
       updatePhotoSyncStatusUI();
       renderOfficials();
-      if (!cancelAutoFetch) showToast("دریافت عکس چهره مسئولان انجام شد");
+      if (!cancelAutoFetch) showToast("عکس همه مسئولان برای تمام کاربران منتشر شد");
     }
 
     function enqueueLazyOfficialPhoto(official) {
-      const key = getOfficialPhotoKey(official.name);
-      if (officialPhotoMap[key] || fetchingOfficialKeys.has(key) || failedOfficialKeys.has(key)) return;
-      if (lazyPhotoQueue.some(x => getOfficialPhotoKey(x.name) === key)) return;
+      if (!isAdminUser || !official.isShared) return;
+      const key = official.sharedKey;
+      if (sharedOfficialsMap[key]?.photo_data || fetchingOfficialKeys.has(key) || failedOfficialKeys.has(key)) return;
+      if (lazyPhotoQueue.some(x => x.sharedKey === key)) return;
       lazyPhotoQueue.push(official);
       pumpLazyPhotoQueue();
     }
 
     async function pumpLazyPhotoQueue() {
-      if (isAutoFetchingPhotos) return;
+      if (isAutoFetchingPhotos || !isAdminUser) return;
       while (lazyActiveWorkers < 2 && lazyPhotoQueue.length > 0) {
         const next = lazyPhotoQueue.shift();
         if (!next) break;
-        const key = getOfficialPhotoKey(next.name);
-        if (officialPhotoMap[key] || fetchingOfficialKeys.has(key)) continue;
+        const key = next.sharedKey;
+        if (sharedOfficialsMap[key]?.photo_data || fetchingOfficialKeys.has(key)) continue;
         lazyActiveWorkers++;
-        fetchAndCacheSingleOfficialPhoto(next)
+        fetchAndPublishOfficialPhoto(next)
           .finally(() => {
             lazyActiveWorkers--;
             pumpLazyPhotoQueue();
@@ -2623,18 +2747,20 @@
         officialAvatarObserver.disconnect();
         officialAvatarObserver = null;
       }
+      // فقط برای مدیر ارشد عکس‌های نداشته‌شده هنگام اسکرول جستجو و در دیتابیس ثبت می‌شوند؛ کاربران عادی فقط عکس تاییدشده مدیر را می‌بینند
+      if (!isAdminUser) return;
       const rootEl = document.getElementById("view-officials");
       if (!rootEl || !rootEl.classList.contains("active") || !("IntersectionObserver" in window)) return;
 
       const byKey = new Map();
-      (window._mergedOfficials || []).forEach(o => byKey.set(getOfficialPhotoKey(o.name), o));
+      (window._mergedOfficials || []).forEach(o => byKey.set(o.domKey, o));
 
       officialAvatarObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (!entry.isIntersecting) return;
-          const key = entry.target.getAttribute("data-avatar-key");
-          const official = byKey.get(key);
-          if (official && !officialPhotoMap[key] && !failedOfficialKeys.has(key)) {
+          const domKey = entry.target.getAttribute("data-avatar-key");
+          const official = byKey.get(domKey);
+          if (official && official.isShared && !sharedOfficialsMap[official.sharedKey]?.photo_data && !failedOfficialKeys.has(official.sharedKey)) {
             enqueueLazyOfficialPhoto(official);
           }
           officialAvatarObserver?.unobserve(entry.target);
@@ -2642,15 +2768,12 @@
       }, { root: rootEl, rootMargin: "140px 0px", threshold: 0.05 });
 
       document.querySelectorAll("#officialsList [data-avatar-key]").forEach(el => {
-        const key = el.getAttribute("data-avatar-key");
-        if (!officialPhotoMap[key] && !failedOfficialKeys.has(key)) {
+        const domKey = el.getAttribute("data-avatar-key");
+        const official = byKey.get(domKey);
+        if (official && official.isShared && !sharedOfficialsMap[official.sharedKey]?.photo_data && !failedOfficialKeys.has(official.sharedKey)) {
           officialAvatarObserver.observe(el);
         }
       });
-    }
-
-    function autoWarmVisibleOfficialPhotos() {
-      observeOfficialAvatars();
     }
 
     function selectOfficialCat(el) {
@@ -2662,43 +2785,55 @@
     }
 
     function getMergedOfficials() {
-      const customByRole = new Map();
-      cachedOfficials.forEach(c => customByRole.set((c.role || "").trim(), c));
-
       const merged = [];
-      const usedCustomIds = new Set();
 
+      // ۱. مسئولان شخصی ثبت‌شده توسط خود کاربر
       cachedOfficials.forEach(c => {
-        const matchesBuiltin = FARS_OFFICIALS_DIRECTORY.some(b => b.role.trim() === (c.role || "").trim());
-        if (!matchesBuiltin) {
-          merged.push({ id: c.id, name: c.name, role: c.role, cat: "custom", isCustom: true });
-          usedCustomIds.add(c.id);
-        }
+        merged.push({
+          domKey: "custom_" + c.id,
+          id: c.id,
+          name: c.name,
+          role: c.role,
+          cat: "custom",
+          isShared: false,
+          isCustom: true,
+          personalPhotoKey: "custom_" + c.id
+        });
       });
 
-      FARS_OFFICIALS_DIRECTORY.forEach((b, idx) => {
-        const override = customByRole.get(b.role.trim());
-        if (override && !usedCustomIds.has(override.id)) {
+      // ۲. مسئولان عمومی جدیدی که مدیر ارشد در shared_officials اضافه کرده (خارج از ۶۵ نفر پایه)
+      Object.values(sharedOfficialsMap).forEach(s => {
+        if (!String(s.official_key || "").startsWith("fars_")) {
           merged.push({
-            id: override.id,
-            name: override.name,
-            role: override.role,
-            cat: b.cat,
-            photoQuery: override.name.trim() === b.name.trim() ? b.photoQuery : undefined,
-            isCustom: true,
-            edited: true
-          });
-          usedCustomIds.add(override.id);
-        } else {
-          merged.push({
-            id: "builtin_" + idx,
-            name: b.name,
-            role: b.role,
-            cat: b.cat,
-            photoQuery: b.photoQuery,
+            domKey: s.official_key,
+            sharedKey: s.official_key,
+            name: s.name,
+            role: s.role,
+            cat: "gov",
+            isShared: true,
+            isExtraShared: true,
             isCustom: false
           });
         }
+      });
+
+      // ۳. لیست ۶۵ مدیر ارشد استان فارس (با اعمال خودکار نام، سمت و عکس مصوب مدیر ارشد از Supabase)
+      FARS_OFFICIALS_DIRECTORY.forEach((b, idx) => {
+        const sk = "fars_" + idx;
+        const shared = sharedOfficialsMap[sk];
+        const finalName = shared?.name || b.name;
+        const finalRole = shared?.role || b.role;
+        merged.push({
+          domKey: sk,
+          sharedKey: sk,
+          name: finalName,
+          role: finalRole,
+          cat: b.cat,
+          photoQuery: finalName.trim() === b.name.trim() ? b.photoQuery : undefined,
+          isShared: true,
+          isCustom: false,
+          edited: !!(shared && (shared.name !== b.name || shared.role !== b.role))
+        });
       });
 
       return merged;
@@ -2713,11 +2848,22 @@
 
     async function loadOfficials() {
       if (!currentUser) return;
-      const { data } = await sb.from("officials").select("*").order("created_at", { ascending: false });
-      cachedOfficials = data || [];
+      try {
+        const [personalRes, sharedRes] = await Promise.all([
+          sb.from("officials").select("*").order("created_at", { ascending: false }),
+          sb.from("shared_officials").select("*")
+        ]);
+        cachedOfficials = personalRes.data || [];
+        if (!sharedRes.error && Array.isArray(sharedRes.data)) {
+          const freshMap = {};
+          sharedRes.data.forEach(row => {
+            if (row.official_key) freshMap[row.official_key] = row;
+          });
+          sharedOfficialsMap = freshMap;
+          saveSharedCacheToStorage();
+        }
+      } catch {}
       renderOfficials();
-      const tabActive = document.getElementById("view-officials")?.classList.contains("active");
-      if (tabActive) autoWarmVisibleOfficialPhotos();
     }
 
     function renderOfficials() {
@@ -2725,7 +2871,7 @@
       window._mergedOfficials = all;
 
       document.getElementById("officialQuickChips").innerHTML = all.slice(0, 14).map(o => {
-        const ph = officialPhotoMap[getOfficialPhotoKey(o.name)];
+        const ph = getOfficialPhoto(o);
         return `<button type="button" class="chip-pill" onclick="pickOfficial('${escapeAttr(o.name + '، ' + o.role)}', false)">${ph ? `<img src="${ph}" class="chip-mini-avatar" alt="" />` : ""}${escapeHtml(o.name)}</button>`;
       }).join("");
 
@@ -2746,18 +2892,18 @@
         return;
       }
 
-      const camSvg = `<span class="off-cam-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></span>`;
+      const camIconHtml = `<span class="off-cam-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></span>`;
 
       list.innerHTML = filtered.map(o => {
-        const pKey = getOfficialPhotoKey(o.name);
-        const photo = officialPhotoMap[pKey];
-        const isLoading = fetchingOfficialKeys.has(pKey);
+        const photo = getOfficialPhoto(o);
+        const isLoading = fetchingOfficialKeys.has(o.domKey);
+        const canEdit = o.isShared ? isAdminUser : true;
         return `
         <div class="off-card">
           <div class="off-left">
-            <div class="off-avatar ${photo ? "has-photo" : ""} ${isLoading ? "loading" : ""}" data-avatar-key="${escapeHtml(pKey)}" title="انتخاب یا تغییر عکس چهره" onclick="openOfficialPhotoPicker('${escapeAttr(o.name)}')">
+            <div class="off-avatar ${photo ? "has-photo" : ""} ${isLoading ? "loading" : ""}" data-avatar-key="${escapeHtml(o.domKey)}" title="${canEdit ? "تغییر عکس چهره" : "مشاهده پروفایل"}" onclick="openOfficialPhotoPicker('${escapeAttr(o.domKey)}')">
               ${photo ? `<img src="${photo}" class="off-avatar-img" alt="${escapeHtml(o.name)}" />` : escapeHtml(getMonogram(o.name))}
-              ${camSvg}
+              ${canEdit ? camIconHtml : ""}
             </div>
             <div class="off-info">
               <div class="off-name">${escapeHtml(o.name)}</div>
@@ -2767,9 +2913,11 @@
           </div>
           <div class="off-actions">
             <button class="pill-btn pill-red pill-sm" onclick="pickOfficial('${escapeAttr(o.name + '، ' + o.role)}', true)">انتخاب</button>
-            ${o.isCustom && !o.edited
+            ${o.isCustom
               ? `<button class="pill-btn pill-glass pill-sm" style="color:#ff5b6f;" onclick="deleteOfficial('${o.id}')">حذف</button>`
-              : `<button class="pill-btn pill-glass pill-sm" onclick="openEditOfficialModal('${escapeAttr(o.isCustom ? o.id : '')}', '${escapeAttr(o.name)}', '${escapeAttr(o.role)}')">ویرایش</button>`
+              : (isAdminUser
+                  ? `<button class="pill-btn pill-glass pill-sm" onclick="openEditSharedOfficialModal('${escapeAttr(o.sharedKey)}', '${escapeAttr(o.name)}', '${escapeAttr(o.role)}')">ویرایش</button>`
+                  : "")
             }
           </div>
         </div>
@@ -2802,14 +2950,14 @@
       }
     }
 
-    async function openOfficialPhotoPicker(officialName) {
+    async function openOfficialPhotoPicker(domKey) {
       const all = window._mergedOfficials || getMergedOfficials();
-      const official = all.find(x => x.name === officialName);
+      const official = all.find(x => x.domKey === domKey);
       if (!official) return;
 
       activePickerOfficial = official;
-      const key = getOfficialPhotoKey(official.name);
-      const currentPhoto = officialPhotoMap[key];
+      const currentPhoto = getOfficialPhoto(official);
+      const canEdit = official.isShared ? isAdminUser : true;
 
       const heroAvatar = document.getElementById("pickerHeroAvatar");
       heroAvatar.innerHTML = currentPhoto
@@ -2818,6 +2966,18 @@
 
       document.getElementById("pickerHeroName").textContent = official.name;
       document.getElementById("pickerHeroRole").textContent = official.role;
+
+      document.getElementById("pickerEditSection").classList.toggle("hidden", !canEdit);
+      document.getElementById("pickerReadonlySection").classList.toggle("hidden", canEdit);
+
+      if (!canEdit) {
+        openSheet("photoPickerSheet");
+        return;
+      }
+
+      document.getElementById("pickerModeHint").textContent = official.isShared
+        ? "چهره‌های یافت‌شده (با لمس، برای تمام کاربران منتشر می‌شود):"
+        : "چهره‌های یافت‌شده (برای ثبت لمس کنید):";
       document.getElementById("pickerRemovePhotoBtn").classList.toggle("hidden", !currentPhoto);
 
       const query = buildOfficialSearchQuery(official);
@@ -2827,12 +2987,37 @@
       await searchPickerFaces(query);
     }
 
+    async function persistPickedPhoto(compressedDataUrl) {
+      if (!activePickerOfficial) return;
+      if (activePickerOfficial.isShared) {
+        if (!isAdminUser) {
+          showToast("فقط مدیر ارشد مجاز به تغییر عکس عمومی است");
+          return;
+        }
+        await upsertSharedOfficial(
+          activePickerOfficial.sharedKey,
+          activePickerOfficial.name,
+          activePickerOfficial.role,
+          compressedDataUrl
+        );
+        renderOfficials();
+        closeAllSheets();
+        showToast("عکس " + activePickerOfficial.name + " برای تمام کاربران منتشر شد");
+      } else {
+        personalPhotoMap[activePickerOfficial.personalPhotoKey] = compressedDataUrl;
+        savePersonalPhotosToStorage();
+        renderOfficials();
+        closeAllSheets();
+        showToast("عکس پروفایل ذخیره شد");
+      }
+    }
+
     async function chooseFaceCandidate(idx) {
       if (!activePickerOfficial) return;
       const item = window._pickerCandidates?.[idx];
       if (!item) return;
       haptic();
-      showToast("در حال ذخیره عکس چهره...");
+      showToast("در حال ثبت عکس چهره...");
 
       try {
         let rawSrc = item.thumbData || null;
@@ -2841,14 +3026,9 @@
           rawSrc = proxied.imageBase64;
         }
         const compressed = await compressFaceDataUrl(rawSrc, 180);
-        const key = getOfficialPhotoKey(activePickerOfficial.name);
-        officialPhotoMap[key] = compressed;
-        savePhotoMapToStorage();
-        renderOfficials();
-        closeAllSheets();
-        showToast("عکس پروفایل " + activePickerOfficial.name + " ذخیره شد");
-      } catch {
-        showToast("ذخیره این عکس ممکن نشد؛ روی عکس دیگری بزنید");
+        await persistPickedPhoto(compressed);
+      } catch (err) {
+        showToast("خطا در ذخیره عکس: " + (err?.message || "روی عکس دیگری بزنید"));
       }
     }
 
@@ -2858,30 +3038,35 @@
       const reader = new FileReader();
       reader.onloadend = async () => {
         try {
+          showToast("در حال آپلود و انتشار عکس...");
           const compressed = await compressFaceDataUrl(String(reader.result), 180);
-          const key = getOfficialPhotoKey(activePickerOfficial.name);
-          officialPhotoMap[key] = compressed;
-          savePhotoMapToStorage();
-          renderOfficials();
-          closeAllSheets();
-          showToast("عکس از گالری ذخیره شد");
-        } catch {
-          showToast("خطا در پردازش عکس انتخابی");
+          await persistPickedPhoto(compressed);
+        } catch (err) {
+          showToast("خطا در ثبت عکس گالری: " + (err?.message || ""));
         }
       };
       reader.readAsDataURL(file);
       e.target.value = "";
     }
 
-    function removeCurrentOfficialPhoto() {
+    async function removeCurrentOfficialPhoto() {
       if (!activePickerOfficial) return;
       haptic();
-      const key = getOfficialPhotoKey(activePickerOfficial.name);
-      delete officialPhotoMap[key];
-      savePhotoMapToStorage();
-      renderOfficials();
-      closeAllSheets();
-      showToast("عکس پروفایل حذف شد");
+      try {
+        if (activePickerOfficial.isShared) {
+          if (!isAdminUser) return;
+          await upsertSharedOfficial(activePickerOfficial.sharedKey, activePickerOfficial.name, activePickerOfficial.role, null);
+          showToast("عکس عمومی برای همه کاربران حذف شد");
+        } else {
+          delete personalPhotoMap[activePickerOfficial.personalPhotoKey];
+          savePersonalPhotosToStorage();
+          showToast("عکس پروفایل حذف شد");
+        }
+        renderOfficials();
+        closeAllSheets();
+      } catch (err) {
+        showToast("خطا در حذف عکس: " + (err?.message || ""));
+      }
     }
 
     function openOfficialInPhotoTab() {
@@ -2901,38 +3086,59 @@
 
     function openAddOfficialModal() {
       document.getElementById("editOfficialId").value = "";
+      document.getElementById("editOfficialSharedKey").value = "";
       document.getElementById("officialSheetTitle").textContent = "افزودن مسئول جدید";
       document.getElementById("offName").value = "";
       document.getElementById("offRole").value = "";
+      const wrap = document.getElementById("adminGlobalToggleWrap");
+      if (wrap) wrap.classList.toggle("hidden", !isAdminUser);
+      const chk = document.getElementById("offIsGlobalToggle");
+      if (chk) chk.checked = isAdminUser;
       openSheet("officialSheet");
     }
 
-    function openEditOfficialModal(existingId, name, role) {
-      document.getElementById("editOfficialId").value = existingId || "";
-      document.getElementById("officialSheetTitle").textContent = "ویرایش نام و سمت مسئول";
+    function openEditSharedOfficialModal(sharedKey, name, role) {
+      if (!isAdminUser) return;
+      document.getElementById("editOfficialId").value = "";
+      document.getElementById("editOfficialSharedKey").value = sharedKey;
+      document.getElementById("officialSheetTitle").textContent = "ویرایش سراسری مسئول (برای همه کاربران)";
       document.getElementById("offName").value = name;
       document.getElementById("offRole").value = role;
+      document.getElementById("adminGlobalToggleWrap")?.classList.add("hidden");
       openSheet("officialSheet");
     }
 
     async function saveOfficial() {
       haptic();
       const editId = document.getElementById("editOfficialId").value.trim();
+      const sharedKey = document.getElementById("editOfficialSharedKey").value.trim();
       const name = document.getElementById("offName").value.trim();
       const role = document.getElementById("offRole").value.trim();
+      const publishGlobal = isAdminUser && (!!sharedKey || document.getElementById("offIsGlobalToggle")?.checked);
+
       if (!name || !role) { showToast("نام و سمت را کامل وارد کنید"); return; }
 
-      if (editId) {
-        await sb.from("officials").update({ name, role }).eq("id", editId);
-      } else {
-        await sb.from("officials").insert({ user_id: currentUser.id, name, role });
+      try {
+        if (publishGlobal) {
+          const targetKey = sharedKey || ("shared_" + Date.now());
+          await upsertSharedOfficial(targetKey, name, role);
+          showToast("تغییرات برای تمام کاربران منتشر شد");
+        } else if (editId) {
+          await sb.from("officials").update({ name, role }).eq("id", editId);
+          showToast("تغییرات ذخیره شد");
+        } else {
+          await sb.from("officials").insert({ user_id: currentUser.id, name, role });
+          showToast("در لیست شخصی شما ذخیره شد");
+        }
+        document.getElementById("editOfficialId").value = "";
+        document.getElementById("editOfficialSharedKey").value = "";
+        document.getElementById("offName").value = "";
+        document.getElementById("offRole").value = "";
+        closeAllSheets();
+        loadOfficials();
+      } catch (err) {
+        showToast("خطا در ذخیره: " + (err?.message || ""));
       }
-      document.getElementById("editOfficialId").value = "";
-      document.getElementById("offName").value = "";
-      document.getElementById("offRole").value = "";
-      closeAllSheets();
-      showToast("تغییرات در بانک مسئولان ذخیره شد");
-      loadOfficials();
     }
 
     async function deleteOfficial(id) {
