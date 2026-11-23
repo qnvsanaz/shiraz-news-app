@@ -1,4 +1,4 @@
-const CACHE_NAME = 'shiraz-news-obsidian-v5';
+const CACHE_NAME = 'shiraz-news-obsidian-v6';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (e) => {

@@ -1066,17 +1066,18 @@
           <div class="feed-header">
             <div>
               <div class="feed-brand-name" style="font-size:18px;">بانک مسئولان فارس</div>
-              <div id="officialsCountLabel" class="muted">۴۶ مدیر ارشد استان + لیست شخصی</div>
+              <div id="officialsCountLabel" class="muted">۶۵ مدیر ارشد استان، شورا و شهرداری + لیست شخصی</div>
             </div>
             <button class="pill-btn pill-red pill-sm" onclick="openAddOfficialModal()">+ مسئول جدید</button>
           </div>
           <div class="field" style="margin-bottom:8px;">
-            <input id="officialSearch" class="glass-input" type="text" placeholder="جستجوی نام، سمت یا دستگاه (مثلاً: آبفا، فرماندار، دادگستری)..." oninput="renderOfficials()" />
+            <input id="officialSearch" class="glass-input" type="text" placeholder="جستجوی نام، سمت یا دستگاه (مثلاً: شهرسازی، شورا، آبفا، فرماندار)..." oninput="renderOfficials()" />
           </div>
           <div class="pill-strip" id="officialCatPills">
             <button class="chip-pill active" data-cat="all" onclick="selectOfficialCat(this)">همه</button>
+            <button class="chip-pill" data-cat="council" onclick="selectOfficialCat(this)">شورای شهر شیراز</button>
+            <button class="chip-pill" data-cat="city" onclick="selectOfficialCat(this)">شهرداری شیراز</button>
             <button class="chip-pill" data-cat="gov" onclick="selectOfficialCat(this)">استانداری و فرمانداری</button>
-            <button class="chip-pill" data-cat="city" onclick="selectOfficialCat(this)">شهری و شورا</button>
             <button class="chip-pill" data-cat="security" onclick="selectOfficialCat(this)">قضایی و انتظامی</button>
             <button class="chip-pill" data-cat="parliament" onclick="selectOfficialCat(this)">مجلس</button>
             <button class="chip-pill" data-cat="directors" onclick="selectOfficialCat(this)">مدیران کل اجرایی</button>
@@ -1818,8 +1819,9 @@
 
     // ==================== OFFICIALS (FARS SENIOR DIRECTORY + PERSONAL SYNC) ====================
     const CAT_LABELS = {
+      council: "شورای شهر شیراز",
+      city: "شهرداری شیراز",
       gov: "استانداری و فرمانداری",
-      city: "شهری و شورا",
       security: "قضایی و انتظامی",
       parliament: "مجلس",
       directors: "مدیران کل اجرایی",
@@ -1828,6 +1830,126 @@
     };
 
     const FARS_OFFICIALS_DIRECTORY = [
+      {
+            "name": "سید ابراهیم حسینی",
+            "role": "رئیس شورای اسلامی شهر شیراز",
+            "cat": "council"
+      },
+      {
+            "name": "محمدتقی تذروی",
+            "role": "نایب‌رئیس شورای اسلامی شهر شیراز",
+            "cat": "council"
+      },
+      {
+            "name": "سیده مریم حسینی",
+            "role": "سخنگو و عضو شورای اسلامی شهر شیراز",
+            "cat": "council"
+      },
+      {
+            "name": "مسعود زارعی",
+            "role": "عضو شورای اسلامی شهر شیراز و رئیس کمیسیون سلامت، محیط زیست و خدمات شهری",
+            "cat": "council"
+      },
+      {
+            "name": "علیرضا اسکندری",
+            "role": "عضو شورای اسلامی شهر شیراز و رئیس کمیسیون اقتصادی و سرمایه‌گذاری",
+            "cat": "council"
+      },
+      {
+            "name": "مصطفی کیانی رحیمی",
+            "role": "عضو شورای اسلامی شهر شیراز و رئیس کمیسیون شهرسازی، معماری و هوشمندسازی",
+            "cat": "council"
+      },
+      {
+            "name": "محمود صفایی",
+            "role": "عضو شورای اسلامی شهر شیراز و رئیس کمیسیون برنامه، بودجه، امور حقوقی و املاک",
+            "cat": "council"
+      },
+      {
+            "name": "محمدرضا هاجری",
+            "role": "عضو شورای اسلامی شهر شیراز و رئیس کمیسیون فرهنگی، گردشگری و سومین حرم اهل‌بیت (ع)",
+            "cat": "council"
+      },
+      {
+            "name": "رضا محمدیان",
+            "role": "عضو شورای اسلامی شهر شیراز",
+            "cat": "council"
+      },
+      {
+            "name": "مهدی طاهری",
+            "role": "عضو شورای اسلامی شهر شیراز",
+            "cat": "council"
+      },
+      {
+            "name": "افسانه خواست‌خدایی",
+            "role": "عضو شورای اسلامی شهر شیراز",
+            "cat": "council"
+      },
+      {
+            "name": "ابراهیم کمالی",
+            "role": "عضو شورای اسلامی شهر شیراز",
+            "cat": "council"
+      },
+      {
+            "name": "غلامحسن اسکندری",
+            "role": "عضو شورای اسلامی شهر شیراز",
+            "cat": "council"
+      },
+      {
+            "name": "محمدحسن اسدی",
+            "role": "شهردار شیراز",
+            "cat": "city"
+      },
+      {
+            "name": "محمد امین",
+            "role": "معاون فنی و عمرانی شهرداری شیراز",
+            "cat": "city"
+      },
+      {
+            "name": "فرزاد میرزایی",
+            "role": "سرپرست معاونت شهرسازی و معماری شهرداری شیراز",
+            "cat": "city"
+      },
+      {
+            "name": "روح‌الله خوشبخت",
+            "role": "معاون محیط زیست و خدمات شهری شهرداری شیراز",
+            "cat": "city"
+      },
+      {
+            "name": "محمد فرخ‌زاده",
+            "role": "معاون حمل‌ونقل و ترافیک شهرداری شیراز",
+            "cat": "city"
+      },
+      {
+            "name": "حمیدرضا اسماعیلی",
+            "role": "معاون مالی و اقتصادی شهرداری شیراز",
+            "cat": "city"
+      },
+      {
+            "name": "محمدعلی چوبینی",
+            "role": "معاون فرهنگی، اجتماعی و ورزشی شهرداری شیراز",
+            "cat": "city"
+      },
+      {
+            "name": "محمدهادی شه‌دوست شیرازی",
+            "role": "معاون برنامه‌ریزی و توسعه سرمایه انسانی شهرداری شیراز",
+            "cat": "city"
+      },
+      {
+            "name": "هادی عیدی‌پور",
+            "role": "رئیس سازمان آتش‌نشانی و خدمات ایمنی شهرداری شیراز",
+            "cat": "city"
+      },
+      {
+            "name": "بهمن بهروزی",
+            "role": "مدیرعامل شرکت آب و فاضلاب شیراز",
+            "cat": "city"
+      },
+      {
+            "name": "محمدرضا سلاحی",
+            "role": "مدیرعامل شرکت توزیع نیروی برق شیراز",
+            "cat": "city"
+      },
       {
             "name": "حسینعلی امیری",
             "role": "استاندار فارس",
@@ -1867,31 +1989,6 @@
             "name": "غلامرضا غلامی",
             "role": "مدیرکل مدیریت بحران استانداری فارس",
             "cat": "gov"
-      },
-      {
-            "name": "محمدحسن اسدی",
-            "role": "شهردار شیراز",
-            "cat": "city"
-      },
-      {
-            "name": "سید ابراهیم حسینی",
-            "role": "رئیس شورای اسلامی شهر شیراز",
-            "cat": "city"
-      },
-      {
-            "name": "هادی عیدی‌پور",
-            "role": "رئیس سازمان آتش‌نشانی و خدمات ایمنی شهرداری شیراز",
-            "cat": "city"
-      },
-      {
-            "name": "بهمن بهروزی",
-            "role": "مدیرعامل شرکت آب و فاضلاب شیراز",
-            "cat": "city"
-      },
-      {
-            "name": "محمدرضا سلاحی",
-            "role": "مدیرعامل شرکت توزیع نیروی برق شیراز",
-            "cat": "city"
       },
       {
             "name": "لطف‌الله دژکام",
