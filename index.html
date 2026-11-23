@@ -653,6 +653,72 @@
       text-align: left;
     }
 
+    
+    /* Officials Directory Enhanced */
+    .off-card {
+      background: var(--glass-grad);
+      border: 1px solid var(--rim);
+      box-shadow: var(--specular), 0 14px 30px rgba(0, 0, 0, 0.52);
+      border-radius: 22px;
+      padding: 13px 14px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 11px;
+    }
+    .off-left {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+      flex: 1;
+    }
+    .off-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 15px;
+      flex: 0 0 auto;
+      background: linear-gradient(145deg, rgba(255, 45, 70, 0.24), rgba(255, 255, 255, 0.08));
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+    .off-info { min-width: 0; flex: 1; }
+    .off-name {
+      font-weight: 800;
+      font-size: 13.8px;
+      line-height: 1.35;
+      margin-bottom: 2px;
+    }
+    .off-role {
+      font-size: 11.5px;
+      color: var(--text-2);
+      line-height: 1.5;
+    }
+    .off-cat-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      color: #ff6b7d;
+      background: rgba(255, 45, 70, 0.14);
+      border: 1px solid rgba(255, 45, 70, 0.30);
+      padding: 2px 7px;
+      border-radius: 999px;
+      margin-top: 5px;
+    }
+    .off-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 0 0 auto;
+    }
+
     /* ==================== FLOATING FROSTED GLASS BOTTOM PILL DOCK ==================== */
     .dock-shell {
       position: absolute;
@@ -995,14 +1061,27 @@
           <div id="archiveList"></div>
         </section>
 
-        <!-- ==================== TAB 5: OFFICIALS ==================== -->
+        <!-- ==================== TAB 5: OFFICIALS (FARS PROVINCE DIRECTORY) ==================== -->
         <section id="view-officials" class="view">
           <div class="feed-header">
             <div>
-              <div class="feed-brand-name" style="font-size:19px;">بانک مسئولان</div>
-              <div class="muted">انتخاب سریع نام و سمت</div>
+              <div class="feed-brand-name" style="font-size:18px;">بانک مسئولان فارس</div>
+              <div id="officialsCountLabel" class="muted">۴۶ مدیر ارشد استان + لیست شخصی</div>
             </div>
-            <button class="pill-btn pill-red pill-sm" onclick="openSheet('officialSheet')">+ مسئول جدید</button>
+            <button class="pill-btn pill-red pill-sm" onclick="openAddOfficialModal()">+ مسئول جدید</button>
+          </div>
+          <div class="field" style="margin-bottom:8px;">
+            <input id="officialSearch" class="glass-input" type="text" placeholder="جستجوی نام، سمت یا دستگاه (مثلاً: آبفا، فرماندار، دادگستری)..." oninput="renderOfficials()" />
+          </div>
+          <div class="pill-strip" id="officialCatPills">
+            <button class="chip-pill active" data-cat="all" onclick="selectOfficialCat(this)">همه</button>
+            <button class="chip-pill" data-cat="gov" onclick="selectOfficialCat(this)">استانداری و فرمانداری</button>
+            <button class="chip-pill" data-cat="city" onclick="selectOfficialCat(this)">شهری و شورا</button>
+            <button class="chip-pill" data-cat="security" onclick="selectOfficialCat(this)">قضایی و انتظامی</button>
+            <button class="chip-pill" data-cat="parliament" onclick="selectOfficialCat(this)">مجلس</button>
+            <button class="chip-pill" data-cat="directors" onclick="selectOfficialCat(this)">مدیران کل اجرایی</button>
+            <button class="chip-pill" data-cat="social" onclick="selectOfficialCat(this)">سلامت، علم و فرهنگ</button>
+            <button class="chip-pill" data-cat="custom" onclick="selectOfficialCat(this)">ثبت‌شده شما</button>
           </div>
           <div id="officialsList"></div>
         </section>
@@ -1087,23 +1166,24 @@
       </div>
     </div>
 
-    <!-- Sheet 3: Add Official -->
+    <!-- Sheet 3: Add / Edit Official -->
     <div id="officialSheet" class="sheet">
       <div class="sheet-bar"></div>
       <div class="sheet-head">
-        <span style="font-size:15px; font-weight:800;">افزودن به بانک مسئولان</span>
+        <span id="officialSheetTitle" style="font-size:15px; font-weight:800;">افزودن به بانک مسئولان</span>
         <button class="pill-btn pill-glass pill-sm" onclick="closeAllSheets()">بستن</button>
       </div>
       <div class="sheet-body">
+        <input id="editOfficialId" type="hidden" value="" />
         <div class="field">
-          <label>نام و نام خانوادگی</label>
+          <label>نام و نام خانوادگی مسئول</label>
           <input id="offName" class="glass-input" type="text" placeholder="مثال: محمدحسن اسدی" />
         </div>
         <div class="field">
           <label>سمت رسمی</label>
           <input id="offRole" class="glass-input" type="text" placeholder="مثال: شهردار شیراز" />
         </div>
-        <button class="pill-btn pill-red" style="width:100%;" onclick="addOfficial()">ذخیره مسئول</button>
+        <button id="saveOfficialBtn" class="pill-btn pill-red" style="width:100%;" onclick="saveOfficial()">ذخیره در بانک مسئولان</button>
       </div>
     </div>
   </div>
@@ -1736,7 +1816,297 @@
       loadArchive();
     }
 
-    // ==================== OFFICIALS ====================
+    // ==================== OFFICIALS (FARS SENIOR DIRECTORY + PERSONAL SYNC) ====================
+    const CAT_LABELS = {
+      gov: "استانداری و فرمانداری",
+      city: "شهری و شورا",
+      security: "قضایی و انتظامی",
+      parliament: "مجلس",
+      directors: "مدیران کل اجرایی",
+      social: "سلامت، علم و فرهنگ",
+      custom: "ثبت‌شده شما"
+    };
+
+    const FARS_OFFICIALS_DIRECTORY = [
+      {
+            "name": "حسینعلی امیری",
+            "role": "استاندار فارس",
+            "cat": "gov"
+      },
+      {
+            "name": "سید احمد احمدی‌زاده",
+            "role": "معاون سیاسی، امنیتی و اجتماعی استانداری فارس",
+            "cat": "gov"
+      },
+      {
+            "name": "محمود رضایی کوچی",
+            "role": "معاون هماهنگی امور عمرانی استانداری فارس",
+            "cat": "gov"
+      },
+      {
+            "name": "مسعود گودرزی",
+            "role": "معاون هماهنگی امور اقتصادی استانداری فارس",
+            "cat": "gov"
+      },
+      {
+            "name": "مهدی پارسایی",
+            "role": "معاون هماهنگی امور گردشگری و زیارت استانداری فارس",
+            "cat": "gov"
+      },
+      {
+            "name": "عبدالعلی کریمی",
+            "role": "معاون توسعه مدیریت و منابع استانداری فارس",
+            "cat": "gov"
+      },
+      {
+            "name": "سید علاءالدین کراماتی",
+            "role": "فرماندار شهرستان شیراز",
+            "cat": "gov"
+      },
+      {
+            "name": "غلامرضا غلامی",
+            "role": "مدیرکل مدیریت بحران استانداری فارس",
+            "cat": "gov"
+      },
+      {
+            "name": "محمدحسن اسدی",
+            "role": "شهردار شیراز",
+            "cat": "city"
+      },
+      {
+            "name": "سید ابراهیم حسینی",
+            "role": "رئیس شورای اسلامی شهر شیراز",
+            "cat": "city"
+      },
+      {
+            "name": "هادی عیدی‌پور",
+            "role": "رئیس سازمان آتش‌نشانی و خدمات ایمنی شهرداری شیراز",
+            "cat": "city"
+      },
+      {
+            "name": "بهمن بهروزی",
+            "role": "مدیرعامل شرکت آب و فاضلاب شیراز",
+            "cat": "city"
+      },
+      {
+            "name": "محمدرضا سلاحی",
+            "role": "مدیرعامل شرکت توزیع نیروی برق شیراز",
+            "cat": "city"
+      },
+      {
+            "name": "لطف‌الله دژکام",
+            "role": "نماینده ولی‌فقیه در استان فارس و امام جمعه شیراز",
+            "cat": "security"
+      },
+      {
+            "name": "سید صدرالله رجایی‌نسب",
+            "role": "رئیس کل دادگستری استان فارس",
+            "cat": "security"
+      },
+      {
+            "name": "کامران میرحاجی",
+            "role": "دادستان عمومی و انقلاب مرکز استان فارس",
+            "cat": "security"
+      },
+      {
+            "name": "عزیزالله ملکی",
+            "role": "فرمانده انتظامی استان فارس",
+            "cat": "security"
+      },
+      {
+            "name": "یدالله بوعلی",
+            "role": "فرمانده سپاه فجر استان فارس",
+            "cat": "security"
+      },
+      {
+            "name": "محمد رستمی",
+            "role": "فرمانده انتظامی شهرستان شیراز",
+            "cat": "security"
+      },
+      {
+            "name": "داریوش اکبری",
+            "role": "رئیس پلیس راهنمایی و رانندگی استان فارس",
+            "cat": "security"
+      },
+      {
+            "name": "ابراهیم عزیزی",
+            "role": "نماینده مردم شیراز و زرقان در مجلس شورای اسلامی",
+            "cat": "parliament"
+      },
+      {
+            "name": "جعفر قادری",
+            "role": "نماینده مردم شیراز و زرقان در مجلس شورای اسلامی",
+            "cat": "parliament"
+      },
+      {
+            "name": "روح‌الله نجابت",
+            "role": "نماینده مردم شیراز و زرقان در مجلس شورای اسلامی",
+            "cat": "parliament"
+      },
+      {
+            "name": "سید اسماعیل حسینی",
+            "role": "نماینده مردم شیراز و زرقان در مجلس شورای اسلامی",
+            "cat": "parliament"
+      },
+      {
+            "name": "محمدمهدی عبدالهی",
+            "role": "مدیرکل راه و شهرسازی استان فارس",
+            "cat": "directors"
+      },
+      {
+            "name": "علیرضا امیری",
+            "role": "مدیرکل راهداری و حمل‌ونقل جاده‌ای استان فارس",
+            "cat": "directors"
+      },
+      {
+            "name": "علی شبانی",
+            "role": "مدیرعامل شرکت آب و فاضلاب استان فارس",
+            "cat": "directors"
+      },
+      {
+            "name": "سیاوش بدری",
+            "role": "مدیرعامل شرکت آب منطقه‌ای فارس",
+            "cat": "directors"
+      },
+      {
+            "name": "حمیدرضا جلایر",
+            "role": "مدیرعامل شرکت توزیع نیروی برق استان فارس",
+            "cat": "directors"
+      },
+      {
+            "name": "محمدرضا زارعیان",
+            "role": "مدیرعامل شرکت گاز استان فارس",
+            "cat": "directors"
+      },
+      {
+            "name": "احد بهجت‌حقیقی",
+            "role": "رئیس سازمان جهاد کشاورزی استان فارس",
+            "cat": "directors"
+      },
+      {
+            "name": "کریم مجرب",
+            "role": "مدیرکل صنعت، معدن و تجارت (صمت) استان فارس",
+            "cat": "directors"
+      },
+      {
+            "name": "محسن پاپری زارعی",
+            "role": "رئیس سازمان مدیریت و برنامه‌ریزی استان فارس",
+            "cat": "directors"
+      },
+      {
+            "name": "سید قاسم حسینی",
+            "role": "مدیرکل هواشناسی استان فارس",
+            "cat": "directors"
+      },
+      {
+            "name": "لیلا تاج‌گردون",
+            "role": "مدیرکل حفاظت محیط زیست استان فارس",
+            "cat": "directors"
+      },
+      {
+            "name": "شهرام منتصری",
+            "role": "مدیرکل منابع طبیعی و آبخیزداری استان فارس",
+            "cat": "directors"
+      },
+      {
+            "name": "سید بصیر هاشمی",
+            "role": "رئیس دانشگاه علوم پزشکی شیراز",
+            "cat": "social"
+      },
+      {
+            "name": "علیرضا افشاری‌فر",
+            "role": "رئیس دانشگاه شیراز",
+            "cat": "social"
+      },
+      {
+            "name": "مسعود عابد",
+            "role": "رئیس مرکز اورژانس و فوریت‌های پزشکی استان فارس",
+            "cat": "social"
+      },
+      {
+            "name": "محسن کلاری",
+            "role": "مدیرکل آموزش و پرورش استان فارس",
+            "cat": "social"
+      },
+      {
+            "name": "بهزاد مریدی",
+            "role": "مدیرکل میراث فرهنگی، گردشگری و صنایع دستی استان فارس",
+            "cat": "social"
+      },
+      {
+            "name": "مهدی رنجبر",
+            "role": "مدیرکل فرهنگ و ارشاد اسلامی استان فارس",
+            "cat": "social"
+      },
+      {
+            "name": "عبدالمجید دوراندیش",
+            "role": "مدیرکل ورزش و جوانان استان فارس",
+            "cat": "social"
+      },
+      {
+            "name": "حسین درویشی",
+            "role": "مدیرعامل جمعیت هلال‌احمر استان فارس",
+            "cat": "social"
+      },
+      {
+            "name": "حمید گودرزی",
+            "role": "مدیرکل بهزیستی استان فارس",
+            "cat": "social"
+      },
+      {
+            "name": "مرتضی موصلی",
+            "role": "مدیرکل کمیته امداد امام خمینی (ره) استان فارس",
+            "cat": "social"
+      }
+];
+
+    let selectedOfficialCat = "all";
+
+    function selectOfficialCat(el) {
+      haptic();
+      el.parentElement.querySelectorAll(".chip-pill").forEach(p => p.classList.remove("active"));
+      el.classList.add("active");
+      selectedOfficialCat = el.dataset.cat;
+      renderOfficials();
+    }
+
+    function getMergedOfficials() {
+      const customByRole = new Map();
+      cachedOfficials.forEach(c => customByRole.set((c.role || "").trim(), c));
+
+      const merged = [];
+      const usedCustomIds = new Set();
+
+      // ۱. مسئولان ثبت‌شده شخصی که هم‌سمت مدیران پیش‌فرض نیستند، اول نمایش داده شوند
+      cachedOfficials.forEach(c => {
+        const matchesBuiltin = FARS_OFFICIALS_DIRECTORY.some(b => b.role.trim() === (c.role || "").trim());
+        if (!matchesBuiltin) {
+          merged.push({ id: c.id, name: c.name, role: c.role, cat: "custom", isCustom: true });
+          usedCustomIds.add(c.id);
+        }
+      });
+
+      // ۲. لیست مدیران ارشد استان فارس (اگر کاربر نام مدیری را ویرایش کرده باشد، نسخه ویرایش‌شده جایگزین می‌شود)
+      FARS_OFFICIALS_DIRECTORY.forEach((b, idx) => {
+        const override = customByRole.get(b.role.trim());
+        if (override && !usedCustomIds.has(override.id)) {
+          merged.push({ id: override.id, name: override.name, role: override.role, cat: b.cat, isCustom: true, edited: true });
+          usedCustomIds.add(override.id);
+        } else {
+          merged.push({ id: "builtin_" + idx, name: b.name, role: b.role, cat: b.cat, isCustom: false });
+        }
+      });
+
+      return merged;
+    }
+
+    function getMonogram(name) {
+      const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
+      if (!parts.length) return "م";
+      if (parts.length === 1) return parts[0].slice(0, 2);
+      return parts[0][0] + "‌" + parts[parts.length - 1][0];
+    }
+
     async function loadOfficials() {
       if (!currentUser) return;
       const { data } = await sb.from("officials").select("*").order("created_at", { ascending: false });
@@ -1745,24 +2115,45 @@
     }
 
     function renderOfficials() {
-      document.getElementById("officialQuickChips").innerHTML = cachedOfficials.slice(0, 10).map(o =>
+      const all = getMergedOfficials();
+
+      // نمایش سریع‌ترین مسئولان در پنجره تنظیم خبر (اولویت با ثبت‌شده‌های خود خبرنگار + مدیران کلیدی استان)
+      document.getElementById("officialQuickChips").innerHTML = all.slice(0, 14).map(o =>
         `<button type="button" class="chip-pill" onclick="pickOfficial('${escapeAttr(o.name + '، ' + o.role)}', false)">${escapeHtml(o.name)}</button>`
       ).join("");
 
+      const q = (document.getElementById("officialSearch")?.value || "").trim().toLowerCase();
+      const filtered = all.filter(o => {
+        const catOk = selectedOfficialCat === "all" || (selectedOfficialCat === "custom" ? o.isCustom : o.cat === selectedOfficialCat);
+        const searchOk = !q || o.name.toLowerCase().includes(q) || o.role.toLowerCase().includes(q) || (CAT_LABELS[o.cat] || "").includes(q);
+        return catOk && searchOk;
+      });
+
+      const countEl = document.getElementById("officialsCountLabel");
+      if (countEl) countEl.textContent = `${filtered.length} مسئول آماده انتخاب`;
+
       const list = document.getElementById("officialsList");
-      if (!cachedOfficials.length) {
-        list.innerHTML = `<div class="smoked-card muted" style="text-align:center;">مسئولی ثبت نشده است. از دکمه «+ مسئول جدید» اضافه کنید.</div>`;
+      if (!filtered.length) {
+        list.innerHTML = `<div class="smoked-card muted" style="text-align:center;">مسئولی با این مشخصات پیدا نشد.</div>`;
         return;
       }
-      list.innerHTML = cachedOfficials.map(o => `
-        <div class="smoked-card" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-          <div>
-            <div style="font-weight:800; font-size:14px;">${escapeHtml(o.name)}</div>
-            <div class="muted">${escapeHtml(o.role)}</div>
+
+      list.innerHTML = filtered.map(o => `
+        <div class="off-card">
+          <div class="off-left">
+            <div class="off-avatar">${escapeHtml(getMonogram(o.name))}</div>
+            <div class="off-info">
+              <div class="off-name">${escapeHtml(o.name)}</div>
+              <div class="off-role">${escapeHtml(o.role)}</div>
+              <span class="off-cat-tag">${escapeHtml(CAT_LABELS[o.cat] || "استان فارس")}${o.edited ? " • بروزشده" : ""}</span>
+            </div>
           </div>
-          <div style="display:flex; gap:6px;">
-            <button class="pill-btn pill-glass pill-sm" onclick="pickOfficial('${escapeAttr(o.name + '، ' + o.role)}', true)">انتخاب</button>
-            <button class="pill-btn pill-glass pill-sm" style="color:#ff5b6f;" onclick="deleteOfficial('${o.id}')">حذف</button>
+          <div class="off-actions">
+            <button class="pill-btn pill-red pill-sm" onclick="pickOfficial('${escapeAttr(o.name + '، ' + o.role)}', true)">انتخاب</button>
+            ${o.isCustom && !o.edited
+              ? `<button class="pill-btn pill-glass pill-sm" style="color:#ff5b6f;" onclick="deleteOfficial('${o.id}')">حذف</button>`
+              : `<button class="pill-btn pill-glass pill-sm" onclick="openEditOfficialModal('${escapeAttr(o.isCustom ? o.id : '')}', '${escapeAttr(o.name)}', '${escapeAttr(o.role)}')">ویرایش</button>`
+            }
           </div>
         </div>
       `).join("");
@@ -1771,26 +2162,50 @@
     function pickOfficial(full, goStudio) {
       haptic();
       document.getElementById("speakerInput").value = full;
-      showToast("نام و سمت انتخاب شد");
+      showToast("نام و سمت مسئول انتخاب شد");
       if (goStudio) { switchTab("studio"); openEditorSheet(); }
     }
 
-    async function addOfficial() {
+    function openAddOfficialModal() {
+      document.getElementById("editOfficialId").value = "";
+      document.getElementById("officialSheetTitle").textContent = "افزودن مسئول جدید";
+      document.getElementById("offName").value = "";
+      document.getElementById("offRole").value = "";
+      openSheet("officialSheet");
+    }
+
+    function openEditOfficialModal(existingId, name, role) {
+      document.getElementById("editOfficialId").value = existingId || "";
+      document.getElementById("officialSheetTitle").textContent = "ویرایش نام و سمت مسئول";
+      document.getElementById("offName").value = name;
+      document.getElementById("offRole").value = role;
+      openSheet("officialSheet");
+    }
+
+    async function saveOfficial() {
       haptic();
+      const editId = document.getElementById("editOfficialId").value.trim();
       const name = document.getElementById("offName").value.trim();
       const role = document.getElementById("offRole").value.trim();
       if (!name || !role) { showToast("نام و سمت را کامل وارد کنید"); return; }
-      await sb.from("officials").insert({ user_id: currentUser.id, name, role });
+
+      if (editId) {
+        await sb.from("officials").update({ name, role }).eq("id", editId);
+      } else {
+        await sb.from("officials").insert({ user_id: currentUser.id, name, role });
+      }
+      document.getElementById("editOfficialId").value = "";
       document.getElementById("offName").value = "";
       document.getElementById("offRole").value = "";
       closeAllSheets();
-      showToast("در بانک مسئولان ذخیره شد");
+      showToast("تغییرات در بانک مسئولان ذخیره شد");
       loadOfficials();
     }
 
     async function deleteOfficial(id) {
       haptic();
       await sb.from("officials").delete().eq("id", id);
+      showToast("حذف شد");
       loadOfficials();
     }
 
