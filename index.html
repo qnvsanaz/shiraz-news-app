@@ -811,7 +811,65 @@
       object-position: center 18%;
       display: block;
     }
-        .admin-badge {
+            select.glass-input {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.07) 0%, rgba(20, 20, 25, 0.92) 100%);
+      cursor: pointer;
+    }
+    select.glass-input option {
+      background: #14141c;
+      color: #ffffff;
+    }
+    .admin-bar-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .admin-bar-actions .pill-btn {
+      flex: 1;
+      padding: 8px 10px;
+      font-size: 11.5px;
+    }
+    .reorder-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex: 0 0 auto;
+    }
+    .move-btn {
+      width: 34px;
+      height: 30px;
+      border-radius: 12px;
+      border: 1px solid var(--rim-strong);
+      background: var(--glass-grad);
+      box-shadow: var(--specular);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: transform 0.12s var(--spring), border-color 0.2s, opacity 0.2s;
+    }
+    .move-btn:active { transform: scale(0.88); }
+    .move-btn:disabled { opacity: 0.28; pointer-events: none; }
+    .move-btn.top-btn {
+      border-color: rgba(255, 45, 70, 0.55);
+      color: #ff6b7d;
+    }
+    .rank-pill {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      color: #e4e4e7;
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 2px 7px;
+      border-radius: 999px;
+      margin-right: 4px;
+      margin-top: 5px;
+      direction: ltr;
+    }
+    .admin-badge {
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -1226,12 +1284,15 @@
           <div id="adminPhotoSyncBar" class="photo-sync-bar hidden">
             <div class="photo-sync-top">
               <div>
-                <div style="font-size:12.5px; font-weight:800;">مدیریت سراسری عکس مسئولان (برای همه کاربران)</div>
-                <div id="photoSyncStatus" class="muted" style="font-size:11px;">هر عکسی تغییر دهید برای تمام کاربران ثبت می‌شود</div>
+                <div style="font-size:12.5px; font-weight:800;">پنل مدیر ارشد (تغییرات برای همه کاربران)</div>
+                <div id="photoSyncStatus" class="muted" style="font-size:11px;">عکس، ترتیب نمایش و دسته‌بندی برای تمام کاربران همگام می‌شود</div>
               </div>
-              <button id="syncAllPhotosBtn" class="pill-btn pill-red pill-sm" onclick="toggleAutoFetchPhotos()">دریافت و انتشار همه</button>
             </div>
             <div class="sync-progress-track"><div id="photoSyncFill" class="sync-progress-fill"></div></div>
+            <div class="admin-bar-actions">
+              <button id="reorderModeBtn" class="pill-btn pill-glass" onclick="toggleReorderMode()">↕ تغییر چینش لیست</button>
+              <button id="syncAllPhotosBtn" class="pill-btn pill-red" onclick="toggleAutoFetchPhotos()">دریافت و انتشار عکس‌ها</button>
+            </div>
           </div>
           <div class="field" style="margin-bottom:8px;">
             <input id="officialSearch" class="glass-input" type="text" placeholder="جستجوی نام، سمت یا دستگاه (مثلاً: شهرسازی، شورا، آبفا، فرماندار)..." oninput="renderOfficials()" />
@@ -1350,9 +1411,28 @@
         </div>
         <label id="adminGlobalToggleWrap" class="toggle-pill hidden">
           <span>انتشار عمومی این مسئول برای تمام کاربران</span>
-          <input id="offIsGlobalToggle" type="checkbox" checked />
+          <input id="offIsGlobalToggle" type="checkbox" checked onchange="syncAdminFieldsVisibility()" />
         </label>
+        <div id="adminMetaFieldsWrap" class="hidden">
+          <div class="field">
+            <label>دسته‌بندی نمایش در اپلیکیشن</label>
+            <select id="offCategory" class="glass-input">
+              <option value="council">شورای شهر شیراز</option>
+              <option value="city">شهرداری شیراز</option>
+              <option value="gov">استانداری و فرمانداری</option>
+              <option value="security">قضایی و انتظامی</option>
+              <option value="parliament">مجلس</option>
+              <option value="directors">مدیران کل اجرایی</option>
+              <option value="social">سلامت، علم و فرهنگ</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>اولویت چینش در لیست (عدد کوچک‌تر بالاتر قرار می‌گیرد — مثلاً ۱ یعنی نفر اول)</label>
+            <input id="offSortOrder" class="glass-input" type="number" min="1" step="1" placeholder="مثلاً: 1" dir="ltr" />
+          </div>
+        </div>
         <button id="saveOfficialBtn" class="pill-btn pill-red" style="width:100%;" onclick="saveOfficial()">ذخیره در بانک مسئولان</button>
+        <button id="deleteSharedOfficialBtn" class="pill-btn pill-glass hidden" style="width:100%; margin-top:8px; color:#ff5b6f;" onclick="deleteExtraSharedOfficial()">حذف این مسئول عمومی</button>
       </div>
     </div>
 
@@ -2486,6 +2566,8 @@
     }
 
     let selectedOfficialCat = "all";
+    let isReorderMode = false;
+    let isReorderingBusy = false;
     let isAutoFetchingPhotos = false;
     let cancelAutoFetch = false;
     let fetchingOfficialKeys = new Set();
@@ -2500,6 +2582,33 @@
       const bar = document.getElementById("adminPhotoSyncBar");
       if (badge) badge.classList.toggle("hidden", !isAdminUser);
       if (bar) bar.classList.toggle("hidden", !isAdminUser);
+      if (!isAdminUser) isReorderMode = false;
+      updateReorderBtnUI();
+    }
+
+    function updateReorderBtnUI() {
+      const btn = document.getElementById("reorderModeBtn");
+      if (!btn) return;
+      if (isReorderMode) {
+        btn.textContent = "✓ اتمام چینش";
+        btn.classList.remove("pill-glass");
+        btn.classList.add("pill-red");
+      } else {
+        btn.textContent = "↕ تغییر چینش لیست";
+        btn.classList.remove("pill-red");
+        btn.classList.add("pill-glass");
+      }
+    }
+
+    function toggleReorderMode() {
+      haptic();
+      if (!isAdminUser) return;
+      isReorderMode = !isReorderMode;
+      updateReorderBtnUI();
+      renderOfficials();
+      if (isReorderMode) {
+        showToast("حالت چینش فعال شد؛ با فلش‌های بالا و پایین ترتیب را عوض کنید");
+      }
     }
 
     let lastAdminCheckError = "";
@@ -2564,7 +2673,7 @@
       return personalPhotoMap[o.personalPhotoKey] || null;
     }
 
-    async function upsertSharedOfficial(sharedKey, name, role, photoData) {
+    function buildSharedPayload(sharedKey, name, role, photoData, category, sortOrder) {
       const existing = sharedOfficialsMap[sharedKey] || {};
       const payload = {
         official_key: sharedKey,
@@ -2573,11 +2682,45 @@
         photo_data: photoData !== undefined ? photoData : (existing.photo_data ?? null),
         updated_at: new Date().toISOString()
       };
+      const finalCat = category !== undefined ? category : existing.category;
+      const finalOrder = sortOrder !== undefined ? sortOrder : existing.sort_order;
+      if (finalCat !== undefined && finalCat !== null && finalCat !== "") {
+        payload.category = finalCat;
+      }
+      if (finalOrder !== undefined && finalOrder !== null && !Number.isNaN(Number(finalOrder))) {
+        payload.sort_order = Math.round(Number(finalOrder));
+      }
+      return payload;
+    }
+
+    async function upsertSharedOfficial(sharedKey, name, role, photoData, category, sortOrder) {
+      const payload = buildSharedPayload(sharedKey, name, role, photoData, category, sortOrder);
       const { error } = await sb
         .from("shared_officials")
         .upsert(payload, { onConflict: "official_key" });
-      if (error) throw error;
-      sharedOfficialsMap[sharedKey] = payload;
+      if (error) {
+        if (String(error.message || "").includes("column")) {
+          throw new Error("ابتدا دستور SQL افزودن ستون‌های category و sort_order را در Supabase اجرا کنید");
+        }
+        throw error;
+      }
+      sharedOfficialsMap[sharedKey] = { ...(sharedOfficialsMap[sharedKey] || {}), ...payload };
+      saveSharedCacheToStorage();
+    }
+
+    async function upsertSharedBatch(rows) {
+      const { error } = await sb
+        .from("shared_officials")
+        .upsert(rows, { onConflict: "official_key" });
+      if (error) {
+        if (String(error.message || "").includes("column")) {
+          throw new Error("ابتدا دستور SQL افزودن ستون‌های category و sort_order را در Supabase اجرا کنید");
+        }
+        throw error;
+      }
+      rows.forEach(r => {
+        sharedOfficialsMap[r.official_key] = { ...(sharedOfficialsMap[r.official_key] || {}), ...r };
+      });
       saveSharedCacheToStorage();
     }
 
@@ -2829,58 +2972,82 @@
     }
 
     function getMergedOfficials() {
-      const merged = [];
+      const personal = [];
+      const sharedList = [];
 
       // ۱. مسئولان شخصی ثبت‌شده توسط خود کاربر
-      cachedOfficials.forEach(c => {
-        merged.push({
+      cachedOfficials.forEach((c, idx) => {
+        personal.push({
           domKey: "custom_" + c.id,
           id: c.id,
           name: c.name,
           role: c.role,
           cat: "custom",
+          sortOrder: idx,
           isShared: false,
           isCustom: true,
           personalPhotoKey: "custom_" + c.id
         });
       });
 
-      // ۲. مسئولان عمومی جدیدی که مدیر ارشد در shared_officials اضافه کرده (خارج از ۶۵ نفر پایه)
-      Object.values(sharedOfficialsMap).forEach(s => {
-        if (!String(s.official_key || "").startsWith("fars_")) {
-          merged.push({
-            domKey: s.official_key,
-            sharedKey: s.official_key,
-            name: s.name,
-            role: s.role,
-            cat: "gov",
-            isShared: true,
-            isExtraShared: true,
-            isCustom: false
-          });
-        }
-      });
-
-      // ۳. لیست ۶۵ مدیر ارشد استان فارس (با اعمال خودکار نام، سمت و عکس مصوب مدیر ارشد از Supabase)
+      // ۲. لیست ۶۵ مدیر ارشد استان فارس (با اعمال نام، سمت، دسته‌بندی، ترتیب و عکس مصوب مدیر ارشد)
       FARS_OFFICIALS_DIRECTORY.forEach((b, idx) => {
         const sk = "fars_" + idx;
         const shared = sharedOfficialsMap[sk];
         const finalName = shared?.name || b.name;
         const finalRole = shared?.role || b.role;
-        merged.push({
+        const finalCat = (shared?.category && CAT_LABELS[shared.category]) ? shared.category : b.cat;
+        const defaultOrder = (idx + 1) * 10;
+        const finalOrder = (shared?.sort_order !== undefined && shared?.sort_order !== null)
+          ? Number(shared.sort_order)
+          : defaultOrder;
+        sharedList.push({
           domKey: sk,
           sharedKey: sk,
           name: finalName,
           role: finalRole,
-          cat: b.cat,
+          cat: finalCat,
+          defaultCat: b.cat,
+          sortOrder: finalOrder,
+          baseIdx: idx,
           photoQuery: finalName.trim() === b.name.trim() ? b.photoQuery : undefined,
           isShared: true,
+          isExtraShared: false,
           isCustom: false,
-          edited: !!(shared && (shared.name !== b.name || shared.role !== b.role))
+          edited: !!(shared && (shared.name !== b.name || shared.role !== b.role || (shared.category && shared.category !== b.cat)))
         });
       });
 
-      return merged;
+      // ۳. مسئولان عمومی جدیدی که مدیر ارشد اضافه کرده است
+      let extraCounter = 0;
+      Object.values(sharedOfficialsMap).forEach(s => {
+        if (!String(s.official_key || "").startsWith("fars_")) {
+          extraCounter++;
+          const finalCat = (s.category && CAT_LABELS[s.category]) ? s.category : "gov";
+          const finalOrder = (s.sort_order !== undefined && s.sort_order !== null)
+            ? Number(s.sort_order)
+            : (FARS_OFFICIALS_DIRECTORY.length + extraCounter) * 10;
+          sharedList.push({
+            domKey: s.official_key,
+            sharedKey: s.official_key,
+            name: s.name,
+            role: s.role,
+            cat: finalCat,
+            defaultCat: finalCat,
+            sortOrder: finalOrder,
+            baseIdx: 10000 + extraCounter,
+            isShared: true,
+            isExtraShared: true,
+            isCustom: false,
+            edited: false
+          });
+        }
+      });
+
+      // مرتب‌سازی سراسری مسئولان استانی بر اساس چینش تعیین‌شده توسط مدیر ارشد
+      sharedList.sort((a, b) => (a.sortOrder - b.sortOrder) || (a.baseIdx - b.baseIdx));
+
+      return [...sharedList, ...personal];
     }
 
     function getMonogram(name) {
@@ -2941,10 +3108,35 @@
 
       const camIconHtml = `<span class="off-cam-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></span>`;
 
+      const visibleShared = filtered.filter(x => x.isShared);
+      window._visibleSharedOfficials = visibleShared;
+
       list.innerHTML = filtered.map(o => {
         const photo = getOfficialPhoto(o);
         const isLoading = fetchingOfficialKeys.has(o.domKey);
         const canEdit = o.isShared ? isAdminUser : true;
+        const sharedPos = o.isShared ? visibleShared.findIndex(x => x.sharedKey === o.sharedKey) : -1;
+        const showReorder = isAdminUser && isReorderMode && o.isShared;
+
+        const rightControls = showReorder
+          ? `<div class="reorder-controls">
+              <button class="move-btn" title="انتقال به بالا" ${sharedPos <= 0 ? "disabled" : ""} onclick="moveSharedOfficial('${escapeAttr(o.sharedKey)}', -1)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="18 15 12 9 6 15"/></svg>
+              </button>
+              <button class="move-btn" title="انتقال به پایین" ${sharedPos < 0 || sharedPos >= visibleShared.length - 1 ? "disabled" : ""} onclick="moveSharedOfficial('${escapeAttr(o.sharedKey)}', 1)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>`
+          : `<div class="off-actions">
+              <button class="pill-btn pill-red pill-sm" onclick="pickOfficial('${escapeAttr(o.name + '، ' + o.role)}', true)">انتخاب</button>
+              ${o.isCustom
+                ? `<button class="pill-btn pill-glass pill-sm" style="color:#ff5b6f;" onclick="deleteOfficial('${o.id}')">حذف</button>`
+                : (isAdminUser
+                    ? `<button class="pill-btn pill-glass pill-sm" onclick="openEditSharedOfficialModal('${escapeAttr(o.sharedKey)}')">ویرایش</button>`
+                    : "")
+              }
+            </div>`;
+
         return `
         <div class="off-card">
           <div class="off-left">
@@ -2955,18 +3147,13 @@
             <div class="off-info">
               <div class="off-name">${escapeHtml(o.name)}</div>
               <div class="off-role">${escapeHtml(o.role)}</div>
-              <span class="off-cat-tag">${escapeHtml(CAT_LABELS[o.cat] || "استان فارس")}${o.edited ? " • بروزشده" : ""}</span>
+              <div>
+                <span class="off-cat-tag">${escapeHtml(CAT_LABELS[o.cat] || "استان فارس")}${o.edited ? " • بروزشده" : ""}</span>
+                ${showReorder ? `<span class="rank-pill">#${sharedPos + 1}</span>` : ""}
+              </div>
             </div>
           </div>
-          <div class="off-actions">
-            <button class="pill-btn pill-red pill-sm" onclick="pickOfficial('${escapeAttr(o.name + '، ' + o.role)}', true)">انتخاب</button>
-            ${o.isCustom
-              ? `<button class="pill-btn pill-glass pill-sm" style="color:#ff5b6f;" onclick="deleteOfficial('${o.id}')">حذف</button>`
-              : (isAdminUser
-                  ? `<button class="pill-btn pill-glass pill-sm" onclick="openEditSharedOfficialModal('${escapeAttr(o.sharedKey)}', '${escapeAttr(o.name)}', '${escapeAttr(o.role)}')">ویرایش</button>`
-                  : "")
-            }
-          </div>
+          ${rightControls}
         </div>
       `;
       }).join("");
@@ -3131,6 +3318,43 @@
       if (goStudio) { switchTab("studio"); openEditorSheet(); }
     }
 
+    function syncAdminFieldsVisibility() {
+      const sharedKey = document.getElementById("editOfficialSharedKey").value.trim();
+      const isGlobalChecked = !!document.getElementById("offIsGlobalToggle")?.checked;
+      const showMeta = isAdminUser && (!!sharedKey || isGlobalChecked);
+      document.getElementById("adminMetaFieldsWrap")?.classList.toggle("hidden", !showMeta);
+    }
+
+    async function moveSharedOfficial(sharedKey, direction) {
+      haptic();
+      if (!isAdminUser || isReorderingBusy) return;
+      const visible = window._visibleSharedOfficials || [];
+      const idx = visible.findIndex(x => x.sharedKey === sharedKey);
+      const targetIdx = idx + direction;
+      if (idx < 0 || targetIdx < 0 || targetIdx >= visible.length) return;
+
+      const itemA = visible[idx];
+      const itemB = visible[targetIdx];
+
+      let orderA = Number(itemB.sortOrder);
+      let orderB = Number(itemA.sortOrder);
+      if (orderA === orderB) {
+        orderA = direction < 0 ? orderB - 1 : orderB + 1;
+      }
+
+      isReorderingBusy = true;
+      try {
+        const rowA = buildSharedPayload(itemA.sharedKey, itemA.name, itemA.role, undefined, itemA.cat, orderA);
+        const rowB = buildSharedPayload(itemB.sharedKey, itemB.name, itemB.role, undefined, itemB.cat, orderB);
+        await upsertSharedBatch([rowA, rowB]);
+        renderOfficials();
+      } catch (err) {
+        showToast(err?.message || "خطا در تغییر ترتیب");
+      } finally {
+        isReorderingBusy = false;
+      }
+    }
+
     function openAddOfficialModal() {
       document.getElementById("editOfficialId").value = "";
       document.getElementById("editOfficialSharedKey").value = "";
@@ -3141,18 +3365,51 @@
       if (wrap) wrap.classList.toggle("hidden", !isAdminUser);
       const chk = document.getElementById("offIsGlobalToggle");
       if (chk) chk.checked = isAdminUser;
+      const catSel = document.getElementById("offCategory");
+      if (catSel) catSel.value = (selectedOfficialCat !== "all" && selectedOfficialCat !== "custom") ? selectedOfficialCat : "gov";
+      const orderInput = document.getElementById("offSortOrder");
+      if (orderInput) orderInput.value = "1";
+      document.getElementById("deleteSharedOfficialBtn")?.classList.add("hidden");
+      syncAdminFieldsVisibility();
       openSheet("officialSheet");
     }
 
-    function openEditSharedOfficialModal(sharedKey, name, role) {
+    function openEditSharedOfficialModal(sharedKey) {
       if (!isAdminUser) return;
+      const all = window._mergedOfficials || getMergedOfficials();
+      const target = all.find(x => x.sharedKey === sharedKey);
+      if (!target) return;
+
       document.getElementById("editOfficialId").value = "";
       document.getElementById("editOfficialSharedKey").value = sharedKey;
       document.getElementById("officialSheetTitle").textContent = "ویرایش سراسری مسئول (برای همه کاربران)";
-      document.getElementById("offName").value = name;
-      document.getElementById("offRole").value = role;
+      document.getElementById("offName").value = target.name;
+      document.getElementById("offRole").value = target.role;
+      const catSel = document.getElementById("offCategory");
+      if (catSel) catSel.value = CAT_LABELS[target.cat] ? target.cat : "gov";
+      const orderInput = document.getElementById("offSortOrder");
+      if (orderInput) orderInput.value = String(target.sortOrder ?? 10);
       document.getElementById("adminGlobalToggleWrap")?.classList.add("hidden");
+      document.getElementById("deleteSharedOfficialBtn")?.classList.toggle("hidden", !target.isExtraShared);
+      syncAdminFieldsVisibility();
       openSheet("officialSheet");
+    }
+
+    async function deleteExtraSharedOfficial() {
+      haptic();
+      const sharedKey = document.getElementById("editOfficialSharedKey").value.trim();
+      if (!isAdminUser || !sharedKey || sharedKey.startsWith("fars_")) return;
+      try {
+        const { error } = await sb.from("shared_officials").delete().eq("official_key", sharedKey);
+        if (error) throw error;
+        delete sharedOfficialsMap[sharedKey];
+        saveSharedCacheToStorage();
+        closeAllSheets();
+        showToast("مسئول عمومی حذف شد");
+        loadOfficials();
+      } catch (err) {
+        showToast("خطا در حذف: " + (err?.message || ""));
+      }
     }
 
     async function saveOfficial() {
@@ -3168,7 +3425,10 @@
       try {
         if (publishGlobal) {
           const targetKey = sharedKey || ("shared_" + Date.now());
-          await upsertSharedOfficial(targetKey, name, role);
+          const catVal = document.getElementById("offCategory")?.value || "gov";
+          const orderRaw = document.getElementById("offSortOrder")?.value;
+          const sortOrderVal = orderRaw !== "" && orderRaw !== undefined ? Number(orderRaw) : undefined;
+          await upsertSharedOfficial(targetKey, name, role, undefined, catVal, sortOrderVal);
           showToast("تغییرات برای تمام کاربران منتشر شد");
         } else if (editId) {
           await sb.from("officials").update({ name, role }).eq("id", editId);
