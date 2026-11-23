@@ -1,13 +1,13 @@
 {
-  "name": "دستیار خبرنویسی شیراز",
+  "name": "آخرین خبرهای شیراز | دستیار خبرنویسی",
   "short_name": "خبرنویسی شیراز",
-  "description": "تبدیل صوت به متن، تنظیم خبر استاندارد خبرگزاری‌ها، بازنشر آخرین خبرهای شیراز و تولید عکس خبری",
+  "description": "استودیو هوشمند تبدیل صوت به خبر، بازنشر زنده @shirazlastnews و تولید عکس خبری",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#070b14",
-  "theme_color": "#070b14",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "lang": "fa",
   "dir": "rtl",
   "icons": [
