@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>آخرین خبرهای شیراز | دستیار خبرنویسی</title>
+  <title>سریر رسانه | تحریریه هوشمند</title>
   <meta name="theme-color" content="#000000" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="خبرنویسی شیراز" />
+  <meta name="apple-mobile-web-app-title" content="سریر رسانه" />
   <link rel="manifest" href="./manifest.json" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -1159,6 +1159,176 @@
       border: 1px solid rgba(56, 189, 248, 0.36);
     }
 
+        .util-btn.active {
+      background: linear-gradient(135deg, rgba(255, 45, 70, 0.34), rgba(255, 255, 255, 0.14));
+      border-color: rgba(255, 45, 70, 0.72);
+      color: #fff;
+      box-shadow: 0 0 16px rgba(255, 45, 70, 0.32), var(--specular);
+    }
+    .pill-sm { white-space: nowrap; }
+
+    /* ==================== DISPATCH TO MEDIA TAB ==================== */
+    .sig-preview-box {
+      background: rgba(255, 45, 70, 0.10);
+      border: 1px solid rgba(255, 45, 70, 0.34);
+      border-radius: 16px;
+      padding: 10px 13px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #ffe4e8;
+    }
+    .outlet-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .outlet-card {
+      background: var(--glass-subtle);
+      border: 1.5px solid var(--rim);
+      border-radius: 18px;
+      padding: 11px 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      transition: border-color 0.18s, background 0.18s, transform 0.12s var(--spring);
+    }
+    .outlet-card:active { transform: scale(0.985); }
+    .outlet-card.selected {
+      background: linear-gradient(145deg, rgba(255, 45, 70, 0.22), rgba(22, 22, 28, 0.92));
+      border-color: rgba(255, 45, 70, 0.75);
+      box-shadow: 0 0 18px rgba(255, 45, 70, 0.18);
+    }
+    .outlet-card.inactive-outlet {
+      opacity: 0.55;
+    }
+    .outlet-check {
+      width: 22px;
+      height: 22px;
+      border-radius: 8px;
+      flex: 0 0 auto;
+      border: 1.5px solid var(--rim-strong);
+      background: rgba(0, 0, 0, 0.45);
+      display: grid;
+      place-items: center;
+      color: transparent;
+      transition: all 0.16s var(--spring);
+    }
+    .outlet-card.selected .outlet-check {
+      background: var(--red);
+      border-color: #ff8a99;
+      color: #fff;
+      box-shadow: 0 0 12px rgba(255, 45, 70, 0.5);
+    }
+    .media-type-pill {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-top: 3px;
+    }
+    .media-type-pill.agency {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.34);
+    }
+    .media-type-pill.newspaper {
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.14);
+      border: 1px solid rgba(251, 191, 36, 0.34);
+    }
+    .media-type-pill.news_site {
+      color: #34d399;
+      background: rgba(52, 211, 153, 0.14);
+      border: 1px solid rgba(52, 211, 153, 0.34);
+    }
+    .attach-preview-box {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--rim-strong);
+      margin-bottom: 10px;
+      max-height: 170px;
+      background: #000;
+    }
+    .attach-preview-box img {
+      width: 100%;
+      max-height: 170px;
+      object-fit: cover;
+      display: block;
+    }
+    .attach-remove-btn {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.78);
+      color: #ff6b7d;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .delivery-result-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 11px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.42);
+      border: 1px solid var(--rim);
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+    .status-ok { color: #34d399; font-weight: 800; }
+    .status-err { color: #ff6b7d; font-weight: 800; }
+    .verified-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .verified-badge.yes {
+      color: #34d399;
+      background: rgba(52, 211, 153, 0.16);
+      border: 1px solid rgba(52, 211, 153, 0.36);
+    }
+    .verified-badge.pending {
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.14);
+      border: 1px solid rgba(251, 191, 36, 0.34);
+    }
+    .admin-user-card {
+      padding: 11px 12px;
+      border-radius: 18px;
+      background: var(--glass-subtle);
+      border: 1px solid var(--rim);
+      margin-bottom: 9px;
+    }
+    .admin-user-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .admin-user-org-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      align-items: center;
+    }
+    .admin-user-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
     .agency-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 8px; }
     .agency-btn {
       padding: 13px 10px; border-radius: 16px;
@@ -1222,9 +1392,9 @@
 
   <!-- Splash -->
   <div id="splash">
-    <img src="./icon-192.png" class="splash-logo" alt="آخرین خبرهای شیراز" />
-    <div style="font-size:18px; font-weight:900;">آخرین خبرهای شیراز</div>
-    <div class="muted" style="display:flex; align-items:center; gap:6px;"><span class="live-dot"></span> @shirazlastnews</div>
+    <img src="./icon-192.png" class="splash-logo" alt="سریر رسانه" />
+    <div style="font-size:20px; font-weight:900;">سریر رسانه</div>
+    <div class="muted" style="display:flex; align-items:center; gap:6px;"><span class="live-dot"></span> تحریریه هوشمند و ارتباط با رسانه‌ها</div>
   </div>
 
   <div class="app-frame">
@@ -1233,9 +1403,9 @@
     <!-- Auth Screen -->
     <div id="authScreen" class="auth-screen hidden">
       <div class="auth-card">
-        <img src="./icon-192.png" class="auth-logo" alt="لوگو" />
-        <h1 style="margin:0 0 4px; font-size:20px; font-weight:900;">آخرین خبرهای شیراز</h1>
-        <p class="muted" style="margin:0;">اتاق خبر هوشمند @shirazlastnews</p>
+        <img src="./icon-192.png" class="auth-logo" alt="لوگو سریر رسانه" />
+        <h1 style="margin:0 0 4px; font-size:21px; font-weight:900;">سریر رسانه</h1>
+        <p class="muted" style="margin:0;">تحریریه هوشمند و ارتباط مستقیم با رسانه‌ها</p>
 
         <div class="seg-control">
           <button id="tabLoginBtn" class="seg-btn active" onclick="setAuthMode('login')">ورود</button>
@@ -1266,7 +1436,11 @@
               </button>
             </div>
           </div>
-          <button id="authSubmitBtn" type="submit" class="pill-btn pill-red" style="width:100%; margin-top:6px;">ورود به اتاق خبر</button>
+          <div id="signupOrgField" class="field hidden">
+            <label>عنوان دستگاه اجرایی / سازمان (الزامی برای روابط عمومی)</label>
+            <input id="signupOrgName" class="glass-input" type="text" placeholder="مثال: شهرداری شیراز، استانداری فارس، آبفا شیراز" />
+          </div>
+          <button id="authSubmitBtn" type="submit" class="pill-btn pill-red" style="width:100%; margin-top:6px;">ورود به سریر رسانه</button>
         </form>
       </div>
     </div>
@@ -1274,11 +1448,11 @@
     <!-- Main App -->
     <div id="mainApp" class="hidden" style="display:flex; flex-direction:column; height:100%; position:relative; z-index:2;">
       <div class="top-util">
-        <button class="util-btn" title="وضعیت حساب و نقش کاربری" onclick="showAccountStatus()">
+        <button class="util-btn" id="topAccountBtn" title="حساب کاربری و نوع فعالیت" onclick="showAccountStatus()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </button>
-        <button class="util-btn" title="خروج از حساب" onclick="handleLogout()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <button class="util-btn" id="topArchiveBtn" title="آرشیو اخبار" onclick="switchTab('archive')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>
         </button>
       </div>
 
@@ -1400,6 +1574,100 @@
           <div id="photoResultsGrid" class="photo-grid"></div>
         </section>
 
+        <!-- ==================== TAB 4: DISPATCH TO MEDIA ==================== -->
+        <section id="view-dispatch" class="view">
+          <div class="feed-header">
+            <div>
+              <div class="feed-brand-name" style="font-size:18px;">ارسال خبر به رسانه‌ها</div>
+              <div id="dispatchSubLabel" class="muted">ارسال مستقیم به تلگرام رسانه‌های استان</div>
+            </div>
+            <button id="adminAddOutletTopBtn" class="pill-btn pill-red pill-sm hidden" onclick="openMediaOutletModal()">+ رسانه جدید</button>
+          </div>
+
+          <!-- پنل اختصاصی مدیر ارشد برای مدیریت رسانه‌ها و نمایندگان -->
+          <div id="adminMediaPanel" class="photo-sync-bar hidden">
+            <div class="photo-sync-top">
+              <div>
+                <div style="font-size:12.5px; font-weight:800;">مدیریت رسانه‌ها و نمایندگان (ویژه مدیر ارشد)</div>
+                <div id="adminMediaCountText" class="muted" style="font-size:11px;">افزودن خبرگزاری، روزنامه و پایگاه خبری با Chat ID تلگرام</div>
+              </div>
+              <button class="pill-btn pill-glass pill-sm" onclick="toggleAdminMediaManager()" id="toggleMediaMgrBtn">مدیریت لیست</button>
+            </div>
+            <div id="adminMediaManagerList" class="hidden" style="margin-top:10px;"></div>
+          </div>
+
+          <!-- حالت قفل برای خبرنگاران یا روابط عمومی‌های تاییدنشده -->
+          <div id="dispatchLockedCard" class="smoked-card hidden" style="text-align:center; padding:22px 16px;">
+            <div style="width:46px; height:46px; border-radius:16px; margin:0 auto 12px; background:rgba(255,45,70,0.14); border:1px solid rgba(255,45,70,0.38); display:grid; place-items:center; color:#ff6b7d;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div id="dispatchLockTitle" style="font-size:15px; font-weight:900; margin-bottom:6px;"></div>
+            <p id="dispatchLockDesc" class="muted" style="line-height:1.8; margin:0 0 14px;"></p>
+            <div class="dual-pills">
+              <button class="pill-btn pill-red pill-sm" onclick="showAccountStatus()">تنظیم حساب کاربری</button>
+              <button class="pill-btn pill-glass pill-sm" onclick="loadDispatchData(true)">بررسی مجدد وضعیت</button>
+            </div>
+          </div>
+
+          <!-- فرم اصلی ارسال خبر (برای روابط عمومی تاییدشده و مدیر ارشد) -->
+          <div id="dispatchStudioArea" class="hidden">
+            <div id="dispatchSigPreview" class="sig-preview-box"></div>
+
+            <div id="adminCustomSenderWrap" class="field hidden">
+              <label>عنوان دستگاه فرستنده (اختیاری — مخصوص ارسال مدیر ارشد)</label>
+              <input id="adminDispatchOrgInput" class="glass-input" type="text" placeholder="مثال: شهرداری شیراز (در صورت خالی بودن: سریر رسانه)" oninput="renderDispatchSignaturePreview()" />
+            </div>
+
+            <div class="field">
+              <label style="display:flex; justify-content:space-between;">
+                <span>متن خبر آماده ارسال</span>
+                <span style="color:var(--red); cursor:pointer;" onclick="clearDispatchForm()">پاک کردن</span>
+              </label>
+              <textarea id="dispatchTextInput" class="glass-textarea" style="min-height:130px;" placeholder="متن خبر را اینجا بنویسید یا از پنجره خروجی خبر دکمه «ارسال به رسانه‌ها» را بزنید..."></textarea>
+            </div>
+
+            <!-- پیوست اختیاری عکس -->
+            <div id="dispatchPhotoPreviewWrap" class="attach-preview-box hidden">
+              <img id="dispatchPhotoPreviewImg" src="" alt="عکس پیوست" />
+              <button type="button" class="attach-remove-btn" onclick="removeDispatchPhoto()">حذف عکس ✕</button>
+            </div>
+
+            <div class="dual-pills" style="margin-bottom:14px;">
+              <label class="pill-btn pill-glass pill-sm" style="margin:0;">
+                پیوست عکس از گالری
+                <input id="dispatchPhotoFileInput" type="file" accept="image/*" class="hidden" onchange="handleDispatchGalleryPhoto(event)" />
+              </label>
+              <button type="button" class="pill-btn pill-glass pill-sm" onclick="attachFromPhotoSearchTab()">عکس از تب «عکس»</button>
+            </div>
+
+            <!-- انتخاب رسانه‌های مقصد -->
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+              <span style="font-size:12.5px; font-weight:800;">انتخاب رسانه‌های مقصد</span>
+              <button type="button" class="pill-btn pill-glass pill-sm" style="padding:4px 10px;" onclick="toggleSelectAllOutlets()">انتخاب همه / لغو</button>
+            </div>
+
+            <div class="pill-strip" id="dispatchMediaCatPills">
+              <button class="chip-pill active" data-mtype="all" onclick="selectDispatchMediaType(this)">همه</button>
+              <button class="chip-pill" data-mtype="agency" onclick="selectDispatchMediaType(this)">خبرگزاری‌ها</button>
+              <button class="chip-pill" data-mtype="newspaper" onclick="selectDispatchMediaType(this)">روزنامه‌ها</button>
+              <button class="chip-pill" data-mtype="news_site" onclick="selectDispatchMediaType(this)">پایگاه‌های خبری</button>
+            </div>
+
+            <div id="dispatchOutletsList" class="outlet-list"></div>
+
+            <button id="sendDispatchBtn" type="button" class="pill-btn pill-red" style="width:100%; margin-bottom:14px;" onclick="submitMediaDispatch()">ارسال مستقیم به رسانه‌های انتخاب‌شده</button>
+
+            <div id="dispatchLastReport" class="smoked-card hidden"></div>
+
+            <!-- تاریخچه ارسال‌ها -->
+            <div style="display:flex; align-items:center; justify-content:space-between; margin:14px 0 8px;">
+              <span style="font-size:13px; font-weight:800;">گزارش ارسال‌های اخیر</span>
+              <button type="button" class="pill-btn pill-glass pill-sm" style="padding:4px 10px;" onclick="loadDispatchHistory()">بروزرسانی</button>
+            </div>
+            <div id="dispatchHistoryList"></div>
+          </div>
+        </section>
+
         <!-- ==================== TAB 4: ARCHIVE ==================== -->
         <section id="view-archive" class="view">
           <div class="feed-header">
@@ -1436,7 +1704,7 @@
             </div>
             <div class="sync-progress-track"><div id="photoSyncFill" class="sync-progress-fill"></div></div>
             <div class="admin-bar-actions">
-              <button id="reorderModeBtn" class="pill-btn pill-glass" onclick="toggleReorderMode()">↕ تغییر چینش لیست</button>
+              <button id="reorderModeBtn" class="pill-btn pill-glass" onclick="toggleReorderMode()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg> تغییر چینش</button>
               <button id="syncAllPhotosBtn" class="pill-btn pill-red" onclick="toggleAutoFetchPhotos()">دریافت و انتشار عکس‌ها</button>
             </div>
           </div>
@@ -1473,9 +1741,9 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
             <span>عکس</span>
           </button>
-          <button class="dock-item" data-tab="archive" onclick="switchTab('archive')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>
-            <span>آرشیو</span>
+          <button class="dock-item" data-tab="dispatch" onclick="switchTab('dispatch')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+            <span>ارسال خبر</span>
           </button>
           <button class="dock-item" data-tab="officials" onclick="switchTab('officials')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -1544,10 +1812,14 @@
       <div class="sheet-body">
         <img id="resultSheetImg" class="hidden" style="width:100%; border-radius:18px; margin-bottom:12px; max-height:240px; object-fit:cover;" />
         <div id="newsResultText" class="article-box"></div>
-        <div class="dual-pills">
+        <div class="dual-pills" style="margin-bottom:9px;">
           <button class="pill-btn pill-red" onclick="copyNewsResult()">کپی متن خبر</button>
           <button class="pill-btn pill-glass" onclick="sendHeadlineToPhotoSearch()">یافتن عکس خبر</button>
         </div>
+        <button class="pill-btn pill-glass" style="width:100%; border-color:rgba(255,45,70,0.52);" onclick="sendResultToMediaDispatch()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+          ارسال به رسانه‌ها (خبرگزاری‌ها، روزنامه‌ها، پایگاه‌ها)
+        </button>
       </div>
     </div>
 
@@ -1648,7 +1920,7 @@
       </div>
     </div>
 
-    <!-- Sheet 5: Account Profile & Activity Type (+ Admin User List) -->
+    <!-- Sheet 5: Account Profile & Activity Type (+ Admin User Approval + Logout) -->
     <div id="accountSheet" class="sheet">
       <div class="sheet-bar"></div>
       <div class="sheet-head">
@@ -1661,7 +1933,7 @@
             <span id="accEmailDisplay" style="font-size:13.5px; font-weight:800; direction:ltr;"></span>
             <span id="accAdminBadge" class="admin-badge hidden" style="margin:0;">مدیر ارشد</span>
           </div>
-          <div id="accRoleStatusText" class="muted"></div>
+          <div id="accRoleStatusText" class="muted" style="line-height:1.6;"></div>
         </div>
 
         <div class="field">
@@ -1678,9 +1950,17 @@
           </div>
         </div>
 
+        <div id="accOrgWrap" class="field hidden">
+          <label>عنوان دستگاه اجرایی / سازمان (در امضای رسمی خبر نمایش داده می‌شود)</label>
+          <div class="search-box-row" style="margin-bottom:0;">
+            <input id="accOrgNameInput" class="glass-input" type="text" placeholder="مثال: شهرداری شیراز" />
+            <button type="button" class="pill-btn pill-red pill-sm" style="flex:0 0 auto; padding:0 16px;" onclick="saveMyOrganizationName()">ذخیره</button>
+          </div>
+        </div>
+
         <div id="adminUsersSection" class="hidden" style="margin-top:16px; border-top:1px solid rgba(255,255,255,0.08); padding-top:14px;">
           <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
-            <span style="font-size:13.5px; font-weight:900;">کاربران ثبت‌نام‌شده در اپلیکیشن</span>
+            <span style="font-size:13.5px; font-weight:900;">مدیریت کاربران و تایید روابط‌عمومی‌ها</span>
             <button type="button" class="pill-btn pill-glass pill-sm" onclick="loadAdminUsersList()">بروزرسانی</button>
           </div>
           <div class="user-stat-row">
@@ -1699,6 +1979,47 @@
           </div>
           <div id="adminUsersList"></div>
         </div>
+
+        <div style="margin-top:18px; border-top:1px solid rgba(255,255,255,0.08); padding-top:14px;">
+          <button type="button" class="pill-btn pill-glass" style="width:100%; color:#ff5b6f; border-color:rgba(255,45,70,0.34);" onclick="handleLogout()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            خروج از حساب کاربری
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sheet 6: Add / Edit Media Outlet (Super Admin Only) -->
+    <div id="mediaOutletSheet" class="sheet">
+      <div class="sheet-bar"></div>
+      <div class="sheet-head">
+        <span id="mediaOutletSheetTitle" style="font-size:15px; font-weight:800;">افزودن رسانه / نماینده جدید</span>
+        <button class="pill-btn pill-glass pill-sm" onclick="closeAllSheets()">بستن</button>
+      </div>
+      <div class="sheet-body">
+        <input id="editMediaOutletId" type="hidden" value="" />
+        <div class="field">
+          <label>نام رسانه یا نماینده</label>
+          <input id="mediaOutletName" class="glass-input" type="text" placeholder="مثال: خبرگزاری فارس — نماینده شیراز" />
+        </div>
+        <div class="field">
+          <label>نوع رسانه</label>
+          <select id="mediaOutletType" class="glass-input">
+            <option value="agency">خبرگزاری</option>
+            <option value="newspaper">روزنامه</option>
+            <option value="news_site">پایگاه خبری</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>شناسه عددی تلگرام (Chat ID) — محرمانه و فقط قابل مشاهده برای مدیر ارشد</label>
+          <input id="mediaOutletChatId" class="glass-input" type="text" placeholder="مثال: 123456789 یا -1001234567890" dir="ltr" />
+        </div>
+        <label class="toggle-pill">
+          <span>فعال (قابل انتخاب در لیست ارسال خبر)</span>
+          <input id="mediaOutletActive" type="checkbox" checked />
+        </label>
+        <button id="saveMediaOutletBtn" type="button" class="pill-btn pill-red" style="width:100%;" onclick="saveMediaOutlet()">ذخیره رسانه</button>
+        <button id="deleteMediaOutletBtn" type="button" class="pill-btn pill-glass hidden" style="width:100%; margin-top:8px; color:#ff5b6f;" onclick="deleteMediaOutlet()">حذف این رسانه</button>
       </div>
     </div>
   </div>
@@ -1772,32 +2093,85 @@
       el._t = setTimeout(() => el.classList.remove("show"), 3200);
     }
 
-    // ==================== AUTH ====================
+    // ==================== AUTH & PROFILE ====================
+    let myUserProfile = { activity_type: "reporter", organization_name: "", pr_verified: false };
+
     function selectSignupActivity(type) {
       haptic();
       signupActivityType = type === "pr" ? "pr" : "reporter";
       document.getElementById("signupRoleReporter")?.classList.toggle("active", signupActivityType === "reporter");
       document.getElementById("signupRolePr")?.classList.toggle("active", signupActivityType === "pr");
+      document.getElementById("signupOrgField")?.classList.toggle("hidden", authMode !== "signup" || signupActivityType !== "pr");
     }
 
     function getUserActivityType(user) {
+      if (myUserProfile?.activity_type === "pr" || myUserProfile?.activity_type === "reporter") {
+        return myUserProfile.activity_type;
+      }
       const raw = user?.user_metadata?.activity_type;
       return raw === "pr" ? "pr" : (raw === "reporter" ? "reporter" : "");
     }
 
-    async function syncCurrentUserProfile(overrideActivity) {
-      if (!currentUser?.id || !currentUser?.email) return;
-      const act = overrideActivity || getUserActivityType(currentUser) || "reporter";
+    async function loadOrSyncMyProfile(overrideActivity, overrideOrg) {
+      if (!currentUser?.id || !currentUser?.email) return myUserProfile;
       try {
-        await sb.from("user_profiles").upsert({
+        const { data: existing, error: selErr } = await sb
+          .from("user_profiles")
+          .select("*")
+          .eq("user_id", currentUser.id)
+          .maybeSingle();
+
+        if (!selErr && existing && overrideActivity === undefined && overrideOrg === undefined) {
+          myUserProfile = {
+            activity_type: existing.activity_type || getUserActivityType(currentUser) || "reporter",
+            organization_name: existing.organization_name || currentUser?.user_metadata?.organization_name || "",
+            pr_verified: !!existing.pr_verified
+          };
+          return myUserProfile;
+        }
+
+        const nextActivity = overrideActivity !== undefined
+          ? overrideActivity
+          : (existing?.activity_type || currentUser?.user_metadata?.activity_type || "reporter");
+        const nextOrg = overrideOrg !== undefined
+          ? overrideOrg
+          : (existing?.organization_name || currentUser?.user_metadata?.organization_name || "");
+
+        const upsertRow = {
           user_id: currentUser.id,
           email: currentUser.email.trim().toLowerCase(),
-          activity_type: act,
+          activity_type: nextActivity,
+          organization_name: nextOrg,
           updated_at: new Date().toISOString()
-        }, { onConflict: "user_id" });
+        };
+
+        const { data: saved, error: upErr } = await sb
+          .from("user_profiles")
+          .upsert(upsertRow, { onConflict: "user_id" })
+          .select("*")
+          .maybeSingle();
+
+        if (!upErr && saved) {
+          myUserProfile = {
+            activity_type: saved.activity_type || nextActivity,
+            organization_name: saved.organization_name || "",
+            pr_verified: !!saved.pr_verified
+          };
+        } else {
+          myUserProfile = {
+            activity_type: nextActivity,
+            organization_name: nextOrg,
+            pr_verified: !!existing?.pr_verified
+          };
+        }
       } catch {
-        // اگر جدول user_profiles هنوز در Supabase ساخته نشده باشد بدون خطا ادامه می‌دهد
+        myUserProfile = {
+          activity_type: overrideActivity || currentUser?.user_metadata?.activity_type || "reporter",
+          organization_name: overrideOrg !== undefined ? overrideOrg : (currentUser?.user_metadata?.organization_name || ""),
+          pr_verified: false
+        };
       }
+      return myUserProfile;
     }
 
     function setAuthMode(mode) {
@@ -1806,7 +2180,8 @@
       document.getElementById("tabLoginBtn").classList.toggle("active", mode === "login");
       document.getElementById("tabSignupBtn").classList.toggle("active", mode === "signup");
       document.getElementById("signupActivityField")?.classList.toggle("hidden", mode !== "signup");
-      document.getElementById("authSubmitBtn").textContent = mode === "login" ? "ورود به اتاق خبر" : "ساخت حساب و ورود";
+      document.getElementById("signupOrgField")?.classList.toggle("hidden", mode !== "signup" || signupActivityType !== "pr");
+      document.getElementById("authSubmitBtn").textContent = mode === "login" ? "ورود به سریر رسانه" : "ساخت حساب و ورود";
     }
 
     async function handleAuthSubmit(e) {
@@ -1814,6 +2189,14 @@
       haptic();
       const email = document.getElementById("authEmail").value.trim();
       const password = document.getElementById("authPassword").value;
+      const orgName = (document.getElementById("signupOrgName")?.value || "").trim();
+
+      if (authMode === "signup" && signupActivityType === "pr" && !orgName) {
+        showToast("لطفاً عنوان دستگاه اجرایی یا سازمان خود را وارد کنید");
+        document.getElementById("signupOrgName")?.focus();
+        return;
+      }
+
       const btn = document.getElementById("authSubmitBtn");
       btn.disabled = true;
       btn.textContent = "لطفاً صبر کنید...";
@@ -1824,15 +2207,18 @@
               email,
               password,
               options: {
-                data: { activity_type: signupActivityType }
+                data: {
+                  activity_type: signupActivityType,
+                  organization_name: signupActivityType === "pr" ? orgName : ""
+                }
               }
             });
         if (res.error) throw res.error;
         if (authMode === "signup") {
           const actLabel = ACTIVITY_LABELS[signupActivityType] || "خبرنگار";
-          showToast(`حساب شما با عنوان «${actLabel}» ساخته شد!`);
+          showToast(`حساب شما در سریر رسانه با عنوان «${actLabel}» ساخته شد!`);
         } else {
-          showToast("خوش آمدید!");
+          showToast("به سریر رسانه خوش آمدید!");
         }
       } catch (err) {
         showToast(err.message || "خطا در ورود");
@@ -1844,6 +2230,7 @@
 
     async function handleLogout() {
       haptic();
+      closeAllSheets();
       await sb.auth.signOut();
       showToast("از حساب خارج شدید");
     }
@@ -1858,12 +2245,14 @@
       if (currentUser) {
         await checkAdminStatus();
         if (myBoot !== sessionBootId) return;
-        syncCurrentUserProfile();
+        await loadOrSyncMyProfile();
         loadOfficials();
         loadArchive();
+        loadDispatchData(false);
       } else {
         isAdminUser = false;
         lastAdminCheckError = "";
+        myUserProfile = { activity_type: "reporter", organization_name: "", pr_verified: false };
         applyAdminUI();
       }
     }
@@ -1889,10 +2278,12 @@
       haptic();
       closeAllSheets();
       document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-      document.getElementById("view-" + tab).classList.add("active");
+      document.getElementById("view-" + tab)?.classList.add("active");
       document.querySelectorAll(".dock-item").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      document.getElementById("topArchiveBtn")?.classList.toggle("active", tab === "archive");
       if (tab === "feed" && !feedLoaded) loadChannelFeed(false);
       if (tab === "archive") loadArchive();
+      if (tab === "dispatch") loadDispatchData(false);
       if (tab === "officials") loadOfficials();
     }
 
@@ -2140,6 +2531,14 @@
       document.getElementById("imgPromptInput").value = headline;
       switchTab("image");
       searchNewsImages();
+    }
+
+    function sendResultToMediaDispatch() {
+      const txt = (document.getElementById("newsResultText")?.textContent || "").trim();
+      if (!txt) { showToast("متن خبری برای ارسال وجود ندارد"); return; }
+      document.getElementById("dispatchTextInput").value = txt;
+      switchTab("dispatch");
+      showToast("متن خبر به صفحه ارسال منتقل شد");
     }
 
     // ==================== CHANNEL FEED ====================
@@ -2391,8 +2790,9 @@
             <span class="muted">${new Date(a.created_at).toLocaleDateString("fa-IR")}</span>
           </div>
           <div style="font-weight:800; font-size:14px; line-height:1.65; margin-bottom:11px;">${escapeHtml(a.title)}</div>
-          <div style="display:flex; gap:8px;" onclick="event.stopPropagation()">
+          <div style="display:flex; gap:8px; flex-wrap:wrap;" onclick="event.stopPropagation()">
             <button class="pill-btn pill-glass pill-sm" onclick="copyTextById('${a.id}')">کپی</button>
+            <button class="pill-btn pill-red pill-sm" onclick="dispatchArchiveItem('${a.id}')">ارسال به رسانه‌ها</button>
             <button class="pill-btn pill-glass pill-sm" style="color:#ff5b6f;" onclick="deleteArticle('${a.id}')">حذف</button>
           </div>
         </div>
@@ -2412,6 +2812,15 @@
       haptic();
       const item = cachedArticles.find(x => x.id === id);
       if (item) { navigator.clipboard.writeText(item.content); showToast("خبر کپی شد"); }
+    }
+
+    function dispatchArchiveItem(id) {
+      haptic();
+      const item = cachedArticles.find(x => x.id === id);
+      if (!item) return;
+      document.getElementById("dispatchTextInput").value = item.content;
+      switchTab("dispatch");
+      showToast("خبر از آرشیو به صفحه ارسال منتقل شد");
     }
 
     async function deleteArticle(id) {
@@ -2873,7 +3282,7 @@
         btn.classList.remove("pill-glass");
         btn.classList.add("pill-red");
       } else {
-        btn.textContent = "↕ تغییر چینش لیست";
+        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg> تغییر چینش`;
         btn.classList.remove("pill-red");
         btn.classList.add("pill-glass");
       }
@@ -2919,17 +3328,32 @@
       return isAdminUser;
     }
 
+    // ==================== ACCOUNT PROFILE & PR VERIFICATION ====================
     function renderAccountActivityUI() {
       const act = getUserActivityType(currentUser);
       document.getElementById("accRoleReporter")?.classList.toggle("active", act === "reporter");
       document.getElementById("accRolePr")?.classList.toggle("active", act === "pr");
+
+      const orgWrap = document.getElementById("accOrgWrap");
+      const orgInput = document.getElementById("accOrgNameInput");
+      if (orgWrap) orgWrap.classList.toggle("hidden", act !== "pr");
+      if (orgInput && document.activeElement !== orgInput) {
+        orgInput.value = myUserProfile?.organization_name || "";
+      }
+
       const statusEl = document.getElementById("accRoleStatusText");
       if (statusEl) {
-        const actLabel = ACTIVITY_LABELS[act] || "تعیین‌نشده (یکی از گزینه‌های زیر را انتخاب کنید)";
+        const actLabel = ACTIVITY_LABELS[act] || "تعیین‌نشده";
+        let extra = "";
+        if (act === "pr") {
+          const orgTxt = myUserProfile?.organization_name ? ` (${myUserProfile.organization_name})` : "";
+          const verTxt = myUserProfile?.pr_verified ? " • تاییدشده برای ارسال خبر ✓" : " • در انتظار تایید مدیر ارشد";
+          extra = orgTxt + verTxt;
+        }
         if (lastAdminCheckError) {
-          statusEl.textContent = `نوع فعالیت: ${actLabel} • خطای بررسی مدیر: ${lastAdminCheckError}`;
+          statusEl.textContent = `نوع فعالیت: ${actLabel}${extra} • خطا: ${lastAdminCheckError}`;
         } else {
-          statusEl.textContent = `نوع فعالیت: ${actLabel}`;
+          statusEl.textContent = `نوع فعالیت: ${actLabel}${extra}`;
         }
       }
     }
@@ -2937,6 +3361,7 @@
     async function showAccountStatus() {
       haptic();
       await checkAdminStatus();
+      await loadOrSyncMyProfile();
       document.getElementById("accEmailDisplay").textContent = currentUser?.email || "نامشخص";
       document.getElementById("accAdminBadge")?.classList.toggle("hidden", !isAdminUser);
       document.getElementById("adminUsersSection")?.classList.toggle("hidden", !isAdminUser);
@@ -2957,12 +3382,32 @@
         });
         if (error) throw error;
         if (data?.user) currentUser = data.user;
-        await syncCurrentUserProfile(cleanType);
+        await loadOrSyncMyProfile(cleanType, undefined);
         renderAccountActivityUI();
+        renderDispatchView();
         showToast(`نوع فعالیت شما به «${ACTIVITY_LABELS[cleanType]}» تغییر یافت`);
         if (isAdminUser) loadAdminUsersList();
       } catch (err) {
         showToast("خطا در ذخیره نوع فعالیت: " + (err?.message || ""));
+      }
+    }
+
+    async function saveMyOrganizationName() {
+      haptic();
+      const orgName = (document.getElementById("accOrgNameInput")?.value || "").trim();
+      if (!orgName) {
+        showToast("عنوان دستگاه اجرایی یا سازمان را وارد کنید");
+        return;
+      }
+      try {
+        await sb.auth.updateUser({ data: { organization_name: orgName } });
+        await loadOrSyncMyProfile("pr", orgName);
+        renderAccountActivityUI();
+        renderDispatchView();
+        showToast("عنوان دستگاه ذخیره شد");
+        if (isAdminUser) loadAdminUsersList();
+      } catch (err) {
+        showToast("خطا در ذخیره عنوان دستگاه: " + (err?.message || ""));
       }
     }
 
@@ -2978,10 +3423,11 @@
           .order("updated_at", { ascending: false })
           .limit(200);
         if (error) {
-          listEl.innerHTML = `<div class="muted" style="text-align:center; padding:10px; line-height:1.7;">برای مشاهده لیست کامل کاربران، دستور SQL ساخت جدول <b>user_profiles</b> را در Supabase اجرا کنید.</div>`;
+          listEl.innerHTML = `<div class="muted" style="text-align:center; padding:10px; line-height:1.7;">لطفاً دستور SQL نسخه ۱۳ را در Supabase اجرا کنید.</div>`;
           return;
         }
         const rows = data || [];
+        window._adminUsersRows = rows;
         const reporters = rows.filter(r => r.activity_type !== "pr").length;
         const prs = rows.filter(r => r.activity_type === "pr").length;
         document.getElementById("statTotalUsers").textContent = rows.length;
@@ -2989,20 +3435,535 @@
         document.getElementById("statPrUsers").textContent = prs;
 
         if (!rows.length) {
-          listEl.innerHTML = `<div class="muted" style="text-align:center; padding:10px;">هنوز کاربری در جدول ثبت نشده است.</div>`;
+          listEl.innerHTML = `<div class="muted" style="text-align:center; padding:10px;">هنوز کاربری ثبت نشده است.</div>`;
           return;
         }
+
         listEl.innerHTML = rows.map(r => {
           const isPr = r.activity_type === "pr";
+          const isVer = !!r.pr_verified;
+          const orgVal = r.organization_name || "";
           return `
-            <div class="user-row-item">
-              <span style="font-size:12px; font-weight:700; direction:ltr; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(r.email)}</span>
-              <span class="activity-pill ${isPr ? "pr" : "reporter"}">${isPr ? "روابط عمومی" : "خبرنگار"}</span>
+            <div class="admin-user-card">
+              <div class="admin-user-top">
+                <span style="font-size:12px; font-weight:800; direction:ltr; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(r.email)}</span>
+                <div style="display:flex; align-items:center; gap:5px; flex:0 0 auto;">
+                  <span class="activity-pill ${isPr ? "pr" : "reporter"}">${isPr ? "روابط عمومی" : "خبرنگار"}</span>
+                  ${isPr ? `<span class="verified-badge ${isVer ? "yes" : "pending"}">${isVer ? "تاییدشده ✓" : "در انتظار تایید"}</span>` : ""}
+                </div>
+              </div>
+              ${isPr ? `
+                <div class="admin-user-org-row">
+                  <input id="adminOrg_${escapeHtml(r.user_id)}" class="glass-input" style="padding:7px 10px; font-size:11.5px; border-radius:12px;" type="text" value="${escapeHtml(orgVal)}" placeholder="عنوان رسمی دستگاه اجرایی..." />
+                </div>
+                <div class="admin-user-actions">
+                  <button type="button" class="pill-btn ${isVer ? "pill-glass" : "pill-red"} pill-sm" style="flex:1; ${isVer ? "color:#ff6b7d;" : ""}" onclick="adminSetPrApproval('${escapeAttr(r.user_id)}', ${!isVer})">
+                    ${isVer ? "لغو دسترسی ارسال" : "تایید دسترسی ارسال ✓"}
+                  </button>
+                  <button type="button" class="pill-btn pill-glass pill-sm" onclick="adminSaveUserOrgOnly('${escapeAttr(r.user_id)}')">ذخیره عنوان</button>
+                </div>
+              ` : ""}
             </div>
           `;
         }).join("");
       } catch {
         listEl.innerHTML = `<div class="muted" style="text-align:center; padding:10px;">خطا در دریافت لیست کاربران</div>`;
+      }
+    }
+
+    async function adminSetPrApproval(targetUserId, approve) {
+      haptic();
+      if (!isAdminUser) return;
+      const orgInput = document.getElementById("adminOrg_" + targetUserId);
+      const orgName = (orgInput?.value || "").trim();
+      if (approve && !orgName) {
+        showToast("قبل از تایید، عنوان رسمی دستگاه اجرایی را وارد کنید");
+        orgInput?.focus();
+        return;
+      }
+      try {
+        const { error } = await sb
+          .from("user_profiles")
+          .update({
+            pr_verified: !!approve,
+            organization_name: orgName,
+            updated_at: new Date().toISOString()
+          })
+          .eq("user_id", targetUserId);
+        if (error) throw error;
+        showToast(approve ? "دسترسی ارسال خبر برای این روابط عمومی تایید شد" : "دسترسی ارسال خبر لغو شد");
+        if (currentUser?.id === targetUserId) {
+          await loadOrSyncMyProfile();
+          renderAccountActivityUI();
+          renderDispatchView();
+        }
+        loadAdminUsersList();
+      } catch (err) {
+        showToast("خطا در بروزرسانی دسترسی: " + (err?.message || ""));
+      }
+    }
+
+    async function adminSaveUserOrgOnly(targetUserId) {
+      haptic();
+      if (!isAdminUser) return;
+      const orgName = (document.getElementById("adminOrg_" + targetUserId)?.value || "").trim();
+      try {
+        const { error } = await sb
+          .from("user_profiles")
+          .update({
+            organization_name: orgName,
+            updated_at: new Date().toISOString()
+          })
+          .eq("user_id", targetUserId);
+        if (error) throw error;
+        showToast("عنوان دستگاه ذخیره شد");
+        if (currentUser?.id === targetUserId) {
+          await loadOrSyncMyProfile();
+          renderDispatchSignaturePreview();
+        }
+      } catch (err) {
+        showToast("خطا در ذخیره عنوان: " + (err?.message || ""));
+      }
+    }
+
+    // ==================== TAB 4: DISPATCH TO MEDIA OUTLETS ====================
+    const MEDIA_TYPE_LABELS = {
+      agency: "خبرگزاری",
+      newspaper: "روزنامه",
+      news_site: "پایگاه خبری"
+    };
+
+    let publicMediaOutlets = [];
+    let adminMediaOutlets = [];
+    let selectedOutletIds = new Set();
+    let selectedDispatchMediaType = "all";
+    let dispatchPhotoDataUrl = null;
+    let isMediaManagerOpen = false;
+    let dispatchHistoryRows = [];
+
+    function formatOfficialSignatureClient(rawOrg) {
+      const clean = String(rawOrg || "").trim().replace(/^روابط\s*عمومی\s+/i, "").trim();
+      if (!clean) return "پیام از طرف سریر رسانه";
+      return `پیام از طرف روابط عمومی ${clean}`;
+    }
+
+    function renderDispatchSignaturePreview() {
+      const el = document.getElementById("dispatchSigPreview");
+      if (!el) return;
+      let org = myUserProfile?.organization_name || "";
+      if (isAdminUser) {
+        const customAdminOrg = (document.getElementById("adminDispatchOrgInput")?.value || "").trim();
+        org = customAdminOrg || org;
+      }
+      const sig = formatOfficialSignatureClient(org);
+      el.innerHTML = `<div style="font-size:10.5px; color:var(--text-2); margin-bottom:2px;">امضای رسمی که خودکار انتهای پیام تلگرام درج می‌شود:</div><div style="font-weight:800;">${escapeHtml(sig)}</div>`;
+    }
+
+    async function loadDispatchData(showFeedback) {
+      if (!currentUser) return;
+      await checkAdminStatus();
+      await loadOrSyncMyProfile();
+
+      try {
+        // دریافت لیست عمومی رسانه‌های فعال (بدون Chat ID برای حفظ امنیت)
+        const { data: pubData, error: pubErr } = await sb.rpc("get_public_media_outlets");
+        if (!pubErr && Array.isArray(pubData)) {
+          publicMediaOutlets = pubData;
+        }
+      } catch {}
+
+      if (isAdminUser) {
+        try {
+          const { data: admData, error: admErr } = await sb
+            .from("media_outlets")
+            .select("*")
+            .order("media_type", { ascending: true })
+            .order("name", { ascending: true });
+          if (!admErr && Array.isArray(admData)) {
+            adminMediaOutlets = admData;
+            // اگر RPC هنوز ساخته نشده بود، برای مدیر از همین لیست پر می‌شود
+            if (!publicMediaOutlets.length) {
+              publicMediaOutlets = admData
+                .filter(x => x.is_active)
+                .map(x => ({ id: x.id, name: x.name, media_type: x.media_type }));
+            }
+          }
+        } catch {}
+      }
+
+      renderDispatchView();
+      loadDispatchHistory();
+      if (showFeedback) showToast("وضعیت بروزرسانی شد");
+    }
+
+    function renderDispatchView() {
+      const isPr = getUserActivityType(currentUser) === "pr";
+      const isVerifiedPr = isPr && !!myUserProfile?.pr_verified;
+      const canDispatch = isAdminUser || isVerifiedPr;
+
+      document.getElementById("adminAddOutletTopBtn")?.classList.toggle("hidden", !isAdminUser);
+      document.getElementById("adminMediaPanel")?.classList.toggle("hidden", !isAdminUser);
+      document.getElementById("adminCustomSenderWrap")?.classList.toggle("hidden", !isAdminUser);
+
+      if (isAdminUser) {
+        const activeCount = adminMediaOutlets.filter(x => x.is_active).length;
+        const cntEl = document.getElementById("adminMediaCountText");
+        if (cntEl) cntEl.textContent = `${adminMediaOutlets.length} رسانه ثبت‌شده (${activeCount} فعال) • Chat ID محرمانه است`;
+        renderAdminMediaManagerList();
+      }
+
+      const lockedCard = document.getElementById("dispatchLockedCard");
+      const studioArea = document.getElementById("dispatchStudioArea");
+      if (lockedCard) lockedCard.classList.toggle("hidden", canDispatch);
+      if (studioArea) studioArea.classList.toggle("hidden", !canDispatch);
+
+      if (!canDispatch) {
+        const titleEl = document.getElementById("dispatchLockTitle");
+        const descEl = document.getElementById("dispatchLockDesc");
+        if (isPr) {
+          if (titleEl) titleEl.textContent = "حساب روابط عمومی شما در انتظار تایید است";
+          const orgInfo = myUserProfile?.organization_name
+            ? `عنوان دستگاه ثبت‌شده: «${myUserProfile.organization_name}». `
+            : "ابتدا از بخش حساب کاربری، عنوان دستگاه اجرایی خود را وارد کنید. ";
+          if (descEl) descEl.textContent = orgInfo + "پس از تایید یک‌باره توسط مدیر ارشد سریر رسانه، امکان ارسال مستقیم خبر به خبرگزاری‌ها، روزنامه‌ها و پایگاه‌های خبری برایتان فعال می‌شود.";
+        } else {
+          if (titleEl) titleEl.textContent = "بخش اختصاصی روابط‌عمومی‌های تاییدشده";
+          if (descEl) descEl.textContent = "این بخش برای ارسال مستقیم اخبار روابط‌عمومی دستگاه‌های اجرایی به نمایندگان رسانه‌ها طراحی شده است. اگر نماینده روابط عمومی هستید، از پنجره حساب کاربری نوع فعالیت خود را به «روابط عمومی» تغییر دهید.";
+        }
+        return;
+      }
+
+      renderDispatchSignaturePreview();
+      renderDispatchOutletsList();
+    }
+
+    function selectDispatchMediaType(el) {
+      haptic();
+      el.parentElement.querySelectorAll(".chip-pill").forEach(p => p.classList.remove("active"));
+      el.classList.add("active");
+      selectedDispatchMediaType = el.dataset.mtype;
+      renderDispatchOutletsList();
+    }
+
+    function getFilteredPublicOutlets() {
+      return publicMediaOutlets.filter(o =>
+        selectedDispatchMediaType === "all" || o.media_type === selectedDispatchMediaType
+      );
+    }
+
+    function renderDispatchOutletsList() {
+      const container = document.getElementById("dispatchOutletsList");
+      if (!container) return;
+      const list = getFilteredPublicOutlets();
+      if (!list.length) {
+        container.innerHTML = `<div class="smoked-card muted" style="text-align:center;">${isAdminUser ? "هنوز رسانه‌ای در این دسته ثبت نشده است. از دکمه «+ رسانه جدید» در بالا اضافه کنید." : "هنوز رسانه‌ای در این دسته‌بندی فعال نشده است."}</div>`;
+        return;
+      }
+
+      const checkSvg = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>`;
+
+      container.innerHTML = list.map(o => {
+        const isSel = selectedOutletIds.has(o.id);
+        const typeLabel = MEDIA_TYPE_LABELS[o.media_type] || "رسانه";
+        return `
+          <div class="outlet-card ${isSel ? "selected" : ""}" onclick="toggleOutletSelection('${escapeAttr(o.id)}')">
+            <div style="min-width:0; flex:1;">
+              <div style="font-size:13.5px; font-weight:800;">${escapeHtml(o.name)}</div>
+              <span class="media-type-pill ${escapeHtml(o.media_type)}">${escapeHtml(typeLabel)}</span>
+            </div>
+            <div class="outlet-check">${checkSvg}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function toggleOutletSelection(id) {
+      haptic();
+      if (selectedOutletIds.has(id)) {
+        selectedOutletIds.delete(id);
+      } else {
+        selectedOutletIds.add(id);
+      }
+      renderDispatchOutletsList();
+    }
+
+    function toggleSelectAllOutlets() {
+      haptic();
+      const visible = getFilteredPublicOutlets();
+      if (!visible.length) return;
+      const allSelected = visible.every(o => selectedOutletIds.has(o.id));
+      visible.forEach(o => {
+        if (allSelected) selectedOutletIds.delete(o.id);
+        else selectedOutletIds.add(o.id);
+      });
+      renderDispatchOutletsList();
+    }
+
+    function compressDispatchPhoto(srcUrl, maxWidth = 1280) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => {
+          try {
+            let w = img.width;
+            let h = img.height;
+            if (w > maxWidth) {
+              h = Math.round((h * maxWidth) / w);
+              w = maxWidth;
+            }
+            const canvas = document.createElement("canvas");
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL("image/jpeg", 0.84));
+          } catch (err) {
+            reject(err);
+          }
+        };
+        img.onerror = () => reject(new Error("خطا در خواندن تصویر"));
+        img.src = srcUrl;
+      });
+    }
+
+    function handleDispatchGalleryPhoto(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        try {
+          dispatchPhotoDataUrl = await compressDispatchPhoto(String(reader.result), 1280);
+          document.getElementById("dispatchPhotoPreviewImg").src = dispatchPhotoDataUrl;
+          document.getElementById("dispatchPhotoPreviewWrap").classList.remove("hidden");
+          showToast("عکس خبر پیوست شد");
+        } catch {
+          showToast("خطا در آماده‌سازی عکس");
+        }
+      };
+      reader.readAsDataURL(file);
+      e.target.value = "";
+    }
+
+    async function attachFromPhotoSearchTab() {
+      haptic();
+      const canvas = document.getElementById("finalNewsCanvas");
+      const rawSrc = canvas ? canvas.toDataURL("image/jpeg", 0.86) : lastRawImageSrc;
+      if (!rawSrc) {
+        showToast("ابتدا در تب «عکس» یک تصویر انتخاب کنید");
+        return;
+      }
+      try {
+        dispatchPhotoDataUrl = await compressDispatchPhoto(rawSrc, 1280);
+        document.getElementById("dispatchPhotoPreviewImg").src = dispatchPhotoDataUrl;
+        document.getElementById("dispatchPhotoPreviewWrap").classList.remove("hidden");
+        showToast("عکس از تب «عکس» پیوست شد");
+      } catch {
+        showToast("خطا در پیوست عکس");
+      }
+    }
+
+    function removeDispatchPhoto() {
+      haptic();
+      dispatchPhotoDataUrl = null;
+      document.getElementById("dispatchPhotoPreviewWrap")?.classList.add("hidden");
+      document.getElementById("dispatchPhotoPreviewImg").src = "";
+    }
+
+    function clearDispatchForm() {
+      haptic();
+      document.getElementById("dispatchTextInput").value = "";
+      removeDispatchPhoto();
+      document.getElementById("dispatchLastReport")?.classList.add("hidden");
+    }
+
+    async function submitMediaDispatch() {
+      haptic();
+      const text = (document.getElementById("dispatchTextInput")?.value || "").trim();
+      if (!text) {
+        showToast("ابتدا متن خبر را وارد کنید");
+        return;
+      }
+      const outletIds = Array.from(selectedOutletIds);
+      if (!outletIds.length) {
+        showToast("حداقل یک رسانه مقصد را انتخاب کنید");
+        return;
+      }
+
+      const btn = document.getElementById("sendDispatchBtn");
+      btn.disabled = true;
+      btn.textContent = `در حال ارسال به ${outletIds.length} رسانه...`;
+
+      try {
+        const payload = {
+          action: "dispatch_news",
+          text,
+          outletIds,
+          photoDataUrl: dispatchPhotoDataUrl || null
+        };
+        if (isAdminUser) {
+          const customOrg = (document.getElementById("adminDispatchOrgInput")?.value || "").trim();
+          if (customOrg) payload.adminOrgOverride = customOrg;
+        }
+
+        const res = await callNewsApi(payload);
+        const reportEl = document.getElementById("dispatchLastReport");
+        if (reportEl && Array.isArray(res.results)) {
+          reportEl.classList.remove("hidden");
+          reportEl.innerHTML = `
+            <div style="font-size:13px; font-weight:900; margin-bottom:8px;">
+              گزارش تحویل (${res.sentCount || 0} موفق${res.failedCount ? ` • ${res.failedCount} ناموفق` : ""})
+            </div>
+            ${res.results.map(r => `
+              <div class="delivery-result-item">
+                <span>${escapeHtml(r.name)}</span>
+                <span class="${r.ok ? "status-ok" : "status-err"}">${r.ok ? "تحویل شد ✓" : escapeHtml(r.error || "خطا")}</span>
+              </div>
+            `).join("")}
+          `;
+        }
+        showToast(`خبر با موفقیت به ${res.sentCount || 0} رسانه ارسال شد`);
+        loadDispatchHistory();
+      } catch (err) {
+        showToast(err.message || "خطا در ارسال خبر");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "ارسال مستقیم به رسانه‌های انتخاب‌شده";
+      }
+    }
+
+    async function loadDispatchHistory() {
+      const container = document.getElementById("dispatchHistoryList");
+      if (!container || !currentUser) return;
+      try {
+        const { data, error } = await sb
+          .from("dispatch_logs")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(20);
+        if (error) {
+          container.innerHTML = `<div class="muted" style="text-align:center; padding:8px;">تاریخچه پس از اجرای SQL نسخه ۱۳ فعال می‌شود.</div>`;
+          return;
+        }
+        dispatchHistoryRows = data || [];
+        if (!dispatchHistoryRows.length) {
+          container.innerHTML = `<div class="smoked-card muted" style="text-align:center;">هنوز خبری به رسانه‌ها ارسال نشده است.</div>`;
+          return;
+        }
+        container.innerHTML = dispatchHistoryRows.map(log => {
+          const dt = new Date(log.created_at);
+          const timeStr = dt.toLocaleDateString("fa-IR") + " - " + dt.toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" });
+          const targets = Array.isArray(log.target_names) ? log.target_names.join("، ") : "";
+          return `
+            <div class="smoked-card" style="padding:12px 14px; margin-bottom:9px;">
+              <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:6px;">
+                <span style="color:#34d399; font-weight:800;">${log.sent_count || 0} رسانه تحویل گرفت${log.has_photo ? " • همراه عکس" : ""}</span>
+                <span class="muted">${escapeHtml(timeStr)}</span>
+              </div>
+              <div style="font-size:12.8px; font-weight:700; line-height:1.65; margin-bottom:6px;">${escapeHtml(log.message_preview || "")}</div>
+              <div class="muted" style="font-size:11px;">مقصدها: ${escapeHtml(targets || "—")}</div>
+              ${isAdminUser && log.organization_name ? `<div class="muted" style="font-size:10.5px; margin-top:3px;">فرستنده: ${escapeHtml(log.organization_name)}</div>` : ""}
+            </div>
+          `;
+        }).join("");
+      } catch {
+        container.innerHTML = "";
+      }
+    }
+
+    // ==================== ADMIN MEDIA OUTLETS MANAGER ====================
+    function toggleAdminMediaManager() {
+      haptic();
+      isMediaManagerOpen = !isMediaManagerOpen;
+      document.getElementById("adminMediaManagerList")?.classList.toggle("hidden", !isMediaManagerOpen);
+      const btn = document.getElementById("toggleMediaMgrBtn");
+      if (btn) btn.textContent = isMediaManagerOpen ? "بستن لیست" : "مدیریت لیست";
+      if (isMediaManagerOpen) renderAdminMediaManagerList();
+    }
+
+    function renderAdminMediaManagerList() {
+      const container = document.getElementById("adminMediaManagerList");
+      if (!container || !isAdminUser) return;
+      if (!adminMediaOutlets.length) {
+        container.innerHTML = `<div class="muted" style="text-align:center; padding:8px;">هنوز رسانه‌ای اضافه نشده است؛ دکمه «+ رسانه جدید» را بزنید.</div>`;
+        return;
+      }
+      container.innerHTML = adminMediaOutlets.map(o => `
+        <div class="outlet-card ${o.is_active ? "" : "inactive-outlet"}" style="margin-bottom:7px; cursor:default;">
+          <div style="min-width:0; flex:1;">
+            <div style="font-size:13px; font-weight:800;">${escapeHtml(o.name)}</div>
+            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:3px;">
+              <span class="media-type-pill ${escapeHtml(o.media_type)}">${escapeHtml(MEDIA_TYPE_LABELS[o.media_type] || o.media_type)}</span>
+              <span class="muted" style="font-size:10.5px; direction:ltr;">ID: ${escapeHtml(o.chat_id)}</span>
+              ${o.is_active ? "" : `<span class="muted" style="color:#ff6b7d; font-size:10.5px;">غیرفعال</span>`}
+            </div>
+          </div>
+          <button type="button" class="pill-btn pill-glass pill-sm" onclick="openMediaOutletModal('${escapeAttr(o.id)}')">ویرایش</button>
+        </div>
+      `).join("");
+    }
+
+    function openMediaOutletModal(outletId) {
+      if (!isAdminUser) return;
+      const existing = outletId ? adminMediaOutlets.find(x => x.id === outletId) : null;
+      document.getElementById("editMediaOutletId").value = existing ? existing.id : "";
+      document.getElementById("mediaOutletSheetTitle").textContent = existing ? "ویرایش رسانه / نماینده" : "افزودن رسانه / نماینده جدید";
+      document.getElementById("mediaOutletName").value = existing ? existing.name : "";
+      document.getElementById("mediaOutletType").value = existing ? existing.media_type : "agency";
+      document.getElementById("mediaOutletChatId").value = existing ? existing.chat_id : "";
+      document.getElementById("mediaOutletActive").checked = existing ? !!existing.is_active : true;
+      document.getElementById("deleteMediaOutletBtn")?.classList.toggle("hidden", !existing);
+      openSheet("mediaOutletSheet");
+    }
+
+    async function saveMediaOutlet() {
+      haptic();
+      if (!isAdminUser) return;
+      const id = document.getElementById("editMediaOutletId").value.trim();
+      const name = document.getElementById("mediaOutletName").value.trim();
+      const media_type = document.getElementById("mediaOutletType").value;
+      const chat_id = document.getElementById("mediaOutletChatId").value.trim();
+      const is_active = !!document.getElementById("mediaOutletActive").checked;
+
+      if (!name || !chat_id) {
+        showToast("نام رسانه و شناسه تلگرام (Chat ID) را کامل وارد کنید");
+        return;
+      }
+
+      try {
+        if (id) {
+          const { error } = await sb
+            .from("media_outlets")
+            .update({ name, media_type, chat_id, is_active, updated_at: new Date().toISOString() })
+            .eq("id", id);
+          if (error) throw error;
+          showToast("رسانه بروزرسانی شد");
+        } else {
+          const { error } = await sb
+            .from("media_outlets")
+            .insert({ name, media_type, chat_id, is_active });
+          if (error) throw error;
+          showToast("رسانه جدید اضافه شد");
+        }
+        closeAllSheets();
+        await loadDispatchData(false);
+      } catch (err) {
+        showToast("خطا در ذخیره رسانه: " + (err?.message || ""));
+      }
+    }
+
+    async function deleteMediaOutlet() {
+      haptic();
+      const id = document.getElementById("editMediaOutletId").value.trim();
+      if (!isAdminUser || !id) return;
+      try {
+        const { error } = await sb.from("media_outlets").delete().eq("id", id);
+        if (error) throw error;
+        selectedOutletIds.delete(id);
+        closeAllSheets();
+        showToast("رسانه حذف شد");
+        await loadDispatchData(false);
+      } catch (err) {
+        showToast("خطا در حذف رسانه: " + (err?.message || ""));
       }
     }
 
