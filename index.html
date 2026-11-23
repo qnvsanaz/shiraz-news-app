@@ -17,45 +17,30 @@
   <style>
     :root {
       --bg: #000000;
-      --bg-elevated: #0b0b0e;
-      --surface: #121216;
-      --surface-2: #1a1a20;
-      --surface-glass: rgba(18, 18, 22, 0.82);
-      --border: rgba(255, 255, 255, 0.09);
-      --border-strong: rgba(255, 255, 255, 0.16);
-      --specular: inset 0 1px 0 rgba(255, 255, 255, 0.11);
-      --text: #f8fafc;
+      --bg-canvas: #030305;
+      --glass-grad: linear-gradient(155deg, rgba(255, 255, 255, 0.11) 0%, rgba(28, 28, 34, 0.74) 38%, rgba(11, 11, 15, 0.94) 100%);
+      --glass-subtle: linear-gradient(160deg, rgba(255, 255, 255, 0.07) 0%, rgba(20, 20, 25, 0.85) 100%);
+      --glass-dock: linear-gradient(180deg, rgba(64, 64, 76, 0.44) 0%, rgba(18, 18, 24, 0.78) 100%);
+      --rim: rgba(255, 255, 255, 0.18);
+      --rim-strong: rgba(255, 255, 255, 0.30);
+      --specular: inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+      --text: #ffffff;
       --text-2: #a1a1aa;
-      --text-3: #63636e;
+      --text-3: #686875;
       --red: #ff2d46;
-      --red-soft: rgba(255, 45, 70, 0.16);
-      --red-glow: rgba(255, 45, 70, 0.42);
-      --green: #10b981;
-      --radius-xl: 26px;
-      --radius-lg: 20px;
-      --radius-md: 15px;
+      --red-deep: #b80f27;
+      --red-soft: rgba(255, 45, 70, 0.18);
       --spring: cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    body.light {
-      --bg: #f4f4f7;
-      --bg-elevated: #ffffff;
-      --surface: #ffffff;
-      --surface-2: #ececf2;
-      --surface-glass: rgba(255, 255, 255, 0.86);
-      --border: rgba(15, 23, 42, 0.08);
-      --border-strong: rgba(15, 23, 42, 0.14);
-      --specular: inset 0 1px 0 rgba(255, 255, 255, 0.9);
-      --text: #09090b;
-      --text-2: #52525b;
-      --text-3: #8e8e98;
     }
 
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
       -webkit-touch-callout: none;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
+    *::-webkit-scrollbar { display: none; }
 
     html, body {
       margin: 0;
@@ -63,7 +48,7 @@
       width: 100%;
       height: 100%;
       font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg);
+      background: #000000;
       color: var(--text);
       overflow: hidden;
       overscroll-behavior: none;
@@ -71,146 +56,141 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Static lightweight ambient glow (Zero GPU animation lag -> true 120Hz) */
-    .ambient-top {
-      position: fixed;
-      inset: 0 0 auto 0;
-      height: 360px;
+    /* Desktop subtle studio presentation */
+    @media (min-width: 560px) {
+      body {
+        background: radial-gradient(circle at 50% 20%, #14141c 0%, #050508 65%, #000000 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+      }
+      .app-frame {
+        height: min(880px, calc(100dvh - 36px)) !important;
+        border-radius: 40px !important;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        box-shadow: 0 36px 90px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+      }
+    }
+
+    .app-frame {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      height: 100dvh;
+      margin: 0 auto;
+      background: var(--bg-canvas);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Static lightweight OLED obsidian studio glow (Zero GPU lag -> 120Hz) */
+    .studio-glow {
+      position: absolute;
+      inset: 0;
       pointer-events: none;
       z-index: 0;
       background:
-        radial-gradient(65% 60% at 50% -10%, rgba(255, 45, 70, 0.16) 0%, transparent 72%),
-        radial-gradient(50% 50% at 85% 0%, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
-    }
-    body.light .ambient-top {
-      background:
-        radial-gradient(65% 60% at 50% -10%, rgba(255, 45, 70, 0.09) 0%, transparent 72%);
+        radial-gradient(85% 42% at 50% -6%, rgba(255, 255, 255, 0.085) 0%, transparent 72%),
+        radial-gradient(60% 38% at 50% 34%, rgba(255, 45, 70, 0.13) 0%, transparent 72%),
+        radial-gradient(70% 30% at 50% 102%, rgba(255, 255, 255, 0.05) 0%, transparent 75%);
     }
 
     /* Splash Screen */
     #splash {
       position: fixed;
       inset: 0;
-      z-index: 200;
-      background: #000000;
+      z-index: 250;
+      background: #000;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 16px;
-      transition: opacity 0.4s var(--spring), transform 0.4s var(--spring);
+      gap: 14px;
+      transition: opacity 0.38s var(--spring), transform 0.38s var(--spring);
       will-change: opacity, transform;
     }
-    #splash.hide {
-      opacity: 0;
-      transform: scale(1.04);
-      pointer-events: none;
-    }
+    #splash.hide { opacity: 0; transform: scale(1.04); pointer-events: none; }
     .splash-logo {
-      width: 84px;
-      height: 84px;
-      border-radius: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      box-shadow: 0 0 40px rgba(255, 45, 70, 0.25);
+      width: 78px; height: 78px; border-radius: 22px;
+      border: 1px solid var(--rim-strong);
+      box-shadow: 0 0 42px rgba(255, 45, 70, 0.32);
       object-fit: cover;
     }
-    .splash-title {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -0.3px;
-      color: #fff;
-    }
-    .splash-sub {
-      font-size: 12px;
-      color: #71717a;
+
+    /* Auth Screen */
+    .auth-screen {
+      position: absolute;
+      inset: 0;
+      z-index: 120;
+      background:
+        radial-gradient(70% 45% at 50% 12%, rgba(255, 45, 70, 0.16) 0%, transparent 70%),
+        #020204;
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
+      padding: 22px;
+      overflow-y: auto;
     }
-
-    /* App Viewport Lock */
-    .app-root {
-      position: relative;
-      z-index: 1;
+    .auth-card {
       width: 100%;
-      max-width: 520px;
-      height: 100dvh;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
+      background: var(--glass-grad);
+      border: 1px solid var(--rim);
+      box-shadow: var(--specular), 0 28px 60px rgba(0, 0, 0, 0.75);
+      border-radius: 30px;
+      padding: 28px 22px;
+      text-align: center;
+    }
+    .auth-logo {
+      width: 70px; height: 70px; border-radius: 20px;
+      border: 1px solid var(--rim-strong);
+      box-shadow: 0 0 34px rgba(255, 45, 70, 0.3);
+      margin-bottom: 12px;
+      object-fit: cover;
+    }
+    .seg-control {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid var(--rim);
+      padding: 4px; border-radius: 16px; margin: 18px 0;
+    }
+    .seg-btn {
+      border: none; background: transparent; color: var(--text-2);
+      padding: 10px; border-radius: 12px; font-family: inherit; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s var(--spring);
+    }
+    .seg-btn.active {
+      background: linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06));
+      color: #fff;
+      box-shadow: var(--specular);
     }
 
-    /* Top Header (Fixed, Glassmorphic) */
-    .header {
-      flex: 0 0 auto;
-      padding: calc(env(safe-area-inset-top, 10px) + 10px) 16px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--surface-glass);
-      backdrop-filter: blur(20px) saturate(160%);
-      -webkit-backdrop-filter: blur(20px) saturate(160%);
-      border-bottom: 1px solid var(--border);
-      z-index: 20;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-    }
-    .brand-logo {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      border: 1px solid var(--border-strong);
-      object-fit: cover;
-      background: #000;
-    }
-    .brand-title {
-      font-size: 15px;
-      font-weight: 800;
-      line-height: 1.25;
-      letter-spacing: -0.2px;
-    }
-    .brand-handle {
-      font-size: 11px;
-      color: var(--text-2);
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-weight: 500;
-    }
-    .live-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--red);
-      box-shadow: 0 0 8px var(--red);
-      display: inline-block;
-    }
-    .header-actions {
+    /* Floating Utility Buttons (Top Left) */
+    .top-util {
+      position: absolute;
+      top: calc(env(safe-area-inset-top, 10px) + 12px);
+      left: 16px;
+      z-index: 30;
       display: flex;
       gap: 8px;
     }
-    .icon-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 12px;
-      background: var(--surface);
-      border: 1px solid var(--border);
+    .util-btn {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--rim);
       box-shadow: var(--specular);
-      color: var(--text);
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      transition: transform 0.15s var(--spring), background 0.2s;
+      color: rgba(255, 255, 255, 0.85);
+      display: grid; place-items: center; cursor: pointer;
+      transition: transform 0.14s var(--spring), background 0.2s;
     }
-    .icon-btn:active { transform: scale(0.9); }
+    .util-btn:active { transform: scale(0.88); }
 
-    /* Scrollable Main Stage */
+    /* Stage & Views */
     .stage {
-      flex: 1 1 auto;
       position: relative;
+      z-index: 2;
+      flex: 1 1 auto;
       overflow: hidden;
     }
     .view {
@@ -219,11 +199,11 @@
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-y: contain;
-      padding: 16px 16px calc(env(safe-area-inset-bottom, 16px) + 96px);
+      padding: calc(env(safe-area-inset-top, 10px) + 14px) 18px calc(env(safe-area-inset-bottom, 14px) + 104px);
       opacity: 0;
-      transform: translate3d(0, 10px, 0);
+      transform: translate3d(0, 12px, 0);
       pointer-events: none;
-      transition: opacity 0.24s var(--spring), transform 0.28s var(--spring);
+      transition: opacity 0.22s var(--spring), transform 0.26s var(--spring);
       will-change: transform, opacity;
       contain: layout style;
     }
@@ -232,380 +212,423 @@
       transform: translate3d(0, 0, 0);
       pointer-events: auto;
     }
-    .view::-webkit-scrollbar { display: none; }
 
-    /* Obsidian Cards (Zero backdrop-filter inside scroll list -> 120Hz smooth scroll) */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      box-shadow: var(--specular), 0 12px 30px rgba(0, 0, 0, 0.35);
-      border-radius: var(--radius-xl);
-      padding: 16px;
-      margin-bottom: 12px;
+    /* Centered Editorial Logo Header (Matches Phone 1 & Phone 3 in Proposal 1) */
+    .center-header {
+      text-align: center;
+      margin-bottom: 18px;
+      padding-top: 2px;
     }
-    body.light .card {
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    .center-logo-wrap {
+      width: 48px; height: 48px; margin: 0 auto 10px;
+      border-radius: 15px;
+      background: #000;
+      border: 1px solid var(--rim-strong);
+      box-shadow: var(--specular), 0 8px 24px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      display: grid; place-items: center;
     }
+    .center-logo-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .center-title {
+      margin: 0; font-size: 22px; font-weight: 900; letter-spacing: -0.4px;
+      text-shadow: 0 2px 14px rgba(255, 255, 255, 0.12);
+    }
+    .center-sub { margin: 4px 0 0; font-size: 12px; color: var(--text-2); }
 
-    /* Auth Screen */
-    .auth-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 90;
-      background: var(--bg);
+    /* Feed Header (Matches Phone 2 in Proposal 1) */
+    .feed-header {
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 20px;
-      overflow-y: auto;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-left: 44px;
     }
-    .auth-card {
-      width: 100%;
-      max-width: 400px;
-      background: var(--surface);
-      border: 1px solid var(--border-strong);
-      box-shadow: var(--specular), 0 24px 60px rgba(0, 0, 0, 0.65);
-      border-radius: 30px;
-      padding: 28px 22px;
-      text-align: center;
+    .feed-brand {
+      display: flex; align-items: center; gap: 10px;
     }
-    .auth-logo {
-      width: 72px;
-      height: 72px;
-      border-radius: 22px;
-      border: 1px solid var(--border-strong);
-      box-shadow: 0 0 32px rgba(255, 45, 70, 0.28);
-      margin-bottom: 14px;
-      object-fit: cover;
-    }
-    .seg-control {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      padding: 4px;
-      border-radius: 15px;
-      margin: 18px 0;
-    }
-    .seg-btn {
-      border: none;
-      background: transparent;
-      color: var(--text-2);
-      padding: 10px;
-      border-radius: 11px;
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s var(--spring);
-    }
-    .seg-btn.active {
-      background: var(--surface-2);
-      color: var(--text);
+    .feed-logo-box {
+      width: 44px; height: 44px; border-radius: 14px;
+      background: #000;
+      border: 1px solid var(--rim-strong);
       box-shadow: var(--specular);
+      overflow: hidden;
+    }
+    .feed-logo-box img { width: 100%; height: 100%; object-fit: cover; }
+    .feed-brand-name { font-size: 16px; font-weight: 900; line-height: 1.25; }
+    .feed-brand-handle { font-size: 11.5px; color: var(--text-2); direction: ltr; text-align: right; }
+
+    /* Smoked Glass Surface */
+    .smoked-card {
+      background: var(--glass-grad);
+      border: 1px solid var(--rim);
+      box-shadow: var(--specular), 0 18px 36px rgba(0, 0, 0, 0.55);
+      border-radius: 24px;
+      padding: 15px 16px;
+      margin-bottom: 12px;
     }
 
-    /* Form Controls */
-    .field { text-align: right; margin-bottom: 12px; }
-    .field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; }
-    .input, .textarea, .select {
-      width: 100%;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 13px 14px;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 14px;
-      outline: none;
-      user-select: text;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .input:focus, .textarea:focus, .select:focus {
-      border-color: var(--red);
-      box-shadow: 0 0 0 3px var(--red-soft);
-    }
-    .textarea { resize: none; min-height: 115px; line-height: 1.85; }
-
-    /* Buttons */
-    .btn {
-      border: none;
-      border-radius: 16px;
-      padding: 13px 18px;
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: transform 0.14s var(--spring), opacity 0.2s;
-      will-change: transform;
-    }
-    .btn:active { transform: scale(0.96); }
-    .btn:disabled { opacity: 0.5; pointer-events: none; }
-    .btn-red {
-      background: linear-gradient(135deg, #ff2d46, #d90429);
-      color: #fff;
-      box-shadow: 0 10px 26px rgba(255, 45, 70, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-      width: 100%;
-    }
-    .btn-obsidian {
-      background: var(--surface-2);
-      color: var(--text);
-      border: 1px solid var(--border-strong);
-      box-shadow: var(--specular);
-    }
-    .btn-ghost {
-      background: transparent;
-      color: var(--text-2);
-      border: 1px solid var(--border);
-    }
-    .btn-sm { padding: 8px 13px; font-size: 12px; border-radius: 12px; }
-
-    /* ==================== TAB 1: OBSIDIAN RECORDING STUDIO ==================== */
-    .studio-wrap {
+    /* ==================== SCREEN 1: STUDIO (EXACT PROPOSAL 1) ==================== */
+    .studio-layout {
       min-height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 16px;
-    }
-    .studio-hero {
-      flex: 1 1 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 0 4px;
-      text-align: center;
-    }
-    .studio-heading {
-      font-size: 21px;
-      font-weight: 900;
-      margin: 0 0 4px;
-      letter-spacing: -0.4px;
-    }
-    .studio-sub {
-      font-size: 12.5px;
-      color: var(--text-2);
-      margin: 0 0 26px;
+      gap: 14px;
     }
 
-    /* Crimson & Silver Luminous Orb (Proposal 1 signature) */
-    .orb-shell {
+    /* Multi-ring 3D Crimson & Silver Glass Orb */
+    .orb-stage {
       position: relative;
-      width: 184px;
-      height: 184px;
+      width: 214px;
+      height: 214px;
+      margin: 2px auto 6px;
       display: grid;
       place-items: center;
-      margin-bottom: 18px;
     }
-    .orb-ring {
+    .orb-halo-outer {
       position: absolute;
       inset: 0;
       border-radius: 50%;
       border: 1px solid rgba(255, 255, 255, 0.14);
-      background: radial-gradient(circle, rgba(255, 45, 70, 0.14) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255, 45, 70, 0.22) 0%, rgba(255, 45, 70, 0.04) 55%, transparent 72%);
       transition: transform 0.3s var(--spring), border-color 0.3s;
     }
-    .orb-shell.recording .orb-ring {
-      border-color: rgba(255, 45, 70, 0.55);
-      animation: ringPulse 1.5s ease-out infinite;
-    }
-    @keyframes ringPulse {
-      0% { transform: scale(0.96); opacity: 0.9; }
-      100% { transform: scale(1.22); opacity: 0; }
-    }
-    .rec-orb {
-      position: relative;
-      z-index: 2;
-      width: 138px;
-      height: 138px;
+    .orb-halo-mid {
+      position: absolute;
+      inset: 14px;
       border-radius: 50%;
-      border: 1.5px solid rgba(255, 255, 255, 0.24);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 0 36px rgba(255, 45, 70, 0.34), inset 0 0 20px rgba(255, 45, 70, 0.22);
+    }
+    .orb-stage.recording .orb-halo-outer {
+      border-color: rgba(255, 45, 70, 0.55);
+      animation: orbBreath 1.6s ease-out infinite;
+    }
+    @keyframes orbBreath {
+      0% { transform: scale(0.95); opacity: 0.9; }
+      100% { transform: scale(1.18); opacity: 0; }
+    }
+    .orb-core {
+      position: relative;
+      z-index: 3;
+      width: 158px;
+      height: 158px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, 0.38);
       background:
-        radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.22), transparent 46%),
-        radial-gradient(circle at 65% 75%, rgba(255, 45, 70, 0.85), #5a0613 78%, #160206);
+        radial-gradient(circle at 28% 22%, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.06) 32%, transparent 52%),
+        radial-gradient(circle at 62% 72%, rgba(255, 45, 70, 0.92) 0%, rgba(145, 12, 32, 0.88) 54%, rgba(24, 5, 10, 0.96) 100%);
       box-shadow:
-        0 0 46px rgba(255, 45, 70, 0.42),
-        inset 0 2px 12px rgba(255, 255, 255, 0.28);
+        0 0 54px rgba(255, 45, 70, 0.48),
+        inset 0 2px 14px rgba(255, 255, 255, 0.38),
+        inset 0 -10px 24px rgba(255, 45, 70, 0.35);
       color: #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 4px;
       cursor: pointer;
-      transition: transform 0.18s var(--spring), box-shadow 0.25s;
+      transition: transform 0.16s var(--spring), box-shadow 0.25s;
       will-change: transform;
+      overflow: hidden;
     }
-    .rec-orb:active { transform: scale(0.93); }
-    .rec-orb.recording {
-      box-shadow:
-        0 0 64px rgba(255, 45, 70, 0.72),
-        inset 0 2px 16px rgba(255, 255, 255, 0.38);
+    .orb-core::before {
+      content: "";
+      position: absolute;
+      top: 7px; left: 22px; right: 22px; height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, transparent 100%);
+      pointer-events: none;
     }
-    .orb-label { font-size: 12px; font-weight: 700; opacity: 0.92; }
-    .orb-timer {
-      font-size: 19px;
-      font-weight: 800;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: 1px;
+    .orb-core:active { transform: scale(0.94); }
+    .orb-state { font-size: 13.5px; font-weight: 700; color: rgba(255, 255, 255, 0.92); }
+    .orb-time {
+      font-size: 21px; font-weight: 800; font-variant-numeric: tabular-nums;
+      letter-spacing: 0.8px; direction: ltr;
     }
 
-    /* Live Waveform Pill */
-    .wave-pill {
-      height: 46px;
-      padding: 0 18px;
+    /* Full-width Smoked Glass Waveform Control Capsule (Matches Phone 1) */
+    .wave-capsule {
+      height: 54px;
       border-radius: 999px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      box-shadow: var(--specular);
+      background: var(--glass-grad);
+      border: 1px solid var(--rim-strong);
+      box-shadow: var(--specular), 0 14px 30px rgba(0, 0, 0, 0.6);
+      padding: 0 12px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 4px;
-      margin-bottom: 20px;
-      min-width: 220px;
+      justify-content: space-between;
+      gap: 10px;
     }
-    .wave-bar {
-      width: 3px;
-      height: 8px;
-      border-radius: 4px;
-      background: var(--text-3);
+    .wave-side {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      height: 30px;
+    }
+    .wbar {
+      width: 2.5px;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.32);
       transition: height 0.08s linear, background 0.2s;
       will-change: height;
     }
-    .wave-pill.active .wave-bar { background: var(--red); }
+    .wbar.red { background: rgba(255, 45, 70, 0.72); }
+    .wave-capsule.recording .wbar { background: rgba(255, 255, 255, 0.85); }
+    .wave-capsule.recording .wbar.red { background: var(--red); }
 
-    /* Compact Studio Action Row */
-    .studio-actions {
+    .cap-center-btn {
+      width: 38px; height: 38px; border-radius: 50%; flex: 0 0 auto;
+      background: linear-gradient(180deg, rgba(255,255,255,0.16), rgba(16,16,22,0.9));
+      border: 1px solid var(--rim-strong);
+      box-shadow: var(--specular);
+      color: #fff; display: grid; place-items: center; cursor: pointer;
+    }
+    .cap-center-btn:active { transform: scale(0.9); }
+    .cap-stop-dot {
+      width: 30px; height: 30px; border-radius: 50%; flex: 0 0 auto;
+      background: rgba(255, 45, 70, 0.16);
+      border: 1px solid rgba(255, 45, 70, 0.45);
+      display: grid; place-items: center; cursor: pointer;
+    }
+    .cap-stop-inner {
+      width: 11px; height: 11px; border-radius: 3px;
+      background: var(--red);
+      box-shadow: 0 0 10px var(--red);
+    }
+
+    /* Transcript Preview Card (Matches Phone 1) */
+    .tx-preview-card {
+      background: var(--glass-grad);
+      border: 1px solid var(--rim);
+      box-shadow: var(--specular), 0 14px 30px rgba(0, 0, 0, 0.55);
+      border-radius: 22px;
+      padding: 13px 15px;
+      cursor: pointer;
+      transition: transform 0.15s var(--spring), border-color 0.2s;
+    }
+    .tx-preview-card:active { transform: scale(0.985); }
+    .tx-preview-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .tx-preview-title { font-size: 13.5px; font-weight: 800; }
+    .tx-preview-body {
+      font-size: 12.2px; color: var(--text-2); line-height: 1.75;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    /* Bottom Dual Pills (Matches Phone 1) */
+    .dual-pills {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      width: 100%;
     }
-    .draft-banner {
-      background: linear-gradient(135deg, rgba(255, 45, 70, 0.14), rgba(24, 24, 30, 0.95));
-      border: 1px solid rgba(255, 45, 70, 0.34);
-      border-radius: 20px;
-      padding: 13px 15px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
+    .pill-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 13px 14px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 800;
       cursor: pointer;
-    }
-    .draft-preview {
-      font-size: 12.5px;
-      color: var(--text-2);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 210px;
-    }
-
-    /* ==================== TAB 2: NEWS FEED (@shirazlastnews) ==================== */
-    .section-head {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
+      justify-content: center;
+      gap: 7px;
+      transition: transform 0.14s var(--spring), opacity 0.2s;
+      will-change: transform;
     }
-    .section-title { font-size: 18px; font-weight: 900; margin: 0; }
-    .feed-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      box-shadow: var(--specular);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      margin-bottom: 14px;
+    .pill-btn:active { transform: scale(0.95); }
+    .pill-btn:disabled { opacity: 0.5; pointer-events: none; }
+    .pill-red {
+      background: linear-gradient(135deg, #ff334d 0%, #d40c29 100%);
+      color: #fff;
+      border: 1px solid rgba(255, 160, 172, 0.45);
+      box-shadow: 0 10px 26px rgba(255, 45, 70, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.35);
     }
-    .feed-media {
+    .pill-glass {
+      background: var(--glass-grad);
+      color: #fff;
+      border: 1px solid var(--rim-strong);
+      box-shadow: var(--specular), 0 10px 22px rgba(0, 0, 0, 0.45);
+    }
+    .pill-sm { padding: 7px 12px; font-size: 11.5px; }
+
+    /* ==================== SCREEN 2: FULL-BLEED OVERLAY FEED (EXACT PROPOSAL 1) ==================== */
+    .news-card {
       position: relative;
-      width: 100%;
-      background: #09090b;
+      border-radius: 26px;
       overflow: hidden;
+      border: 1px solid var(--rim);
+      box-shadow: var(--specular), 0 18px 38px rgba(0, 0, 0, 0.6);
+      margin-bottom: 14px;
+      background: var(--glass-grad);
+      cursor: pointer;
+      transition: transform 0.15s var(--spring);
     }
-    .feed-media img {
+    .news-card:active { transform: scale(0.985); }
+    .news-card.has-photo {
+      min-height: 248px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background: #0a0a0d;
+    }
+    .news-card-bg {
+      position: absolute;
+      inset: 0;
       width: 100%;
-      max-height: 280px;
+      height: 100%;
       object-fit: cover;
-      display: block;
+      z-index: 0;
     }
-    .feed-badge {
+    .news-card-scrim {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.20) 0%,
+        rgba(0, 0, 0, 0.14) 32%,
+        rgba(5, 5, 8, 0.84) 70%,
+        rgba(5, 5, 8, 0.98) 100%
+      );
+    }
+    .news-card-top {
       position: absolute;
       top: 12px;
       right: 12px;
-      background: rgba(0, 0, 0, 0.72);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      left: 12px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .live-pill {
+      background: rgba(12, 12, 16, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
       color: #fff;
       font-size: 11px;
       font-weight: 700;
       padding: 4px 10px;
       border-radius: 999px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
     }
-    .feed-body { padding: 14px 16px 16px; }
-    .feed-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 11.5px;
-      color: var(--text-2);
-      margin-bottom: 8px;
+    .live-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 10px var(--red);
+      display: inline-block;
     }
-    .feed-text {
-      font-size: 13.5px;
-      line-height: 1.85;
-      color: var(--text);
-      white-space: pre-wrap;
-      margin-bottom: 12px;
+    .news-card-content {
+      position: relative;
+      z-index: 2;
+      padding: 16px;
+    }
+    .news-card:not(.has-photo) .news-card-content {
+      padding-top: 46px;
+    }
+    .news-headline {
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.75;
+      color: #ffffff;
+      margin-bottom: 11px;
       display: -webkit-box;
-      -webkit-line-clamp: 5;
+      -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.65);
     }
-    .feed-text.expanded { -webkit-line-clamp: unset; }
-    .feed-foot { display: flex; gap: 8px; flex-wrap: wrap; }
+    .news-tags {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+    .mini-glass-tag {
+      background: rgba(255, 255, 255, 0.11);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #f4f4f5;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .mini-glass-tag.red-accent {
+      background: rgba(255, 45, 70, 0.22);
+      border-color: rgba(255, 45, 70, 0.45);
+    }
 
-    /* ==================== TAB 3: AI IMAGE STUDIO ==================== */
-    .img-stage {
+    /* ==================== SCREEN 3: AI IMAGE STUDIO (EXACT PROPOSAL 1) ==================== */
+    .preview-frame {
       width: 100%;
-      min-height: 220px;
-      border-radius: 22px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-strong);
+      aspect-ratio: 16 / 10;
+      border-radius: 26px;
+      background:
+        radial-gradient(60% 60% at 50% 40%, rgba(255, 255, 255, 0.08) 0%, rgba(12, 12, 16, 0.94) 100%);
+      border: 1.5px solid var(--rim-strong);
+      box-shadow: var(--specular), 0 20px 44px rgba(0, 0, 0, 0.68);
       overflow: hidden;
       display: grid;
       place-items: center;
-      margin-bottom: 14px;
       position: relative;
     }
-    .img-stage canvas, .img-stage img {
+    .preview-frame canvas, .preview-frame img {
+      width: 100%; height: 100%; object-fit: contain; display: block; background: #000;
+    }
+    .dots-row {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      margin: 10px 0 14px;
+    }
+    .dot-ind { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.28); }
+    .dot-ind.active { width: 16px; border-radius: 99px; background: var(--red); box-shadow: 0 0 8px var(--red); }
+
+    .field { text-align: right; margin-bottom: 12px; }
+    .field label { display: block; font-size: 12px; font-weight: 700; color: var(--text-2); margin-bottom: 6px; }
+    .glass-input, .glass-textarea {
       width: 100%;
-      height: auto;
-      display: block;
+      background: var(--glass-subtle);
+      border: 1px solid var(--rim);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+      border-radius: 18px;
+      padding: 13px 15px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 13.5px;
+      outline: none;
+      user-select: text;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .pill-row {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      margin-bottom: 12px;
+    .glass-input:focus, .glass-textarea:focus {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px var(--red-soft), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
-    .pill-row::-webkit-scrollbar { display: none; }
-    .pill {
+    .glass-textarea { resize: none; min-height: 82px; line-height: 1.8; }
+
+    .pill-strip {
+      display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 6px; margin-bottom: 10px;
+    }
+    .chip-pill {
       flex: 0 0 auto;
-      padding: 8px 14px;
+      padding: 8px 15px;
       border-radius: 999px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
+      background: var(--glass-subtle);
+      border: 1px solid var(--rim);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
       color: var(--text-2);
       font-family: inherit;
       font-size: 12px;
@@ -613,119 +636,118 @@
       cursor: pointer;
       transition: all 0.18s var(--spring);
     }
-    .pill.active {
-      background: var(--red-soft);
-      border-color: var(--red);
-      color: var(--text);
-    }
-    .switch-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 11px 14px;
-      border-radius: 15px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      margin-bottom: 14px;
-      font-size: 12.5px;
-      font-weight: 600;
+    .chip-pill.active {
+      background: linear-gradient(135deg, rgba(255, 45, 70, 0.26), rgba(255, 255, 255, 0.10));
+      border-color: rgba(255, 45, 70, 0.65);
+      color: #fff;
+      box-shadow: 0 0 18px rgba(255, 45, 70, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.28);
     }
 
-    /* ==================== FLOATING PILL BOTTOM DOCK ==================== */
-    .dock-wrap {
-      position: fixed;
-      bottom: calc(env(safe-area-inset-bottom, 10px) + 10px);
-      left: 50%;
-      transform: translateX(-50%);
-      width: calc(100% - 28px);
-      max-width: 488px;
+    .toggle-pill {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 11px 15px; border-radius: 18px;
+      background: var(--glass-subtle);
+      border: 1px solid var(--rim);
+      margin-bottom: 14px; font-size: 12px; font-weight: 600; color: var(--text-2);
+    }
+
+    /* ==================== FLOATING FROSTED GLASS BOTTOM PILL DOCK (EXACT PROPOSAL 1) ==================== */
+    .dock-shell {
+      position: absolute;
+      bottom: calc(env(safe-area-inset-bottom, 10px) + 12px);
+      left: 16px;
+      right: 16px;
       z-index: 40;
     }
-    .dock {
+    .dock-pill {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      padding: 6px;
-      border-radius: 28px;
-      background: var(--surface-glass);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border: 1px solid var(--border-strong);
-      box-shadow: var(--specular), 0 18px 40px rgba(0, 0, 0, 0.65);
+      padding: 7px 6px;
+      border-radius: 32px;
+      background: var(--glass-dock);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 1px solid var(--rim-strong);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.34),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+        0 20px 44px rgba(0, 0, 0, 0.78);
     }
-    .dock-btn {
+    .dock-item {
+      position: relative;
       border: none;
       background: transparent;
-      color: var(--text-2);
-      padding: 8px 2px;
-      border-radius: 20px;
+      color: rgba(255, 255, 255, 0.56);
+      padding: 7px 2px;
+      border-radius: 24px;
       font-family: inherit;
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 700;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 4px;
       cursor: pointer;
-      transition: color 0.2s, background 0.2s, transform 0.14s var(--spring);
+      transition: color 0.18s, transform 0.14s var(--spring);
     }
-    .dock-btn:active { transform: scale(0.92); }
-    .dock-btn svg { width: 20px; height: 20px; stroke-width: 1.9; }
-    .dock-btn.active {
-      background: rgba(255, 45, 70, 0.16);
-      color: #fff;
-      box-shadow: inset 0 0 0 1px rgba(255, 45, 70, 0.35);
+    .dock-item:active { transform: scale(0.9); }
+    .dock-item svg { width: 20px; height: 20px; stroke-width: 1.9; }
+    .dock-item.active {
+      color: #ffffff;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.05) 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
     }
-    body.light .dock-btn.active { color: var(--red); }
+    .dock-item.active::after {
+      content: "";
+      position: absolute;
+      bottom: 2px;
+      width: 14px;
+      height: 2.5px;
+      border-radius: 99px;
+      background: var(--red);
+      box-shadow: 0 0 8px var(--red);
+    }
 
-    /* ==================== NATIVE BOTTOM SHEET (120Hz GPU SLIDE) ==================== */
-    .sheet-backdrop {
-      position: fixed;
+    /* ==================== NATIVE BOTTOM SHEETS ==================== */
+    .sheet-mask {
+      position: absolute;
       inset: 0;
-      z-index: 70;
-      background: rgba(0, 0, 0, 0.68);
+      z-index: 80;
+      background: rgba(0, 0, 0, 0.72);
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.25s ease;
+      transition: opacity 0.24s ease;
     }
-    .sheet-backdrop.open { opacity: 1; pointer-events: auto; }
+    .sheet-mask.open { opacity: 1; pointer-events: auto; }
     .sheet {
-      position: fixed;
-      left: 50%;
-      bottom: 0;
-      width: 100%;
-      max-width: 520px;
-      max-height: 88dvh;
-      z-index: 80;
-      background: #0d0d11;
-      border-top: 1px solid var(--border-strong);
-      border-radius: 28px 28px 0 0;
-      box-shadow: var(--specular), 0 -20px 50px rgba(0, 0, 0, 0.7);
-      transform: translate3d(-50%, 105%, 0);
-      transition: transform 0.36s var(--spring);
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      max-height: 88%;
+      z-index: 90;
+      background: linear-gradient(180deg, rgba(28, 28, 36, 0.96) 0%, rgba(8, 8, 12, 0.99) 100%);
+      backdrop-filter: blur(26px);
+      -webkit-backdrop-filter: blur(26px);
+      border-top: 1px solid var(--rim-strong);
+      border-radius: 30px 30px 0 0;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 -22px 54px rgba(0, 0, 0, 0.8);
+      transform: translate3d(0, 105%, 0);
+      transition: transform 0.34s var(--spring);
       will-change: transform;
       display: flex;
       flex-direction: column;
       padding-bottom: calc(env(safe-area-inset-bottom, 12px) + 12px);
     }
-    body.light .sheet { background: #ffffff; }
-    .sheet.open { transform: translate3d(-50%, 0, 0); }
-    .sheet-handle {
-      width: 40px;
-      height: 4px;
-      border-radius: 4px;
-      background: var(--border-strong);
+    .sheet.open { transform: translate3d(0, 0, 0); }
+    .sheet-bar {
+      width: 40px; height: 4px; border-radius: 99px;
+      background: rgba(255, 255, 255, 0.24);
       margin: 10px auto 6px;
-      flex: 0 0 auto;
     }
     .sheet-head {
       padding: 6px 18px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      flex: 0 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
-    .sheet-title { font-size: 15.5px; font-weight: 800; }
     .sheet-body {
       padding: 16px 18px;
       overflow-y: auto;
@@ -734,40 +756,25 @@
     }
 
     .agency-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 9px;
-      margin-top: 8px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 8px;
     }
     .agency-btn {
-      padding: 13px 10px;
-      border-radius: 15px;
-      background: var(--surface-2);
-      border: 1px solid var(--border-strong);
-      color: var(--text);
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      transition: transform 0.14s var(--spring), border-color 0.2s;
+      padding: 13px 10px; border-radius: 16px;
+      background: var(--glass-grad);
+      border: 1px solid var(--rim);
+      box-shadow: var(--specular);
+      color: #fff; font-family: inherit; font-size: 13px; font-weight: 800;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px;
+      transition: transform 0.14s var(--spring);
     }
     .agency-btn:active { transform: scale(0.95); }
     .agency-dot { width: 8px; height: 8px; border-radius: 50%; }
 
     .article-box {
-      white-space: pre-wrap;
-      line-height: 1.95;
-      font-size: 14px;
-      user-select: text;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 15px;
-      margin-bottom: 14px;
+      white-space: pre-wrap; line-height: 1.95; font-size: 13.8px; user-select: text;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid var(--rim);
+      border-radius: 20px; padding: 15px; margin-bottom: 14px;
     }
 
     /* Toast */
@@ -776,318 +783,321 @@
       top: calc(env(safe-area-inset-top, 10px) + 14px);
       left: 50%;
       transform: translate3d(-50%, -24px, 0);
-      background: rgba(20, 20, 25, 0.96);
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: 999px;
-      border: 1px solid var(--border-strong);
-      font-size: 12.5px;
-      font-weight: 700;
-      z-index: 300;
-      opacity: 0;
-      pointer-events: none;
+      background: rgba(18, 18, 24, 0.94);
+      border: 1px solid var(--rim-strong);
+      box-shadow: var(--specular), 0 14px 30px rgba(0, 0, 0, 0.7);
+      color: #fff; padding: 10px 18px; border-radius: 999px;
+      font-size: 12.5px; font-weight: 700; z-index: 300;
+      opacity: 0; pointer-events: none;
       transition: opacity 0.22s, transform 0.26s var(--spring);
-      max-width: 92%;
-      text-align: center;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      max-width: 90%; text-align: center;
     }
     .toast.show { opacity: 1; transform: translate3d(-50%, 0, 0); }
 
-    /* Skeleton Shimmer */
     .skel {
-      height: 160px;
-      border-radius: 22px;
-      background: linear-gradient(90deg, var(--surface) 25%, var(--surface-2) 50%, var(--surface) 75%);
+      height: 220px; border-radius: 26px;
+      background: linear-gradient(90deg, #101015 25%, #1c1c24 50%, #101015 75%);
       background-size: 200% 100%;
-      animation: skelMove 1.2s infinite linear;
-      margin-bottom: 12px;
+      animation: skelMove 1.15s infinite linear;
+      margin-bottom: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
     @keyframes skelMove { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
     .hidden { display: none !important; }
-    .muted { color: var(--text-2); font-size: 12.5px; }
+    .muted { color: var(--text-2); font-size: 12px; }
   </style>
 </head>
 <body>
-  <div class="ambient-top"></div>
   <div id="toast" class="toast"></div>
 
-  <!-- Splash Screen -->
+  <!-- Splash -->
   <div id="splash">
     <img src="./icon-192.png" class="splash-logo" alt="آخرین خبرهای شیراز" />
-    <div class="splash-title">آخرین خبرهای شیراز</div>
-    <div class="splash-sub"><span class="live-dot"></span> اتاق خبر هوشمند @shirazlastnews</div>
+    <div style="font-size:18px; font-weight:900;">آخرین خبرهای شیراز</div>
+    <div class="muted" style="display:flex; align-items:center; gap:6px;"><span class="live-dot"></span> @shirazlastnews</div>
   </div>
 
-  <!-- Auth Screen -->
-  <div id="authScreen" class="auth-screen hidden">
-    <div class="auth-card">
-      <img src="./icon-192.png" class="auth-logo" alt="لوگو" />
-      <h1 style="margin:0 0 6px; font-size:20px; font-weight:900;">آخرین خبرهای شیراز</h1>
-      <p class="muted" style="margin:0;">اتاق خبر اختصاصی خبرنگاران @shirazlastnews</p>
+  <div class="app-frame">
+    <div class="studio-glow"></div>
 
-      <div class="seg-control">
-        <button id="tabLoginBtn" class="seg-btn active" onclick="setAuthMode('login')">ورود</button>
-        <button id="tabSignupBtn" class="seg-btn" onclick="setAuthMode('signup')">ثبت‌نام خبرنگار</button>
+    <!-- Auth Screen -->
+    <div id="authScreen" class="auth-screen hidden">
+      <div class="auth-card">
+        <img src="./icon-192.png" class="auth-logo" alt="لوگو" />
+        <h1 style="margin:0 0 4px; font-size:20px; font-weight:900;">آخرین خبرهای شیراز</h1>
+        <p class="muted" style="margin:0;">اتاق خبر هوشمند @shirazlastnews</p>
+
+        <div class="seg-control">
+          <button id="tabLoginBtn" class="seg-btn active" onclick="setAuthMode('login')">ورود</button>
+          <button id="tabSignupBtn" class="seg-btn" onclick="setAuthMode('signup')">ثبت‌نام خبرنگار</button>
+        </div>
+
+        <form onsubmit="handleAuthSubmit(event)">
+          <div class="field">
+            <label>ایمیل</label>
+            <input id="authEmail" class="glass-input" type="email" required placeholder="reporter@example.com" dir="ltr" />
+          </div>
+          <div class="field">
+            <label>رمز عبور (حداقل ۶ کاراکتر)</label>
+            <input id="authPassword" class="glass-input" type="password" required minlength="6" placeholder="••••••••" dir="ltr" />
+          </div>
+          <button id="authSubmitBtn" type="submit" class="pill-btn pill-red" style="width:100%; margin-top:6px;">ورود به اتاق خبر</button>
+        </form>
       </div>
-
-      <form onsubmit="handleAuthSubmit(event)">
-        <div class="field">
-          <label>ایمیل</label>
-          <input id="authEmail" class="input" type="email" required placeholder="reporter@example.com" dir="ltr" />
-        </div>
-        <div class="field">
-          <label>رمز عبور (حداقل ۶ کاراکتر)</label>
-          <input id="authPassword" class="input" type="password" required minlength="6" placeholder="••••••••" dir="ltr" />
-        </div>
-        <button id="authSubmitBtn" type="submit" class="btn btn-red" style="margin-top:6px;">ورود به اتاق خبر</button>
-      </form>
     </div>
-  </div>
 
-  <!-- Main Native-Like App Shell -->
-  <div id="mainApp" class="app-root hidden">
-    <header class="header">
-      <div class="brand">
-        <img src="./icon-192.png" class="brand-logo" alt="لوگو" />
-        <div>
-          <div class="brand-title">آخرین خبرهای شیراز</div>
-          <div class="brand-handle"><span class="live-dot"></span> @shirazlastnews</div>
-        </div>
-      </div>
-      <div class="header-actions">
-        <button class="icon-btn" title="تغییر تم" onclick="toggleTheme()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-        </button>
-        <button class="icon-btn" title="خروج" onclick="handleLogout()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    <!-- Main App -->
+    <div id="mainApp" class="hidden" style="display:flex; flex-direction:column; height:100%; position:relative; z-index:2;">
+      <!-- Minimal Floating Utility Action -->
+      <div class="top-util">
+        <button class="util-btn" title="خروج از حساب" onclick="handleLogout()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         </button>
       </div>
-    </header>
 
-    <main class="stage">
-      <!-- TAB 1: STUDIO -->
-      <section id="view-studio" class="view active">
-        <div class="studio-wrap">
-          <div class="studio-hero">
-            <h2 class="studio-heading">استودیو ضبط و خبرنویسی</h2>
-            <p id="recSubText" class="studio-sub">برای ضبط مصاحبه زنده لمس کنید</p>
+      <main class="stage">
+        <!-- ==================== TAB 1: STUDIO (PROPOSAL 1 LEFT PHONE) ==================== -->
+        <section id="view-studio" class="view active">
+          <div class="studio-layout">
+            <div class="center-header">
+              <div class="center-logo-wrap"><img src="./icon-192.png" alt="لوگو" /></div>
+              <h1 class="center-title">استودیو ضبط</h1>
+              <p id="studioSub" class="center-sub">ضبط مصاحبه و تبدیل فوری به خبر استاندارد</p>
+            </div>
 
-            <div id="orbShell" class="orb-shell">
-              <div class="orb-ring"></div>
-              <button id="recOrb" class="rec-orb" onclick="toggleRecord()">
-                <svg id="orbMicIcon" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <div id="orbStage" class="orb-stage">
+              <div class="orb-halo-outer"></div>
+              <div class="orb-halo-mid"></div>
+              <button id="orbCore" class="orb-core" onclick="toggleRecord()">
+                <span id="orbState" class="orb-state">آماده ضبط</span>
+                <span id="orbTime" class="orb-time">00:00:00</span>
+              </button>
+            </div>
+
+            <!-- Smoked Glass Waveform Control Capsule -->
+            <div id="waveCapsule" class="wave-capsule">
+              <div id="waveRight" class="wave-side"></div>
+              <button class="cap-center-btn" onclick="toggleRecord()" title="شروع یا توقف ضبط">
+                <svg id="capIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                   <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
                   <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                  <line x1="12" y1="19" x2="12" y2="22"/>
                 </svg>
-                <span id="orbStatusLabel" class="orb-label">شروع ضبط</span>
-                <span id="orbTimer" class="orb-timer hidden">00:00</span>
+              </button>
+              <div id="waveLeft" class="wave-side"></div>
+              <button class="cap-stop-dot" onclick="stopIfRecording()" title="پایان ضبط">
+                <span class="cap-stop-inner"></span>
               </button>
             </div>
 
-            <div id="wavePill" class="wave-pill"></div>
+            <!-- Smoked Glass Transcript Preview Card -->
+            <div class="tx-preview-card" onclick="openEditorSheet()">
+              <div class="tx-preview-head">
+                <span class="tx-preview-title">متن پیاده‌شده</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-2)" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+              </div>
+              <div id="txPreviewBody" class="tx-preview-body">صدای مصاحبه را ضبط یا آپلود کنید (یا لمس کنید تا متن خام وارد کنید و خبر را تنظیم کنید)...</div>
+            </div>
 
-            <div class="studio-actions">
-              <label class="btn btn-obsidian">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                آپلود صوت
+            <!-- Bottom Dual Pills -->
+            <div class="dual-pills">
+              <button id="primaryStudioBtn" class="pill-btn pill-red" onclick="handlePrimaryStudioAction()">شروع ضبط</button>
+              <label class="pill-btn pill-glass" style="margin:0;">
+                آپلود فایل صوتی
                 <input id="audioFileInput" type="file" accept="audio/*" class="hidden" onchange="handleAudioUpload(event)" />
               </label>
-              <button class="btn btn-obsidian" onclick="openEditorSheet()">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                متن خام / تنظیم
-              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 2: NEWS FEED (PROPOSAL 1 CENTER PHONE) ==================== -->
+        <section id="view-feed" class="view">
+          <div class="feed-header">
+            <div class="feed-brand">
+              <div class="feed-logo-box"><img src="./icon-192.png" alt="لوگو" /></div>
+              <div>
+                <div class="feed-brand-name">آخرین خبرهای شیراز</div>
+                <div class="feed-brand-handle">@shirazlastnews</div>
+              </div>
+            </div>
+            <button class="pill-btn pill-glass pill-sm" onclick="loadChannelFeed(true)">بروزرسانی</button>
+          </div>
+          <div id="feedList"></div>
+        </section>
+
+        <!-- ==================== TAB 3: AI IMAGE STUDIO (PROPOSAL 1 RIGHT PHONE) ==================== -->
+        <section id="view-image" class="view">
+          <div class="center-header" style="margin-bottom:14px;">
+            <div class="center-logo-wrap"><img src="./icon-192.png" alt="لوگو" /></div>
+            <h1 class="center-title">تولید عکس خبری</h1>
+          </div>
+
+          <div id="imgStage" class="preview-frame">
+            <div style="text-align:center; padding:20px;">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.34)" stroke-width="1.6"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <div class="muted" style="margin-top:8px;">پیش‌نمایش عکس خبری اینجا ظاهر می‌شود</div>
             </div>
           </div>
 
-          <div id="draftBanner" class="draft-banner hidden" onclick="openEditorSheet()">
-            <div>
-              <div style="font-size:13px; font-weight:800; margin-bottom:2px;">متن پیاده‌شده آماده تنظیم است</div>
-              <div id="draftPreview" class="draft-preview"></div>
-            </div>
-            <span class="btn btn-red btn-sm" style="width:auto;">ادامه</span>
+          <div class="dots-row">
+            <span class="dot-ind"></span>
+            <span class="dot-ind active"></span>
+            <span class="dot-ind"></span>
           </div>
-        </div>
-      </section>
 
-      <!-- TAB 2: CHANNEL FEED -->
-      <section id="view-feed" class="view">
-        <div class="section-head">
-          <div>
-            <h2 class="section-title">آخرین خبرهای شیراز</h2>
-            <div class="muted">پست‌های زنده کانال @shirazlastnews</div>
-          </div>
-          <button class="btn btn-obsidian btn-sm" onclick="loadChannelFeed(true)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
-            بروزرسانی
-          </button>
-        </div>
-        <div id="feedList"></div>
-      </section>
-
-      <!-- TAB 3: AI IMAGE STUDIO -->
-      <section id="view-image" class="view">
-        <div class="section-head">
-          <h2 class="section-title">تولید عکس خبری</h2>
-          <span class="muted">هوش مصنوعی اختصاصی</span>
-        </div>
-
-        <div id="imgStage" class="img-stage">
-          <div style="text-align:center; padding:24px;">
-            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="1.6"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-            <div class="muted" style="margin-top:8px;">پیش‌نمایش عکس خبری اینجا نمایش داده می‌شود</div>
-          </div>
-        </div>
-
-        <div class="card">
           <div class="field">
-            <label>موضوع یا تیتر خبر</label>
-            <textarea id="imgPromptInput" class="textarea" style="min-height:76px;" placeholder="مثال: نمای مدرن از بلوار چمران شیراز هنگام غروب آفتاب با نورپردازی شهری..."></textarea>
+            <textarea id="imgPromptInput" class="glass-textarea" placeholder="موضوع خبر را بنویسید... (مثال: بلوار چمران شیراز در غروب آفتاب)"></textarea>
           </div>
 
-          <div class="muted" style="margin-bottom:6px; font-weight:700;">سبک تصویر</div>
-          <div class="pill-row" id="stylePills">
-            <button class="pill active" data-val="photo" onclick="selectPill('style', this)">عکاسی خبری</button>
-            <button class="pill" data-val="cinematic" onclick="selectPill('style', this)">سینمایی</button>
-            <button class="pill" data-val="aerial" onclick="selectPill('style', this)">نمای هوایی شیراز</button>
-            <button class="pill" data-val="minimal" onclick="selectPill('style', this)">گرافیک مینیمال</button>
+          <div class="muted" style="font-weight:700; margin-bottom:6px;">سبک تصویر:</div>
+          <div class="pill-strip">
+            <button class="chip-pill active" data-val="photo" onclick="selectPill('style', this)">عکاسی خبری</button>
+            <button class="chip-pill" data-val="cinematic" onclick="selectPill('style', this)">سینمایی</button>
+            <button class="chip-pill" data-val="aerial" onclick="selectPill('style', this)">نمای هوایی</button>
+            <button class="chip-pill" data-val="minimal" onclick="selectPill('style', this)">مینیمال</button>
           </div>
 
-          <div class="muted" style="margin-bottom:6px; font-weight:700;">نسبت تصویر</div>
-          <div class="pill-row" id="ratioPills">
-            <button class="pill active" data-val="16:9" onclick="selectPill('ratio', this)">۱۶:۹ (خبر)</button>
-            <button class="pill" data-val="1:1" onclick="selectPill('ratio', this)">۱:۱ (پست)</button>
-            <button class="pill" data-val="9:16" onclick="selectPill('ratio', this)">۹:۱۶ (استوری)</button>
+          <div class="muted" style="font-weight:700; margin-bottom:6px;">نسبت تصویر:</div>
+          <div class="pill-strip">
+            <button class="chip-pill active" data-val="16:9" onclick="selectPill('ratio', this)">۱۶:۹ افقی</button>
+            <button class="chip-pill" data-val="1:1" onclick="selectPill('ratio', this)">۱:۱ مربعی</button>
+            <button class="chip-pill" data-val="9:16" onclick="selectPill('ratio', this)">۹:۱۶ استوری</button>
           </div>
 
-          <label class="switch-row">
-            <span>درج لوگو و نشان @shirazlastnews روی عکس</span>
+          <label class="toggle-pill">
+            <span>درج لوگوی دروازه قرآن و @shirazlastnews</span>
             <input id="watermarkToggle" type="checkbox" checked onchange="renderWatermarkCanvas()" />
           </label>
 
-          <button id="genImgBtn" class="btn btn-red" onclick="generateImage()">تولید عکس خبری</button>
-          <button id="downloadImgBtn" class="btn btn-obsidian hidden" style="width:100%; margin-top:9px;" onclick="downloadGeneratedImage()">ذخیره عکس در گالری (PNG)</button>
-        </div>
-      </section>
+          <button id="genImgBtn" class="pill-btn pill-glass" style="width:100%; border-color:rgba(255,45,70,0.52);" onclick="generateImage()">تولید عکس خبری</button>
+          <button id="downloadImgBtn" class="pill-btn pill-red hidden" style="width:100%; margin-top:10px;" onclick="downloadGeneratedImage()">ذخیره عکس در گالری (PNG)</button>
+        </section>
 
-      <!-- TAB 4: ARCHIVE -->
-      <section id="view-archive" class="view">
-        <div class="section-head">
-          <h2 class="section-title">آرشیو اخبار</h2>
-          <button class="btn btn-obsidian btn-sm" onclick="loadArchive()">بروزرسانی</button>
+        <!-- ==================== TAB 4: ARCHIVE ==================== -->
+        <section id="view-archive" class="view">
+          <div class="feed-header">
+            <div>
+              <div class="feed-brand-name" style="font-size:19px;">آرشیو اخبار</div>
+              <div class="muted">خبرهای تنظیم‌شده شما</div>
+            </div>
+            <button class="pill-btn pill-glass pill-sm" onclick="loadArchive()">بروزرسانی</button>
+          </div>
+          <div class="field">
+            <input id="archiveSearch" class="glass-input" type="text" placeholder="جستجو در تیتر یا متن خبرها..." oninput="renderArchive()" />
+          </div>
+          <div id="archiveList"></div>
+        </section>
+
+        <!-- ==================== TAB 5: OFFICIALS ==================== -->
+        <section id="view-officials" class="view">
+          <div class="feed-header">
+            <div>
+              <div class="feed-brand-name" style="font-size:19px;">بانک مسئولان</div>
+              <div class="muted">انتخاب سریع نام و سمت</div>
+            </div>
+            <button class="pill-btn pill-red pill-sm" onclick="openSheet('officialSheet')">+ مسئول جدید</button>
+          </div>
+          <div id="officialsList"></div>
+        </section>
+      </main>
+
+      <!-- Floating Frosted Glass Pill Dock -->
+      <div class="dock-shell">
+        <nav class="dock-pill">
+          <button class="dock-item active" data-tab="studio" onclick="switchTab('studio')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+            <span>استودیو</span>
+          </button>
+          <button class="dock-item" data-tab="feed" onclick="switchTab('feed')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+            <span>خبرها</span>
+          </button>
+          <button class="dock-item" data-tab="image" onclick="switchTab('image')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+            <span>عکس</span>
+          </button>
+          <button class="dock-item" data-tab="archive" onclick="switchTab('archive')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>
+            <span>آرشیو</span>
+          </button>
+          <button class="dock-item" data-tab="officials" onclick="switchTab('officials')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>مسئولان</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Bottom Sheets -->
+    <div id="sheetMask" class="sheet-mask" onclick="closeAllSheets()"></div>
+
+    <!-- Sheet 1: Editor & Agencies -->
+    <div id="editorSheet" class="sheet">
+      <div class="sheet-bar"></div>
+      <div class="sheet-head">
+        <span style="font-size:15px; font-weight:800;">تنظیم خبر و انتخاب خبرگزاری</span>
+        <button class="pill-btn pill-glass pill-sm" onclick="closeAllSheets()">بستن</button>
+      </div>
+      <div class="sheet-body">
+        <div class="field">
+          <label style="display:flex; justify-content:space-between;">
+            <span>متن خام مصاحبه (قابل ویرایش)</span>
+            <span style="color:var(--red); cursor:pointer;" onclick="clearTranscript()">پاک کردن</span>
+          </label>
+          <textarea id="transcriptInput" class="glass-textarea" style="min-height:125px;" placeholder="متن پیاده‌شده اینجا ظاهر می‌شود یا متن خام را پیست کنید..." oninput="syncTranscriptPreview()"></textarea>
+        </div>
+
+        <div class="field">
+          <label>نام و سمت مصاحبه‌شونده</label>
+          <div id="officialQuickChips" class="pill-strip"></div>
+          <input id="speakerInput" class="glass-input" type="text" placeholder="مثال: رامین طالبی، رئیس سازمان حمل‌ونقل مسافر شهرداری شیراز" />
+        </div>
+
+        <div class="muted" style="font-weight:700; margin-top:4px;">انتخاب سبک خبرگزاری:</div>
+        <div class="agency-grid">
+          <button class="agency-btn" onclick="generateNews('fars')"><span class="agency-dot" style="background:#38bdf8;"></span>خبرگزاری فارس</button>
+          <button class="agency-btn" onclick="generateNews('irna')"><span class="agency-dot" style="background:#e4e4e7;"></span>خبرگزاری ایرنا</button>
+          <button class="agency-btn" onclick="generateNews('isna')"><span class="agency-dot" style="background:#10b981;"></span>خبرگزاری ایسنا</button>
+          <button class="agency-btn" onclick="generateNews('tasnim')"><span class="agency-dot" style="background:#ff2d46;"></span>خبرگزاری تسنیم</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sheet 2: Result / Full Post Reader -->
+    <div id="resultSheet" class="sheet">
+      <div class="sheet-bar"></div>
+      <div class="sheet-head">
+        <span id="resultSheetTitle" style="font-size:15px; font-weight:800;">خبر آماده انتشار</span>
+        <button class="pill-btn pill-glass pill-sm" onclick="closeAllSheets()">بستن</button>
+      </div>
+      <div class="sheet-body">
+        <img id="resultSheetImg" class="hidden" style="width:100%; border-radius:18px; margin-bottom:12px; max-height:240px; object-fit:cover;" />
+        <div id="newsResultText" class="article-box"></div>
+        <div class="dual-pills">
+          <button class="pill-btn pill-red" onclick="copyNewsResult()">کپی متن خبر</button>
+          <button class="pill-btn pill-glass" onclick="sendHeadlineToImageStudio()">ساخت عکس خبر</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sheet 3: Add Official -->
+    <div id="officialSheet" class="sheet">
+      <div class="sheet-bar"></div>
+      <div class="sheet-head">
+        <span style="font-size:15px; font-weight:800;">افزودن به بانک مسئولان</span>
+        <button class="pill-btn pill-glass pill-sm" onclick="closeAllSheets()">بستن</button>
+      </div>
+      <div class="sheet-body">
+        <div class="field">
+          <label>نام و نام خانوادگی</label>
+          <input id="offName" class="glass-input" type="text" placeholder="مثال: محمدحسن اسدی" />
         </div>
         <div class="field">
-          <input id="archiveSearch" class="input" type="text" placeholder="جستجو در تیتر یا متن اخبار..." oninput="renderArchive()" />
+          <label>سمت رسمی</label>
+          <input id="offRole" class="glass-input" type="text" placeholder="مثال: شهردار شیراز" />
         </div>
-        <div id="archiveList"></div>
-      </section>
-
-      <!-- TAB 5: OFFICIALS -->
-      <section id="view-officials" class="view">
-        <div class="section-head">
-          <h2 class="section-title">بانک مسئولان</h2>
-          <button class="btn btn-red btn-sm" style="width:auto;" onclick="openAddOfficialSheet()">+ مسئول جدید</button>
-        </div>
-        <div id="officialsList"></div>
-      </section>
-    </main>
-
-    <!-- Floating Pill Dock -->
-    <div class="dock-wrap">
-      <nav class="dock">
-        <button class="dock-btn active" data-tab="studio" onclick="switchTab('studio')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
-          <span>استودیو</span>
-        </button>
-        <button class="dock-btn" data-tab="feed" onclick="switchTab('feed')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
-          <span>خبرها</span>
-        </button>
-        <button class="dock-btn" data-tab="image" onclick="switchTab('image')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-          <span>عکس</span>
-        </button>
-        <button class="dock-btn" data-tab="archive" onclick="switchTab('archive')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>
-          <span>آرشیو</span>
-        </button>
-        <button class="dock-btn" data-tab="officials" onclick="switchTab('officials')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          <span>مسئولان</span>
-        </button>
-      </nav>
-    </div>
-  </div>
-
-  <!-- Bottom Sheet Backdrop -->
-  <div id="sheetBackdrop" class="sheet-backdrop" onclick="closeAllSheets()"></div>
-
-  <!-- Sheet 1: Editor & Agency Selector -->
-  <div id="editorSheet" class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-head">
-      <div class="sheet-title">تنظیم خبر و انتخاب خبرگزاری</div>
-      <button class="btn btn-ghost btn-sm" onclick="closeAllSheets()">بستن</button>
-    </div>
-    <div class="sheet-body">
-      <div class="field">
-        <label style="display:flex; justify-content:space-between;">
-          <span>متن خام مصاحبه (قابل ویرایش)</span>
-          <span style="color:var(--red); cursor:pointer;" onclick="clearTranscript()">پاک کردن</span>
-        </label>
-        <textarea id="transcriptInput" class="textarea" placeholder="متن پیاده‌شده اینجا قرار می‌گیرد یا می‌توانید مستقیم متن خام را پیست کنید..." oninput="updateDraftBanner()"></textarea>
+        <button class="pill-btn pill-red" style="width:100%;" onclick="addOfficial()">ذخیره مسئول</button>
       </div>
-
-      <div class="field">
-        <label>نام و سمت مصاحبه‌شونده</label>
-        <div id="officialQuickChips" class="pill-row" style="margin-bottom:8px;"></div>
-        <input id="speakerInput" class="input" type="text" placeholder="مثال: رامین طالبی، رئیس سازمان حمل‌ونقل مسافر شهرداری شیراز" />
-      </div>
-
-      <div class="muted" style="font-weight:700; margin-top:6px;">انتخاب سبک خبرگزاری برای تنظیم فوری:</div>
-      <div class="agency-grid">
-        <button class="agency-btn" onclick="generateNews('fars')"><span class="agency-dot" style="background:#38bdf8;"></span>خبرگزاری فارس</button>
-        <button class="agency-btn" onclick="generateNews('irna')"><span class="agency-dot" style="background:#e4e4e7;"></span>خبرگزاری ایرنا</button>
-        <button class="agency-btn" onclick="generateNews('isna')"><span class="agency-dot" style="background:#10b981;"></span>خبرگزاری ایسنا</button>
-        <button class="agency-btn" onclick="generateNews('tasnim')"><span class="agency-dot" style="background:#ff2d46;"></span>خبرگزاری تسنیم</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Sheet 2: News Result Viewer -->
-  <div id="resultSheet" class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-head">
-      <div id="resultSheetTitle" class="sheet-title">خبر آماده انتشار</div>
-      <button class="btn btn-ghost btn-sm" onclick="closeAllSheets()">بستن</button>
-    </div>
-    <div class="sheet-body">
-      <div id="newsResultText" class="article-box"></div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-        <button class="btn btn-red" onclick="copyNewsResult()">کپی متن خبر</button>
-        <button class="btn btn-obsidian" onclick="sendHeadlineToImageStudio()">ساخت عکس خبر</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Sheet 3: Add Official -->
-  <div id="officialSheet" class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-head">
-      <div class="sheet-title">افزودن به بانک مسئولان</div>
-      <button class="btn btn-ghost btn-sm" onclick="closeAllSheets()">بستن</button>
-    </div>
-    <div class="sheet-body">
-      <div class="field">
-        <label>نام و نام خانوادگی</label>
-        <input id="offName" class="input" type="text" placeholder="مثال: محمدحسن اسدی" />
-      </div>
-      <div class="field">
-        <label>سمت رسمی</label>
-        <input id="offRole" class="input" type="text" placeholder="مثال: شهردار شیراز" />
-      </div>
-      <button class="btn btn-red" onclick="addOfficial()">ذخیره در بانک مسئولان</button>
     </div>
   </div>
 
@@ -1119,30 +1129,28 @@
       tasnim: "خبرگزاری تسنیم"
     };
 
-    // Register Service Worker
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./sw.js").catch(() => {});
     }
 
-    // Build 22 waveform bars
-    const wavePill = document.getElementById("wavePill");
+    // Build symmetrical waveform bars inside the smoked glass capsule
+    const waveRight = document.getElementById("waveRight");
+    const waveLeft = document.getElementById("waveLeft");
     const waveBars = [];
-    for (let i = 0; i < 22; i++) {
-      const b = document.createElement("div");
-      b.className = "wave-bar";
-      b.style.height = (6 + Math.round(Math.sin(i * 0.55) * 4 + 4)) + "px";
-      wavePill.appendChild(b);
-      waveBars.push(b);
-    }
+    const idleHeights = [7, 13, 20, 11, 24, 15, 9, 18, 12, 7];
+    [waveRight, waveLeft].forEach((side, sIdx) => {
+      idleHeights.forEach((h, i) => {
+        const b = document.createElement("div");
+        b.className = "wbar" + ((sIdx === 0 && i < 5) ? " red" : "");
+        b.style.height = h + "px";
+        side.appendChild(b);
+        waveBars.push({ el: b, idle: h });
+      });
+    });
 
-    // Splash dismiss
-    setTimeout(() => {
-      document.getElementById("splash").classList.add("hide");
-    }, 650);
+    setTimeout(() => document.getElementById("splash").classList.add("hide"), 550);
 
-    function haptic() {
-      if (navigator.vibrate) navigator.vibrate(10);
-    }
+    function haptic() { if (navigator.vibrate) navigator.vibrate(10); }
 
     function showToast(msg) {
       const el = document.getElementById("toast");
@@ -1151,13 +1159,6 @@
       clearTimeout(el._t);
       el._t = setTimeout(() => el.classList.remove("show"), 3200);
     }
-
-    function toggleTheme() {
-      haptic();
-      document.body.classList.toggle("light");
-      localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
-    }
-    if (localStorage.getItem("theme") === "light") document.body.classList.add("light");
 
     // ==================== AUTH ====================
     function setAuthMode(mode) {
@@ -1210,9 +1211,9 @@
     function switchTab(tab) {
       haptic();
       closeAllSheets();
-      document.querySelectorAll(".view").forEach(el => el.classList.remove("active"));
+      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
       document.getElementById("view-" + tab).classList.add("active");
-      document.querySelectorAll(".dock-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      document.querySelectorAll(".dock-item").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
       if (tab === "feed" && !feedLoaded) loadChannelFeed(false);
       if (tab === "archive") loadArchive();
       if (tab === "officials") loadOfficials();
@@ -1221,28 +1222,47 @@
     function openSheet(id) {
       haptic();
       closeAllSheets();
-      document.getElementById("sheetBackdrop").classList.add("open");
+      document.getElementById("sheetMask").classList.add("open");
       document.getElementById(id).classList.add("open");
     }
 
     function closeAllSheets() {
-      document.getElementById("sheetBackdrop").classList.remove("open");
+      document.getElementById("sheetMask").classList.remove("open");
       document.querySelectorAll(".sheet").forEach(s => s.classList.remove("open"));
     }
 
     function openEditorSheet() { openSheet("editorSheet"); }
-    function openAddOfficialSheet() { openSheet("officialSheet"); }
 
-    function updateDraftBanner() {
+    function syncTranscriptPreview() {
       const val = document.getElementById("transcriptInput").value.trim();
-      const banner = document.getElementById("draftBanner");
-      banner.classList.toggle("hidden", !val);
-      if (val) document.getElementById("draftPreview").textContent = val;
+      const preview = document.getElementById("txPreviewBody");
+      const btn = document.getElementById("primaryStudioBtn");
+      if (val) {
+        preview.textContent = val;
+        preview.style.color = "#f4f4f5";
+        if (!mediaRecorder || mediaRecorder.state !== "recording") btn.textContent = "تنظیم خبر";
+      } else {
+        preview.textContent = "صدای مصاحبه را ضبط یا آپلود کنید (یا لمس کنید تا متن خام وارد کنید و خبر را تنظیم کنید)...";
+        preview.style.color = "";
+        if (!mediaRecorder || mediaRecorder.state !== "recording") btn.textContent = "شروع ضبط";
+      }
     }
 
     function clearTranscript() {
       document.getElementById("transcriptInput").value = "";
-      updateDraftBanner();
+      syncTranscriptPreview();
+    }
+
+    function handlePrimaryStudioAction() {
+      if (mediaRecorder && mediaRecorder.state === "recording") {
+        toggleRecord();
+        return;
+      }
+      if (document.getElementById("transcriptInput").value.trim()) {
+        openEditorSheet();
+      } else {
+        toggleRecord();
+      }
     }
 
     // ==================== API HELPER ====================
@@ -1253,7 +1273,7 @@
       return data;
     }
 
-    // ==================== RECORDING + LIVE AUDIO WAVEFORM ====================
+    // ==================== RECORDING ====================
     function startWaveVisualizer(stream) {
       try {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1261,45 +1281,56 @@
         analyser = audioCtx.createAnalyser();
         analyser.fftSize = 64;
         src.connect(analyser);
-        const dataArr = new Uint8Array(analyser.frequencyBinCount);
-        wavePill.classList.add("active");
-        const draw = () => {
-          analyser.getByteFrequencyData(dataArr);
+        const arr = new Uint8Array(analyser.frequencyBinCount);
+        document.getElementById("waveCapsule").classList.add("recording");
+        const loop = () => {
+          analyser.getByteFrequencyData(arr);
           for (let i = 0; i < waveBars.length; i++) {
-            const v = dataArr[i % dataArr.length] || 0;
-            const h = Math.max(6, Math.min(34, Math.round((v / 255) * 34)));
-            waveBars[i].style.height = h + "px";
+            const v = arr[i % arr.length] || 0;
+            waveBars[i].el.style.height = Math.max(5, Math.min(28, Math.round((v / 255) * 28))) + "px";
           }
-          waveAnimId = requestAnimationFrame(draw);
+          waveAnimId = requestAnimationFrame(loop);
         };
-        draw();
+        loop();
       } catch {}
     }
 
     function stopWaveVisualizer() {
       cancelAnimationFrame(waveAnimId);
-      wavePill.classList.remove("active");
-      waveBars.forEach((b, i) => { b.style.height = (6 + Math.round(Math.sin(i * 0.55) * 4 + 4)) + "px"; });
+      document.getElementById("waveCapsule").classList.remove("recording");
+      waveBars.forEach(item => { item.el.style.height = item.idle + "px"; });
       if (audioCtx) { audioCtx.close().catch(() => {}); audioCtx = null; }
+    }
+
+    function formatTimer(sec) {
+      const h = String(Math.floor(sec / 3600)).padStart(2, "0");
+      const m = String(Math.floor((sec % 3600) / 60)).padStart(2, "0");
+      const s = String(sec % 60).padStart(2, "0");
+      return `${h}:${m}:${s}`;
+    }
+
+    function stopIfRecording() {
+      if (mediaRecorder && mediaRecorder.state === "recording") toggleRecord();
     }
 
     async function toggleRecord() {
       haptic();
-      const shell = document.getElementById("orbShell");
-      const orb = document.getElementById("recOrb");
-      const label = document.getElementById("orbStatusLabel");
-      const timer = document.getElementById("orbTimer");
-      const sub = document.getElementById("recSubText");
+      const stage = document.getElementById("orbStage");
+      const stateEl = document.getElementById("orbState");
+      const timeEl = document.getElementById("orbTime");
+      const sub = document.getElementById("studioSub");
+      const pBtn = document.getElementById("primaryStudioBtn");
+      const capIcon = document.getElementById("capIcon");
 
       if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
         clearInterval(recInterval);
         stopWaveVisualizer();
-        shell.classList.remove("recording");
-        orb.classList.remove("recording");
-        label.textContent = "در حال پیاده‌سازی...";
-        timer.classList.add("hidden");
-        sub.textContent = "هوش مصنوعی در حال تبدیل دقیق صوت به متن است...";
+        stage.classList.remove("recording");
+        stateEl.textContent = "در حال پیاده‌سازی...";
+        sub.textContent = "تبدیل دقیق و کلمه‌به‌کلمه صوت...";
+        pBtn.textContent = "لطفاً صبر کنید...";
+        capIcon.innerHTML = `<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/>`;
         return;
       }
 
@@ -1316,17 +1347,15 @@
         mediaRecorder.start();
         startWaveVisualizer(stream);
         recSeconds = 0;
-        shell.classList.add("recording");
-        orb.classList.add("recording");
-        label.textContent = "توقف ضبط";
-        timer.textContent = "00:00";
-        timer.classList.remove("hidden");
-        sub.textContent = "در حال ضبط زنده مصاحبه...";
+        stage.classList.add("recording");
+        stateEl.textContent = "در حال ضبط...";
+        timeEl.textContent = "00:00:00";
+        sub.textContent = "میکروفون فعال است؛ برای پایان روی گوی لمس کنید";
+        pBtn.textContent = "توقف و پیاده‌سازی";
+        capIcon.innerHTML = `<rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>`;
         recInterval = setInterval(() => {
           recSeconds++;
-          const m = String(Math.floor(recSeconds / 60)).padStart(2, "0");
-          const s = String(recSeconds % 60).padStart(2, "0");
-          timer.textContent = `${m}:${s}`;
+          timeEl.textContent = formatTimer(recSeconds);
         }, 1000);
       } catch {
         showToast("دسترسی به میکروفون داده نشد");
@@ -1336,12 +1365,9 @@
     async function handleAudioUpload(e) {
       const file = e.target.files?.[0];
       if (!file) return;
-      if (file.size > 20 * 1024 * 1024) {
-        showToast("حجم فایل باید کمتر از ۲۰ مگابایت باشد");
-        return;
-      }
-      document.getElementById("orbStatusLabel").textContent = "در حال پردازش...";
-      document.getElementById("recSubText").textContent = "در حال پیاده‌سازی فایل صوتی...";
+      if (file.size > 20 * 1024 * 1024) { showToast("حجم فایل باید کمتر از ۲۰ مگابایت باشد"); return; }
+      document.getElementById("orbState").textContent = "در حال پیاده‌سازی...";
+      document.getElementById("studioSub").textContent = "فایل صوتی در حال تبدیل به متن است...";
       await processAudioBlob(file, file.type || "audio/mpeg");
       e.target.value = "";
     }
@@ -1365,19 +1391,20 @@
           caption: document.getElementById("speakerInput").value.trim()
         });
         document.getElementById("transcriptInput").value = res.text;
-        updateDraftBanner();
-        document.getElementById("orbStatusLabel").textContent = "شروع ضبط";
-        document.getElementById("recSubText").textContent = "متن پیاده‌شده آماده تنظیم خبری است";
+        syncTranscriptPreview();
+        document.getElementById("orbState").textContent = "آماده ضبط";
+        document.getElementById("studioSub").textContent = "متن پیاده‌شده آماده تنظیم خبری است";
         showToast("صوت با موفقیت پیاده‌سازی شد");
         openEditorSheet();
       } catch (err) {
-        document.getElementById("orbStatusLabel").textContent = "شروع ضبط";
-        document.getElementById("recSubText").textContent = "برای ضبط مصاحبه زنده لمس کنید";
+        document.getElementById("orbState").textContent = "آماده ضبط";
+        document.getElementById("studioSub").textContent = "ضبط مصاحبه و تبدیل فوری به خبر استاندارد";
+        syncTranscriptPreview();
         showToast(err.message);
       }
     }
 
-    // ==================== GENERATE NEWS ====================
+    // ==================== NEWS GENERATION ====================
     async function generateNews(agencyKey) {
       haptic();
       const transcript = document.getElementById("transcriptInput").value.trim();
@@ -1387,6 +1414,7 @@
 
       try {
         const res = await callNewsApi({ action: "write_news", transcript, agencyKey, speakerInfo });
+        document.getElementById("resultSheetImg").classList.add("hidden");
         document.getElementById("resultSheetTitle").textContent = "خروجی " + AGENCY_NAMES[agencyKey];
         document.getElementById("newsResultText").textContent = res.text;
         openSheet("resultSheet");
@@ -1420,7 +1448,7 @@
       showToast("تیتر به استودیو عکس منتقل شد");
     }
 
-    // ==================== CHANNEL FEED (WITH SERVER-PROXIED IMAGES) ====================
+    // ==================== CHANNEL FEED (OVERLAY PHOTO CARDS LIKE PROPOSAL 1) ====================
     async function loadChannelFeed(force) {
       const container = document.getElementById("feedList");
       if (force || !feedLoaded) {
@@ -1430,41 +1458,54 @@
         const res = await callNewsApi({ action: "channel_feed" });
         feedLoaded = true;
         if (!res.posts?.length) {
-          container.innerHTML = `<div class="card muted" style="text-align:center;">پستی یافت نشد.</div>`;
+          container.innerHTML = `<div class="smoked-card muted" style="text-align:center;">پستی یافت نشد.</div>`;
           return;
         }
         window._feedPosts = res.posts;
         container.innerHTML = res.posts.map((p, idx) => `
-          <article class="feed-card">
+          <article class="news-card ${p.image ? "has-photo" : ""}" onclick="openFeedPost(${idx})">
             ${p.image ? `
-              <div class="feed-media">
-                <img src="${p.image}" referrerpolicy="no-referrer" loading="lazy" alt="تصویر خبر" onerror="this.parentElement.style.display='none'" />
-                ${idx === 0 ? `<div class="feed-badge"><span class="live-dot"></span> پست جدید</div>` : ""}
-              </div>
+              <img class="news-card-bg" src="${p.image}" referrerpolicy="no-referrer" loading="lazy" alt="تصویر خبر" onerror="this.closest('.news-card').classList.remove('has-photo'); this.remove();" />
+              <div class="news-card-scrim"></div>
             ` : ""}
-            <div class="feed-body">
-              <div class="feed-meta">
-                <span>@shirazlastnews</span>
-                <span>${p.views ? p.views + " بازدید" : ""}</span>
-              </div>
-              <div class="feed-text" onclick="this.classList.toggle('expanded')">${escapeHtml(p.text)}</div>
-              <div class="feed-foot">
-                <button class="btn btn-obsidian btn-sm" onclick="rewriteFeedPost(${idx})">تنظیم مجدد خبری</button>
-                <a class="btn btn-ghost btn-sm" style="text-decoration:none;" href="${p.link}" target="_blank">مشاهده در تلگرام</a>
+            <div class="news-card-top">
+              <span class="live-pill"><span class="live-dot"></span> ${idx === 0 ? "پست جدید" : "آخرین خبرهای شیراز"}</span>
+              ${p.views ? `<span class="live-pill">${escapeHtml(p.views)} بازدید</span>` : ""}
+            </div>
+            <div class="news-card-content">
+              <div class="news-headline">${escapeHtml(p.text)}</div>
+              <div class="news-tags" onclick="event.stopPropagation()">
+                <button class="mini-glass-tag red-accent" onclick="rewriteFeedPost(${idx})">تنظیم مجدد خبری</button>
+                <a class="mini-glass-tag" href="${p.link}" target="_blank">مشاهده در تلگرام</a>
               </div>
             </div>
           </article>
         `).join("");
       } catch (err) {
-        container.innerHTML = `<div class="card muted" style="text-align:center;">${escapeHtml(err.message)}</div>`;
+        container.innerHTML = `<div class="smoked-card muted" style="text-align:center;">${escapeHtml(err.message)}</div>`;
       }
+    }
+
+    function openFeedPost(idx) {
+      const post = window._feedPosts?.[idx];
+      if (!post) return;
+      const imgEl = document.getElementById("resultSheetImg");
+      if (post.image) {
+        imgEl.src = post.image;
+        imgEl.classList.remove("hidden");
+      } else {
+        imgEl.classList.add("hidden");
+      }
+      document.getElementById("resultSheetTitle").textContent = "خبر کانال @shirazlastnews";
+      document.getElementById("newsResultText").textContent = post.text;
+      openSheet("resultSheet");
     }
 
     function rewriteFeedPost(idx) {
       const post = window._feedPosts?.[idx];
       if (!post) return;
       document.getElementById("transcriptInput").value = post.text;
-      updateDraftBanner();
+      syncTranscriptPreview();
       switchTab("studio");
       openEditorSheet();
     }
@@ -1472,8 +1513,7 @@
     // ==================== AI IMAGE STUDIO ====================
     function selectPill(group, el) {
       haptic();
-      const parent = el.parentElement;
-      parent.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
+      el.parentElement.querySelectorAll(".chip-pill").forEach(p => p.classList.remove("active"));
       el.classList.add("active");
       if (group === "style") selectedImgStyle = el.dataset.val;
       if (group === "ratio") selectedImgRatio = el.dataset.val;
@@ -1482,12 +1522,12 @@
     async function generateImage() {
       haptic();
       const prompt = document.getElementById("imgPromptInput").value.trim();
-      if (!prompt) { showToast("موضوع یا تیتر خبر را وارد کنید"); return; }
+      if (!prompt) { showToast("موضوع یا تیتر خبر را بنویسید"); return; }
 
       const btn = document.getElementById("genImgBtn");
       btn.disabled = true;
-      btn.textContent = "در حال ساخت تصویر (۱۰ تا ۲۰ ثانیه)...";
-      document.getElementById("imgStage").innerHTML = `<div class="muted" style="padding:36px;">در حال رندر تصویر خبری با هوش مصنوعی...</div>`;
+      btn.textContent = "در حال خلق عکس خبری (۱۰ تا ۲۰ ثانیه)...";
+      document.getElementById("imgStage").innerHTML = `<div class="muted" style="padding:24px; text-align:center;">در حال رندر تصویر خبری با هوش مصنوعی...</div>`;
 
       try {
         const res = await callNewsApi({
@@ -1501,7 +1541,7 @@
         document.getElementById("downloadImgBtn").classList.remove("hidden");
         showToast("عکس خبری آماده شد");
       } catch (err) {
-        document.getElementById("imgStage").innerHTML = `<div class="muted" style="padding:24px; text-align:center; line-height:1.8;">${escapeHtml(err.message)}</div>`;
+        document.getElementById("imgStage").innerHTML = `<div class="muted" style="padding:20px; text-align:center; line-height:1.85; font-size:11.5px;">${escapeHtml(err.message)}</div>`;
         showToast("خطا در تولید عکس");
       } finally {
         btn.disabled = false;
@@ -1533,14 +1573,14 @@
         }
 
         const pad = Math.round(canvas.width * 0.032);
-        const pillH = Math.round(Math.max(42, canvas.width * 0.068));
+        const pillH = Math.round(Math.max(40, canvas.width * 0.066));
         const pillW = Math.round(pillH * 5.2);
         const x = canvas.width - pillW - pad;
         const y = canvas.height - pillH - pad;
 
         ctx.save();
         ctx.fillStyle = "rgba(0, 0, 0, 0.72)";
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.28)";
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.30)";
         ctx.lineWidth = Math.max(1.5, canvas.width / 500);
         ctx.beginPath();
         ctx.roundRect(x, y, pillW, pillH, pillH / 2);
@@ -1548,7 +1588,7 @@
         ctx.stroke();
 
         ctx.fillStyle = "#ffffff";
-        ctx.font = `700 ${Math.round(pillH * 0.36)}px Vazirmatn, sans-serif`;
+        ctx.font = `700 ${Math.round(pillH * 0.35)}px Vazirmatn, sans-serif`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText("آخرین خبرهای شیراز | @shirazlastnews", x + pillW / 2 - pillH * 0.28, y + pillH / 2 + 1);
@@ -1596,19 +1636,19 @@
       const list = cachedArticles.filter(a => !q || a.title.toLowerCase().includes(q) || a.content.toLowerCase().includes(q));
       const el = document.getElementById("archiveList");
       if (!list.length) {
-        el.innerHTML = `<div class="card muted" style="text-align:center;">هنوز خبری در آرشیو نیست.</div>`;
+        el.innerHTML = `<div class="smoked-card muted" style="text-align:center;">هنوز خبری در آرشیو نیست.</div>`;
         return;
       }
       el.innerHTML = list.map(a => `
-        <div class="card" style="cursor:pointer;" onclick="openArchiveItem('${a.id}')">
-          <div class="feed-meta">
-            <span style="color:var(--red); font-weight:700;">${escapeHtml(a.agency)}</span>
-            <span>${new Date(a.created_at).toLocaleDateString("fa-IR")}</span>
+        <div class="smoked-card" style="cursor:pointer;" onclick="openArchiveItem('${a.id}')">
+          <div style="display:flex; justify-content:space-between; font-size:11.5px; margin-bottom:8px;">
+            <span style="color:var(--red); font-weight:800;">${escapeHtml(a.agency)}</span>
+            <span class="muted">${new Date(a.created_at).toLocaleDateString("fa-IR")}</span>
           </div>
-          <div style="font-weight:800; font-size:14px; line-height:1.6; margin-bottom:10px;">${escapeHtml(a.title)}</div>
+          <div style="font-weight:800; font-size:14px; line-height:1.65; margin-bottom:11px;">${escapeHtml(a.title)}</div>
           <div style="display:flex; gap:8px;" onclick="event.stopPropagation()">
-            <button class="btn btn-obsidian btn-sm" onclick="copyTextById('${a.id}')">کپی</button>
-            <button class="btn btn-ghost btn-sm" style="color:var(--red);" onclick="deleteArticle('${a.id}')">حذف</button>
+            <button class="pill-btn pill-glass pill-sm" onclick="copyTextById('${a.id}')">کپی</button>
+            <button class="pill-btn pill-glass pill-sm" style="color:#ff5b6f;" onclick="deleteArticle('${a.id}')">حذف</button>
           </div>
         </div>
       `).join("");
@@ -1617,6 +1657,7 @@
     function openArchiveItem(id) {
       const item = cachedArticles.find(x => x.id === id);
       if (!item) return;
+      document.getElementById("resultSheetImg").classList.add("hidden");
       document.getElementById("resultSheetTitle").textContent = item.agency;
       document.getElementById("newsResultText").textContent = item.content;
       openSheet("resultSheet");
@@ -1645,23 +1686,23 @@
 
     function renderOfficials() {
       document.getElementById("officialQuickChips").innerHTML = cachedOfficials.slice(0, 10).map(o =>
-        `<button type="button" class="pill" onclick="pickOfficial('${escapeAttr(o.name + '، ' + o.role)}', false)">${escapeHtml(o.name)}</button>`
+        `<button type="button" class="chip-pill" onclick="pickOfficial('${escapeAttr(o.name + '، ' + o.role)}', false)">${escapeHtml(o.name)}</button>`
       ).join("");
 
       const list = document.getElementById("officialsList");
       if (!cachedOfficials.length) {
-        list.innerHTML = `<div class="card muted" style="text-align:center;">مسئولی ثبت نشده است. از دکمه «+ مسئول جدید» اضافه کنید.</div>`;
+        list.innerHTML = `<div class="smoked-card muted" style="text-align:center;">مسئولی ثبت نشده است. از دکمه «+ مسئول جدید» اضافه کنید.</div>`;
         return;
       }
       list.innerHTML = cachedOfficials.map(o => `
-        <div class="card" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+        <div class="smoked-card" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
           <div>
             <div style="font-weight:800; font-size:14px;">${escapeHtml(o.name)}</div>
             <div class="muted">${escapeHtml(o.role)}</div>
           </div>
           <div style="display:flex; gap:6px;">
-            <button class="btn btn-obsidian btn-sm" onclick="pickOfficial('${escapeAttr(o.name + '، ' + o.role)}', true)">انتخاب</button>
-            <button class="btn btn-ghost btn-sm" style="color:var(--red);" onclick="deleteOfficial('${o.id}')">حذف</button>
+            <button class="pill-btn pill-glass pill-sm" onclick="pickOfficial('${escapeAttr(o.name + '، ' + o.role)}', true)">انتخاب</button>
+            <button class="pill-btn pill-glass pill-sm" style="color:#ff5b6f;" onclick="deleteOfficial('${o.id}')">حذف</button>
           </div>
         </div>
       `).join("");
