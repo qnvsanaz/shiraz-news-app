@@ -1028,6 +1028,137 @@
       flex: 1 1 auto;
     }
 
+        /* Activity Role Cards (Signup & Account) */
+    .role-choice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 6px;
+    }
+    .role-choice-btn {
+      border: 1px solid var(--rim);
+      background: var(--glass-subtle);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      padding: 12px 10px;
+      color: var(--text-2);
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s var(--spring);
+    }
+    .role-choice-btn:active { transform: scale(0.96); }
+    .role-choice-btn .rc-title { font-size: 13px; font-weight: 800; color: #e4e4e7; }
+    .role-choice-btn .rc-sub { font-size: 10.5px; color: var(--text-2); }
+    .role-choice-btn.active {
+      background: linear-gradient(145deg, rgba(255, 45, 70, 0.24), rgba(255, 255, 255, 0.08));
+      border-color: rgba(255, 45, 70, 0.72);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(255, 45, 70, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    }
+    .role-choice-btn.active .rc-title { color: #fff; }
+    .role-choice-btn.active .rc-sub { color: rgba(255, 255, 255, 0.78); }
+
+    /* Two-Mode News Output Selector */
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .mode-card-btn {
+      border: 1px solid var(--rim-strong);
+      border-radius: 20px;
+      padding: 14px 12px;
+      font-family: inherit;
+      color: #fff;
+      cursor: pointer;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      transition: transform 0.14s var(--spring), border-color 0.2s, box-shadow 0.2s;
+    }
+    .mode-card-btn:active { transform: scale(0.96); }
+    .mode-card-btn.general-mode {
+      background: linear-gradient(145deg, #ff334d 0%, #c80b26 100%);
+      border-color: rgba(255, 160, 172, 0.48);
+      box-shadow: 0 10px 26px rgba(255, 45, 70, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+    .mode-card-btn.agency-mode {
+      background: var(--glass-grad);
+      box-shadow: var(--specular), 0 10px 22px rgba(0, 0, 0, 0.45);
+    }
+    .mode-card-btn.agency-mode.open {
+      border-color: rgba(255, 45, 70, 0.72);
+      background: linear-gradient(155deg, rgba(255, 45, 70, 0.22) 0%, rgba(28, 28, 34, 0.85) 100%);
+    }
+    .mode-title { font-size: 13.5px; font-weight: 900; }
+    .mode-desc { font-size: 10.8px; color: rgba(255, 255, 255, 0.82); }
+    .agency-subpanel {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.42);
+      border: 1px solid var(--rim);
+    }
+
+    /* Account & Admin Users Sheet */
+    .profile-summary-box {
+      background: rgba(0, 0, 0, 0.42);
+      border: 1px solid var(--rim);
+      border-radius: 20px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .user-stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .user-stat-box {
+      background: var(--glass-subtle);
+      border: 1px solid var(--rim);
+      border-radius: 16px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .user-stat-num { font-size: 18px; font-weight: 900; }
+    .user-stat-lbl { font-size: 10.5px; color: var(--text-2); margin-top: 2px; }
+    .user-row-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: var(--glass-subtle);
+      border: 1px solid var(--rim);
+      margin-bottom: 8px;
+    }
+    .activity-pill {
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
+    .activity-pill.reporter {
+      color: #ff6b7d;
+      background: rgba(255, 45, 70, 0.16);
+      border: 1px solid rgba(255, 45, 70, 0.36);
+    }
+    .activity-pill.pr {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.16);
+      border: 1px solid rgba(56, 189, 248, 0.36);
+    }
+
     .agency-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 8px; }
     .agency-btn {
       padding: 13px 10px; border-radius: 16px;
@@ -1108,17 +1239,32 @@
 
         <div class="seg-control">
           <button id="tabLoginBtn" class="seg-btn active" onclick="setAuthMode('login')">ورود</button>
-          <button id="tabSignupBtn" class="seg-btn" onclick="setAuthMode('signup')">ثبت‌نام خبرنگار</button>
+          <button id="tabSignupBtn" class="seg-btn" onclick="setAuthMode('signup')">ثبت‌نام</button>
         </div>
 
         <form onsubmit="handleAuthSubmit(event)">
           <div class="field">
             <label>ایمیل</label>
-            <input id="authEmail" class="glass-input" type="email" required placeholder="reporter@example.com" dir="ltr" />
+            <input id="authEmail" class="glass-input" type="email" required placeholder="name@example.com" dir="ltr" />
           </div>
           <div class="field">
             <label>رمز عبور (حداقل ۶ کاراکتر)</label>
             <input id="authPassword" class="glass-input" type="password" required minlength="6" placeholder="••••••••" dir="ltr" />
+          </div>
+          <div id="signupActivityField" class="field hidden">
+            <label>نوع فعالیت شما در رسانه</label>
+            <div class="role-choice-grid">
+              <button type="button" id="signupRoleReporter" class="role-choice-btn active" onclick="selectSignupActivity('reporter')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+                <span class="rc-title">خبرنگار</span>
+                <span class="rc-sub">تحریریه و خبرگزاری</span>
+              </button>
+              <button type="button" id="signupRolePr" class="role-choice-btn" onclick="selectSignupActivity('pr')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>
+                <span class="rc-title">روابط عمومی</span>
+                <span class="rc-sub">سازمان‌ها و دستگاه‌ها</span>
+              </button>
+            </div>
           </div>
           <button id="authSubmitBtn" type="submit" class="pill-btn pill-red" style="width:100%; margin-top:6px;">ورود به اتاق خبر</button>
         </form>
@@ -1346,7 +1492,7 @@
     <div id="editorSheet" class="sheet">
       <div class="sheet-bar"></div>
       <div class="sheet-head">
-        <span style="font-size:15px; font-weight:800;">تنظیم خبر و انتخاب خبرگزاری</span>
+        <span style="font-size:15px; font-weight:800;">تنظیم خبر</span>
         <button class="pill-btn pill-glass pill-sm" onclick="closeAllSheets()">بستن</button>
       </div>
       <div class="sheet-body">
@@ -1364,12 +1510,26 @@
           <input id="speakerInput" class="glass-input" type="text" placeholder="مثال: رامین طالبی، رئیس سازمان حمل‌ونقل مسافر شهرداری شیراز" />
         </div>
 
-        <div class="muted" style="font-weight:700; margin-top:4px;">انتخاب سبک خبرگزاری:</div>
-        <div class="agency-grid">
-          <button class="agency-btn" onclick="generateNews('fars')"><span class="agency-dot" style="background:#38bdf8;"></span>خبرگزاری فارس</button>
-          <button class="agency-btn" onclick="generateNews('irna')"><span class="agency-dot" style="background:#e4e4e7;"></span>خبرگزاری ایرنا</button>
-          <button class="agency-btn" onclick="generateNews('isna')"><span class="agency-dot" style="background:#10b981;"></span>خبرگزاری ایسنا</button>
-          <button class="agency-btn" onclick="generateNews('tasnim')"><span class="agency-dot" style="background:#ff2d46;"></span>خبرگزاری تسنیم</button>
+        <div class="muted" style="font-weight:700; margin-top:4px;">انتخاب حالت تنظیم خبر:</div>
+        <div class="mode-grid">
+          <button type="button" class="mode-card-btn general-mode" onclick="generateNews('general')">
+            <span class="mode-title">تنظیم خبری عمومی</span>
+            <span class="mode-desc">خبر استاندارد بدون قالب خبرگزاری</span>
+          </button>
+          <button type="button" id="agencyModeToggleBtn" class="mode-card-btn agency-mode" onclick="toggleAgencySubpanel()">
+            <span class="mode-title">تنظیم خبرگزاری</span>
+            <span class="mode-desc">فارس، ایرنا، ایسنا و تسنیم ▾</span>
+          </button>
+        </div>
+
+        <div id="agencySubpanel" class="agency-subpanel hidden">
+          <div class="muted" style="font-weight:700; margin-bottom:4px;">خبرگزاری موردنظر را انتخاب کنید:</div>
+          <div class="agency-grid">
+            <button type="button" class="agency-btn" onclick="generateNews('fars')"><span class="agency-dot" style="background:#38bdf8;"></span>خبرگزاری فارس</button>
+            <button type="button" class="agency-btn" onclick="generateNews('irna')"><span class="agency-dot" style="background:#e4e4e7;"></span>خبرگزاری ایرنا</button>
+            <button type="button" class="agency-btn" onclick="generateNews('isna')"><span class="agency-dot" style="background:#10b981;"></span>خبرگزاری ایسنا</button>
+            <button type="button" class="agency-btn" onclick="generateNews('tasnim')"><span class="agency-dot" style="background:#ff2d46;"></span>خبرگزاری تسنیم</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1487,6 +1647,60 @@
         </div>
       </div>
     </div>
+
+    <!-- Sheet 5: Account Profile & Activity Type (+ Admin User List) -->
+    <div id="accountSheet" class="sheet">
+      <div class="sheet-bar"></div>
+      <div class="sheet-head">
+        <span style="font-size:15px; font-weight:800;">حساب کاربری و نوع فعالیت</span>
+        <button class="pill-btn pill-glass pill-sm" onclick="closeAllSheets()">بستن</button>
+      </div>
+      <div class="sheet-body">
+        <div class="profile-summary-box">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px;">
+            <span id="accEmailDisplay" style="font-size:13.5px; font-weight:800; direction:ltr;"></span>
+            <span id="accAdminBadge" class="admin-badge hidden" style="margin:0;">مدیر ارشد</span>
+          </div>
+          <div id="accRoleStatusText" class="muted"></div>
+        </div>
+
+        <div class="field">
+          <label>نوع فعالیت شما (قابل ویرایش)</label>
+          <div class="role-choice-grid">
+            <button type="button" id="accRoleReporter" class="role-choice-btn" onclick="updateMyActivityType('reporter')">
+              <span class="rc-title">خبرنگار</span>
+              <span class="rc-sub">تحریریه و خبرگزاری</span>
+            </button>
+            <button type="button" id="accRolePr" class="role-choice-btn" onclick="updateMyActivityType('pr')">
+              <span class="rc-title">روابط عمومی</span>
+              <span class="rc-sub">سازمان‌ها و دستگاه‌ها</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="adminUsersSection" class="hidden" style="margin-top:16px; border-top:1px solid rgba(255,255,255,0.08); padding-top:14px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+            <span style="font-size:13.5px; font-weight:900;">کاربران ثبت‌نام‌شده در اپلیکیشن</span>
+            <button type="button" class="pill-btn pill-glass pill-sm" onclick="loadAdminUsersList()">بروزرسانی</button>
+          </div>
+          <div class="user-stat-row">
+            <div class="user-stat-box">
+              <div id="statTotalUsers" class="user-stat-num">0</div>
+              <div class="user-stat-lbl">کل کاربران</div>
+            </div>
+            <div class="user-stat-box">
+              <div id="statReporters" class="user-stat-num" style="color:#ff6b7d;">0</div>
+              <div class="user-stat-lbl">خبرنگار</div>
+            </div>
+            <div class="user-stat-box">
+              <div id="statPrUsers" class="user-stat-num" style="color:#38bdf8;">0</div>
+              <div class="user-stat-lbl">روابط عمومی</div>
+            </div>
+          </div>
+          <div id="adminUsersList"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -1514,11 +1728,19 @@
     let lastRawImageSrc = null;
 
     const AGENCY_NAMES = {
+      general: "خبر عمومی",
       fars: "خبرگزاری فارس",
       irna: "خبرگزاری ایرنا",
       isna: "خبرگزاری ایسنا",
       tasnim: "خبرگزاری تسنیم"
     };
+
+    const ACTIVITY_LABELS = {
+      reporter: "خبرنگار",
+      pr: "روابط عمومی"
+    };
+
+    let signupActivityType = "reporter";
 
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./sw.js").catch(() => {});
@@ -1551,11 +1773,39 @@
     }
 
     // ==================== AUTH ====================
+    function selectSignupActivity(type) {
+      haptic();
+      signupActivityType = type === "pr" ? "pr" : "reporter";
+      document.getElementById("signupRoleReporter")?.classList.toggle("active", signupActivityType === "reporter");
+      document.getElementById("signupRolePr")?.classList.toggle("active", signupActivityType === "pr");
+    }
+
+    function getUserActivityType(user) {
+      const raw = user?.user_metadata?.activity_type;
+      return raw === "pr" ? "pr" : (raw === "reporter" ? "reporter" : "");
+    }
+
+    async function syncCurrentUserProfile(overrideActivity) {
+      if (!currentUser?.id || !currentUser?.email) return;
+      const act = overrideActivity || getUserActivityType(currentUser) || "reporter";
+      try {
+        await sb.from("user_profiles").upsert({
+          user_id: currentUser.id,
+          email: currentUser.email.trim().toLowerCase(),
+          activity_type: act,
+          updated_at: new Date().toISOString()
+        }, { onConflict: "user_id" });
+      } catch {
+        // اگر جدول user_profiles هنوز در Supabase ساخته نشده باشد بدون خطا ادامه می‌دهد
+      }
+    }
+
     function setAuthMode(mode) {
       haptic();
       authMode = mode;
       document.getElementById("tabLoginBtn").classList.toggle("active", mode === "login");
       document.getElementById("tabSignupBtn").classList.toggle("active", mode === "signup");
+      document.getElementById("signupActivityField")?.classList.toggle("hidden", mode !== "signup");
       document.getElementById("authSubmitBtn").textContent = mode === "login" ? "ورود به اتاق خبر" : "ساخت حساب و ورود";
     }
 
@@ -1570,9 +1820,20 @@
       try {
         const res = authMode === "login"
           ? await sb.auth.signInWithPassword({ email, password })
-          : await sb.auth.signUp({ email, password });
+          : await sb.auth.signUp({
+              email,
+              password,
+              options: {
+                data: { activity_type: signupActivityType }
+              }
+            });
         if (res.error) throw res.error;
-        showToast(authMode === "login" ? "خوش آمدید!" : "حساب شما ساخته شد!");
+        if (authMode === "signup") {
+          const actLabel = ACTIVITY_LABELS[signupActivityType] || "خبرنگار";
+          showToast(`حساب شما با عنوان «${actLabel}» ساخته شد!`);
+        } else {
+          showToast("خوش آمدید!");
+        }
       } catch (err) {
         showToast(err.message || "خطا در ورود");
       } finally {
@@ -1597,6 +1858,7 @@
       if (currentUser) {
         await checkAdminStatus();
         if (myBoot !== sessionBootId) return;
+        syncCurrentUserProfile();
         loadOfficials();
         loadArchive();
       } else {
@@ -1646,7 +1908,23 @@
       document.querySelectorAll(".sheet").forEach(s => s.classList.remove("open"));
     }
 
-    function openEditorSheet() { openSheet("editorSheet"); }
+    function openEditorSheet() {
+      document.getElementById("agencySubpanel")?.classList.add("hidden");
+      document.getElementById("agencyModeToggleBtn")?.classList.remove("open");
+      openSheet("editorSheet");
+    }
+
+    function toggleAgencySubpanel() {
+      haptic();
+      const panel = document.getElementById("agencySubpanel");
+      const btn = document.getElementById("agencyModeToggleBtn");
+      if (!panel) return;
+      const isHidden = panel.classList.toggle("hidden");
+      if (btn) btn.classList.toggle("open", !isHidden);
+      if (!isHidden) {
+        panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
 
     function syncTranscriptPreview() {
       const val = document.getElementById("transcriptInput").value.trim();
@@ -1828,7 +2106,8 @@
       showToast("در حال تنظیم خبر برای " + AGENCY_NAMES[agencyKey] + "...");
 
       try {
-        const res = await callNewsApi({ action: "write_news", transcript, agencyKey, speakerInfo });
+        const activityType = getUserActivityType(currentUser) || "reporter";
+        const res = await callNewsApi({ action: "write_news", transcript, agencyKey, speakerInfo, activityType });
         document.getElementById("resultSheetImg").classList.add("hidden");
         document.getElementById("resultSheetTitle").textContent = "خروجی " + AGENCY_NAMES[agencyKey];
         document.getElementById("newsResultText").textContent = res.text;
@@ -2640,17 +2919,90 @@
       return isAdminUser;
     }
 
+    function renderAccountActivityUI() {
+      const act = getUserActivityType(currentUser);
+      document.getElementById("accRoleReporter")?.classList.toggle("active", act === "reporter");
+      document.getElementById("accRolePr")?.classList.toggle("active", act === "pr");
+      const statusEl = document.getElementById("accRoleStatusText");
+      if (statusEl) {
+        const actLabel = ACTIVITY_LABELS[act] || "تعیین‌نشده (یکی از گزینه‌های زیر را انتخاب کنید)";
+        if (lastAdminCheckError) {
+          statusEl.textContent = `نوع فعالیت: ${actLabel} • خطای بررسی مدیر: ${lastAdminCheckError}`;
+        } else {
+          statusEl.textContent = `نوع فعالیت: ${actLabel}`;
+        }
+      }
+    }
+
     async function showAccountStatus() {
       haptic();
-      const email = currentUser?.email || "نامشخص";
       await checkAdminStatus();
+      document.getElementById("accEmailDisplay").textContent = currentUser?.email || "نامشخص";
+      document.getElementById("accAdminBadge")?.classList.toggle("hidden", !isAdminUser);
+      document.getElementById("adminUsersSection")?.classList.toggle("hidden", !isAdminUser);
+      renderAccountActivityUI();
+      openSheet("accountSheet");
       if (isAdminUser) {
-        showToast(`حساب فعال: ${email} • نقش: مدیر ارشد ✓`);
         loadOfficials();
-      } else if (lastAdminCheckError) {
-        showToast(`خطای بررسی مدیر: ${lastAdminCheckError}`);
-      } else {
-        showToast(`حساب فعال: ${email} • نقش: خبرنگار عادی (در جدول app_admins ثبت نشده)`);
+        loadAdminUsersList();
+      }
+    }
+
+    async function updateMyActivityType(newType) {
+      haptic();
+      const cleanType = newType === "pr" ? "pr" : "reporter";
+      try {
+        const { data, error } = await sb.auth.updateUser({
+          data: { activity_type: cleanType }
+        });
+        if (error) throw error;
+        if (data?.user) currentUser = data.user;
+        await syncCurrentUserProfile(cleanType);
+        renderAccountActivityUI();
+        showToast(`نوع فعالیت شما به «${ACTIVITY_LABELS[cleanType]}» تغییر یافت`);
+        if (isAdminUser) loadAdminUsersList();
+      } catch (err) {
+        showToast("خطا در ذخیره نوع فعالیت: " + (err?.message || ""));
+      }
+    }
+
+    async function loadAdminUsersList() {
+      if (!isAdminUser) return;
+      const listEl = document.getElementById("adminUsersList");
+      if (!listEl) return;
+      listEl.innerHTML = `<div class="muted" style="text-align:center; padding:10px;">در حال دریافت لیست کاربران...</div>`;
+      try {
+        const { data, error } = await sb
+          .from("user_profiles")
+          .select("*")
+          .order("updated_at", { ascending: false })
+          .limit(200);
+        if (error) {
+          listEl.innerHTML = `<div class="muted" style="text-align:center; padding:10px; line-height:1.7;">برای مشاهده لیست کامل کاربران، دستور SQL ساخت جدول <b>user_profiles</b> را در Supabase اجرا کنید.</div>`;
+          return;
+        }
+        const rows = data || [];
+        const reporters = rows.filter(r => r.activity_type !== "pr").length;
+        const prs = rows.filter(r => r.activity_type === "pr").length;
+        document.getElementById("statTotalUsers").textContent = rows.length;
+        document.getElementById("statReporters").textContent = reporters;
+        document.getElementById("statPrUsers").textContent = prs;
+
+        if (!rows.length) {
+          listEl.innerHTML = `<div class="muted" style="text-align:center; padding:10px;">هنوز کاربری در جدول ثبت نشده است.</div>`;
+          return;
+        }
+        listEl.innerHTML = rows.map(r => {
+          const isPr = r.activity_type === "pr";
+          return `
+            <div class="user-row-item">
+              <span style="font-size:12px; font-weight:700; direction:ltr; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(r.email)}</span>
+              <span class="activity-pill ${isPr ? "pr" : "reporter"}">${isPr ? "روابط عمومی" : "خبرنگار"}</span>
+            </div>
+          `;
+        }).join("");
+      } catch {
+        listEl.innerHTML = `<div class="muted" style="text-align:center; padding:10px;">خطا در دریافت لیست کاربران</div>`;
       }
     }
 
