@@ -56,7 +56,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Desktop subtle studio presentation */
     @media (min-width: 560px) {
       body {
         background: radial-gradient(circle at 50% 20%, #14141c 0%, #050508 65%, #000000 100%);
@@ -85,7 +84,6 @@
       flex-direction: column;
     }
 
-    /* Static lightweight OLED obsidian studio glow (Zero GPU lag -> 120Hz) */
     .studio-glow {
       position: absolute;
       inset: 0;
@@ -166,7 +164,7 @@
       box-shadow: var(--specular);
     }
 
-    /* Floating Utility Buttons (Top Left) */
+    /* Floating Utility Buttons */
     .top-util {
       position: absolute;
       top: calc(env(safe-area-inset-top, 10px) + 12px);
@@ -213,10 +211,9 @@
       pointer-events: auto;
     }
 
-    /* Centered Editorial Logo Header (Matches Phone 1 & Phone 3 in Proposal 1) */
     .center-header {
       text-align: center;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       padding-top: 2px;
     }
     .center-logo-wrap {
@@ -230,12 +227,11 @@
     }
     .center-logo-wrap img { width: 100%; height: 100%; object-fit: cover; }
     .center-title {
-      margin: 0; font-size: 22px; font-weight: 900; letter-spacing: -0.4px;
+      margin: 0; font-size: 21px; font-weight: 900; letter-spacing: -0.4px;
       text-shadow: 0 2px 14px rgba(255, 255, 255, 0.12);
     }
     .center-sub { margin: 4px 0 0; font-size: 12px; color: var(--text-2); }
 
-    /* Feed Header (Matches Phone 2 in Proposal 1) */
     .feed-header {
       display: flex;
       align-items: center;
@@ -243,9 +239,7 @@
       margin-bottom: 16px;
       padding-left: 44px;
     }
-    .feed-brand {
-      display: flex; align-items: center; gap: 10px;
-    }
+    .feed-brand { display: flex; align-items: center; gap: 10px; }
     .feed-logo-box {
       width: 44px; height: 44px; border-radius: 14px;
       background: #000;
@@ -257,7 +251,6 @@
     .feed-brand-name { font-size: 16px; font-weight: 900; line-height: 1.25; }
     .feed-brand-handle { font-size: 11.5px; color: var(--text-2); direction: ltr; text-align: right; }
 
-    /* Smoked Glass Surface */
     .smoked-card {
       background: var(--glass-grad);
       border: 1px solid var(--rim);
@@ -267,7 +260,7 @@
       margin-bottom: 12px;
     }
 
-    /* ==================== SCREEN 1: STUDIO (EXACT PROPOSAL 1) ==================== */
+    /* ==================== SCREEN 1: STUDIO ==================== */
     .studio-layout {
       min-height: 100%;
       display: flex;
@@ -275,8 +268,6 @@
       justify-content: space-between;
       gap: 14px;
     }
-
-    /* Multi-ring 3D Crimson & Silver Glass Orb */
     .orb-stage {
       position: relative;
       width: 214px;
@@ -348,7 +339,6 @@
       letter-spacing: 0.8px; direction: ltr;
     }
 
-    /* Full-width Smoked Glass Waveform Control Capsule (Matches Phone 1) */
     .wave-capsule {
       height: 54px;
       border-radius: 999px;
@@ -400,7 +390,6 @@
       box-shadow: 0 0 10px var(--red);
     }
 
-    /* Transcript Preview Card (Matches Phone 1) */
     .tx-preview-card {
       background: var(--glass-grad);
       border: 1px solid var(--rim);
@@ -408,25 +397,17 @@
       border-radius: 22px;
       padding: 13px 15px;
       cursor: pointer;
-      transition: transform 0.15s var(--spring), border-color 0.2s;
+      transition: transform 0.15s var(--spring);
     }
     .tx-preview-card:active { transform: scale(0.985); }
-    .tx-preview-head {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 6px;
-    }
+    .tx-preview-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
     .tx-preview-title { font-size: 13.5px; font-weight: 800; }
     .tx-preview-body {
       font-size: 12.2px; color: var(--text-2); line-height: 1.75;
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     }
 
-    /* Bottom Dual Pills (Matches Phone 1) */
-    .dual-pills {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
+    .dual-pills { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .pill-btn {
       border: none;
       border-radius: 999px;
@@ -458,7 +439,7 @@
     }
     .pill-sm { padding: 7px 12px; font-size: 11.5px; }
 
-    /* ==================== SCREEN 2: FULL-BLEED OVERLAY FEED (EXACT PROPOSAL 1) ==================== */
+    /* ==================== SCREEN 2: FULL-BLEED NEWS FEED ==================== */
     .news-card {
       position: relative;
       border-radius: 26px;
@@ -500,26 +481,18 @@
     }
     .news-card-top {
       position: absolute;
-      top: 12px;
-      right: 12px;
-      left: 12px;
+      top: 12px; right: 12px; left: 12px;
       z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: flex; align-items: center; justify-content: space-between;
     }
     .live-pill {
       background: rgba(12, 12, 16, 0.72);
       border: 1px solid rgba(255, 255, 255, 0.22);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
       color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      font-size: 11px; font-weight: 700;
+      padding: 4px 10px; border-radius: 999px;
+      display: inline-flex; align-items: center; gap: 6px;
     }
     .live-dot {
       width: 7px; height: 7px; border-radius: 50%;
@@ -527,53 +500,28 @@
       box-shadow: 0 0 10px var(--red);
       display: inline-block;
     }
-    .news-card-content {
-      position: relative;
-      z-index: 2;
-      padding: 16px;
-    }
-    .news-card:not(.has-photo) .news-card-content {
-      padding-top: 46px;
-    }
+    .news-card-content { position: relative; z-index: 2; padding: 16px; }
+    .news-card:not(.has-photo) .news-card-content { padding-top: 46px; }
     .news-headline {
-      font-size: 14px;
-      font-weight: 800;
-      line-height: 1.75;
-      color: #ffffff;
+      font-size: 14px; font-weight: 800; line-height: 1.75; color: #fff;
       margin-bottom: 11px;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.65);
     }
-    .news-tags {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      flex-wrap: wrap;
-    }
+    .news-tags { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
     .mini-glass-tag {
       background: rgba(255, 255, 255, 0.11);
       border: 1px solid rgba(255, 255, 255, 0.18);
-      color: #f4f4f5;
-      font-family: inherit;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 5px 10px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      cursor: pointer;
-      text-decoration: none;
+      color: #f4f4f5; font-family: inherit; font-size: 11px; font-weight: 700;
+      padding: 5px 10px; border-radius: 999px;
+      display: inline-flex; align-items: center; gap: 5px; cursor: pointer; text-decoration: none;
     }
     .mini-glass-tag.red-accent {
       background: rgba(255, 45, 70, 0.22);
       border-color: rgba(255, 45, 70, 0.45);
     }
 
-    /* ==================== SCREEN 3: AI IMAGE STUDIO (EXACT PROPOSAL 1) ==================== */
+    /* ==================== SCREEN 3: SMART REAL NEWS PHOTO SEARCH ==================== */
     .preview-frame {
       width: 100%;
       aspect-ratio: 16 / 10;
@@ -586,16 +534,31 @@
       display: grid;
       place-items: center;
       position: relative;
+      margin-bottom: 12px;
     }
     .preview-frame canvas, .preview-frame img {
       width: 100%; height: 100%; object-fit: contain; display: block; background: #000;
     }
-    .dots-row {
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      margin: 10px 0 14px;
+    .preview-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #e4e4e7;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 999px;
+      z-index: 3;
+      direction: ltr;
     }
-    .dot-ind { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.28); }
-    .dot-ind.active { width: 16px; border-radius: 99px; background: var(--red); box-shadow: 0 0 8px var(--red); }
+
+    .search-box-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
 
     .field { text-align: right; margin-bottom: 12px; }
     .field label { display: block; font-size: 12px; font-weight: 700; color: var(--text-2); margin-bottom: 6px; }
@@ -605,7 +568,7 @@
       border: 1px solid var(--rim);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
       border-radius: 18px;
-      padding: 13px 15px;
+      padding: 12px 14px;
       color: #fff;
       font-family: inherit;
       font-size: 13.5px;
@@ -619,19 +582,17 @@
     }
     .glass-textarea { resize: none; min-height: 82px; line-height: 1.8; }
 
-    .pill-strip {
-      display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 6px; margin-bottom: 10px;
-    }
+    .pill-strip { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 6px; margin-bottom: 10px; }
     .chip-pill {
       flex: 0 0 auto;
-      padding: 8px 15px;
+      padding: 7px 13px;
       border-radius: 999px;
       background: var(--glass-subtle);
       border: 1px solid var(--rim);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
       color: var(--text-2);
       font-family: inherit;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.18s var(--spring);
@@ -645,13 +606,54 @@
 
     .toggle-pill {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 11px 15px; border-radius: 18px;
+      padding: 10px 14px; border-radius: 16px;
       background: var(--glass-subtle);
       border: 1px solid var(--rim);
-      margin-bottom: 14px; font-size: 12px; font-weight: 600; color: var(--text-2);
+      margin-bottom: 12px; font-size: 12px; font-weight: 600; color: var(--text-2);
     }
 
-    /* ==================== FLOATING FROSTED GLASS BOTTOM PILL DOCK (EXACT PROPOSAL 1) ==================== */
+    /* Search Photo Results Grid */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .photo-tile {
+      position: relative;
+      aspect-ratio: 16 / 11;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #0d0d12;
+      border: 1.5px solid var(--rim);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      transition: transform 0.15s var(--spring), border-color 0.2s;
+    }
+    .photo-tile:active { transform: scale(0.95); }
+    .photo-tile.selected {
+      border-color: var(--red);
+      box-shadow: 0 0 0 2px var(--red-soft), 0 10px 26px rgba(255, 45, 70, 0.3);
+    }
+    .photo-tile img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .photo-tile-cap {
+      position: absolute;
+      inset: auto 0 0 0;
+      padding: 18px 8px 6px;
+      background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.88) 100%);
+      font-size: 10px;
+      font-weight: 600;
+      color: #e4e4e7;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      direction: ltr;
+      text-align: left;
+    }
+
+    /* ==================== FLOATING FROSTED GLASS BOTTOM PILL DOCK ==================== */
     .dock-shell {
       position: absolute;
       bottom: calc(env(safe-area-inset-bottom, 10px) + 12px);
@@ -755,9 +757,7 @@
       flex: 1 1 auto;
     }
 
-    .agency-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 8px;
-    }
+    .agency-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 8px; }
     .agency-btn {
       padding: 13px 10px; border-radius: 16px;
       background: var(--glass-grad);
@@ -801,6 +801,13 @@
       animation: skelMove 1.15s infinite linear;
       margin-bottom: 14px;
       border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .skel-tile {
+      aspect-ratio: 16 / 11;
+      border-radius: 18px;
+      background: linear-gradient(90deg, #101015 25%, #1c1c24 50%, #101015 75%);
+      background-size: 200% 100%;
+      animation: skelMove 1.15s infinite linear;
     }
     @keyframes skelMove { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
@@ -849,7 +856,6 @@
 
     <!-- Main App -->
     <div id="mainApp" class="hidden" style="display:flex; flex-direction:column; height:100%; position:relative; z-index:2;">
-      <!-- Minimal Floating Utility Action -->
       <div class="top-util">
         <button class="util-btn" title="خروج از حساب" onclick="handleLogout()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -857,7 +863,7 @@
       </div>
 
       <main class="stage">
-        <!-- ==================== TAB 1: STUDIO (PROPOSAL 1 LEFT PHONE) ==================== -->
+        <!-- ==================== TAB 1: STUDIO ==================== -->
         <section id="view-studio" class="view active">
           <div class="studio-layout">
             <div class="center-header">
@@ -875,7 +881,6 @@
               </button>
             </div>
 
-            <!-- Smoked Glass Waveform Control Capsule -->
             <div id="waveCapsule" class="wave-capsule">
               <div id="waveRight" class="wave-side"></div>
               <button class="cap-center-btn" onclick="toggleRecord()" title="شروع یا توقف ضبط">
@@ -890,7 +895,6 @@
               </button>
             </div>
 
-            <!-- Smoked Glass Transcript Preview Card -->
             <div class="tx-preview-card" onclick="openEditorSheet()">
               <div class="tx-preview-head">
                 <span class="tx-preview-title">متن پیاده‌شده</span>
@@ -899,7 +903,6 @@
               <div id="txPreviewBody" class="tx-preview-body">صدای مصاحبه را ضبط یا آپلود کنید (یا لمس کنید تا متن خام وارد کنید و خبر را تنظیم کنید)...</div>
             </div>
 
-            <!-- Bottom Dual Pills -->
             <div class="dual-pills">
               <button id="primaryStudioBtn" class="pill-btn pill-red" onclick="handlePrimaryStudioAction()">شروع ضبط</button>
               <label class="pill-btn pill-glass" style="margin:0;">
@@ -910,7 +913,7 @@
           </div>
         </section>
 
-        <!-- ==================== TAB 2: NEWS FEED (PROPOSAL 1 CENTER PHONE) ==================== -->
+        <!-- ==================== TAB 2: NEWS FEED ==================== -->
         <section id="view-feed" class="view">
           <div class="feed-header">
             <div class="feed-brand">
@@ -925,52 +928,56 @@
           <div id="feedList"></div>
         </section>
 
-        <!-- ==================== TAB 3: AI IMAGE STUDIO (PROPOSAL 1 RIGHT PHONE) ==================== -->
+        <!-- ==================== TAB 3: REAL NEWS PHOTO SEARCH ==================== -->
         <section id="view-image" class="view">
-          <div class="center-header" style="margin-bottom:14px;">
+          <div class="center-header" style="margin-bottom:12px;">
             <div class="center-logo-wrap"><img src="./icon-192.png" alt="لوگو" /></div>
-            <h1 class="center-title">تولید عکس خبری</h1>
+            <h1 class="center-title">جستجوی عکس خبری</h1>
+            <p class="center-sub">یافتن واقعی‌ترین و مرتبط‌ترین عکس از وب برای خبر شما</p>
           </div>
 
           <div id="imgStage" class="preview-frame">
             <div style="text-align:center; padding:20px;">
-              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.34)" stroke-width="1.6"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-              <div class="muted" style="margin-top:8px;">پیش‌نمایش عکس خبری اینجا ظاهر می‌شود</div>
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.34)" stroke-width="1.6"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <div class="muted" style="margin-top:8px;">سوژه خبر را جستجو کنید و روی بهترین عکس بزنید</div>
             </div>
           </div>
 
-          <div class="dots-row">
-            <span class="dot-ind"></span>
-            <span class="dot-ind active"></span>
-            <span class="dot-ind"></span>
+          <div class="search-box-row">
+            <input
+              id="imgPromptInput"
+              class="glass-input"
+              type="text"
+              placeholder="مثال: بلوار چمران شیراز، شهردار شیراز، ورزشگاه پارس..."
+              onkeydown="if(event.key==='Enter'){event.preventDefault(); searchNewsImages();}"
+            />
+            <button id="searchImgBtn" class="pill-btn pill-red" style="flex:0 0 auto; padding:0 18px;" onclick="searchNewsImages()">جستجو</button>
           </div>
 
-          <div class="field">
-            <textarea id="imgPromptInput" class="glass-textarea" placeholder="موضوع خبر را بنویسید... (مثال: بلوار چمران شیراز در غروب آفتاب)"></textarea>
-          </div>
-
-          <div class="muted" style="font-weight:700; margin-bottom:6px;">سبک تصویر:</div>
           <div class="pill-strip">
-            <button class="chip-pill active" data-val="photo" onclick="selectPill('style', this)">عکاسی خبری</button>
-            <button class="chip-pill" data-val="cinematic" onclick="selectPill('style', this)">سینمایی</button>
-            <button class="chip-pill" data-val="aerial" onclick="selectPill('style', this)">نمای هوایی</button>
-            <button class="chip-pill" data-val="minimal" onclick="selectPill('style', this)">مینیمال</button>
+            <button class="chip-pill active" data-val="auto" onclick="selectSearchCat(this)">جستجوی دقیق</button>
+            <button class="chip-pill" data-val="shiraz" onclick="selectSearchCat(this)">مکان‌های شیراز</button>
+            <button class="chip-pill" data-val="news" onclick="selectSearchCat(this)">آرشیو خبری</button>
+            <button class="chip-pill" data-val="sport" onclick="selectSearchCat(this)">ورزشی</button>
           </div>
 
-          <div class="muted" style="font-weight:700; margin-bottom:6px;">نسبت تصویر:</div>
-          <div class="pill-strip">
-            <button class="chip-pill active" data-val="16:9" onclick="selectPill('ratio', this)">۱۶:۹ افقی</button>
-            <button class="chip-pill" data-val="1:1" onclick="selectPill('ratio', this)">۱:۱ مربعی</button>
-            <button class="chip-pill" data-val="9:16" onclick="selectPill('ratio', this)">۹:۱۶ استوری</button>
+          <div id="selectedPhotoControls" class="hidden">
+            <label class="toggle-pill">
+              <span>درج لوگوی دروازه قرآن و @shirazlastnews روی عکس</span>
+              <input id="watermarkToggle" type="checkbox" checked onchange="renderWatermarkCanvas()" />
+            </label>
+            <div class="dual-pills" style="margin-bottom:10px;">
+              <button id="downloadImgBtn" class="pill-btn pill-red" onclick="downloadGeneratedImage()">ذخیره عکس (PNG)</button>
+              <a id="sourceLinkBtn" class="pill-btn pill-glass" style="text-decoration:none;" href="#" target="_blank">منبع اصلی</a>
+            </div>
           </div>
 
-          <label class="toggle-pill">
-            <span>درج لوگوی دروازه قرآن و @shirazlastnews</span>
-            <input id="watermarkToggle" type="checkbox" checked onchange="renderWatermarkCanvas()" />
-          </label>
+          <div id="searchMetaBar" class="muted hidden" style="margin-top:4px; display:flex; justify-content:space-between;">
+            <span id="searchMetaQuery"></span>
+            <span id="searchMetaCount"></span>
+          </div>
 
-          <button id="genImgBtn" class="pill-btn pill-glass" style="width:100%; border-color:rgba(255,45,70,0.52);" onclick="generateImage()">تولید عکس خبری</button>
-          <button id="downloadImgBtn" class="pill-btn pill-red hidden" style="width:100%; margin-top:10px;" onclick="downloadGeneratedImage()">ذخیره عکس در گالری (PNG)</button>
+          <div id="photoResultsGrid" class="photo-grid"></div>
         </section>
 
         <!-- ==================== TAB 4: ARCHIVE ==================== -->
@@ -1075,7 +1082,7 @@
         <div id="newsResultText" class="article-box"></div>
         <div class="dual-pills">
           <button class="pill-btn pill-red" onclick="copyNewsResult()">کپی متن خبر</button>
-          <button class="pill-btn pill-glass" onclick="sendHeadlineToImageStudio()">ساخت عکس خبر</button>
+          <button class="pill-btn pill-glass" onclick="sendHeadlineToPhotoSearch()">یافتن عکس خبر</button>
         </div>
       </div>
     </div>
@@ -1118,9 +1125,12 @@
     let cachedArticles = [];
     let cachedOfficials = [];
     let feedLoaded = false;
+
+    // Photo Search state
+    let searchCategory = "auto";
+    let foundPhotos = [];
+    let selectedPhotoIdx = -1;
     let lastRawImageSrc = null;
-    let selectedImgStyle = "photo";
-    let selectedImgRatio = "16:9";
 
     const AGENCY_NAMES = {
       fars: "خبرگزاری فارس",
@@ -1133,7 +1143,6 @@
       navigator.serviceWorker.register("./sw.js").catch(() => {});
     }
 
-    // Build symmetrical waveform bars inside the smoked glass capsule
     const waveRight = document.getElementById("waveRight");
     const waveLeft = document.getElementById("waveLeft");
     const waveBars = [];
@@ -1440,15 +1449,15 @@
       showToast("متن خبر کپی شد");
     }
 
-    function sendHeadlineToImageStudio() {
+    function sendHeadlineToPhotoSearch() {
       const txt = document.getElementById("newsResultText").textContent;
       const headline = txt.split("\n").find(l => l.trim().length > 8) || txt.slice(0, 120);
       document.getElementById("imgPromptInput").value = headline;
       switchTab("image");
-      showToast("تیتر به استودیو عکس منتقل شد");
+      searchNewsImages();
     }
 
-    // ==================== CHANNEL FEED (OVERLAY PHOTO CARDS LIKE PROPOSAL 1) ====================
+    // ==================== CHANNEL FEED ====================
     async function loadChannelFeed(force) {
       const container = document.getElementById("feedList");
       if (force || !feedLoaded) {
@@ -1510,48 +1519,98 @@
       openEditorSheet();
     }
 
-    // ==================== AI IMAGE STUDIO ====================
-    function selectPill(group, el) {
+    // ==================== SMART REAL NEWS PHOTO SEARCH ====================
+    function selectSearchCat(el) {
       haptic();
       el.parentElement.querySelectorAll(".chip-pill").forEach(p => p.classList.remove("active"));
       el.classList.add("active");
-      if (group === "style") selectedImgStyle = el.dataset.val;
-      if (group === "ratio") selectedImgRatio = el.dataset.val;
+      searchCategory = el.dataset.val;
     }
 
-    async function generateImage() {
+    async function searchNewsImages() {
       haptic();
-      const prompt = document.getElementById("imgPromptInput").value.trim();
-      if (!prompt) { showToast("موضوع یا تیتر خبر را بنویسید"); return; }
+      const query = document.getElementById("imgPromptInput").value.trim();
+      if (!query) { showToast("سوژه یا تیتر خبر را وارد کنید"); return; }
 
-      const btn = document.getElementById("genImgBtn");
+      const btn = document.getElementById("searchImgBtn");
+      const grid = document.getElementById("photoResultsGrid");
       btn.disabled = true;
-      btn.textContent = "در حال خلق عکس خبری (۱۰ تا ۲۰ ثانیه)...";
-      document.getElementById("imgStage").innerHTML = `<div class="muted" style="padding:24px; text-align:center;">در حال رندر تصویر خبری با هوش مصنوعی...</div>`;
+      btn.textContent = "...";
+      grid.innerHTML = `<div class="skel-tile"></div><div class="skel-tile"></div><div class="skel-tile"></div><div class="skel-tile"></div>`;
 
       try {
         const res = await callNewsApi({
-          action: "generate_image",
-          prompt,
-          style: selectedImgStyle,
-          aspectRatio: selectedImgRatio
+          action: "search_images",
+          query,
+          category: searchCategory
         });
-        lastRawImageSrc = res.imageBase64;
-        await renderWatermarkCanvas();
-        document.getElementById("downloadImgBtn").classList.remove("hidden");
-        showToast("عکس خبری آماده شد");
+
+        foundPhotos = res.images || [];
+        if (!foundPhotos.length) {
+          grid.innerHTML = "";
+          showToast("عکسی برای این عبارت پیدا نشد؛ عبارت ساده‌تری بنویسید");
+          return;
+        }
+
+        document.getElementById("searchMetaBar").classList.remove("hidden");
+        document.getElementById("searchMetaQuery").textContent = "جستجو: " + (res.usedQuery || query);
+        document.getElementById("searchMetaCount").textContent = foundPhotos.length + " عکس مرتبط";
+
+        grid.innerHTML = foundPhotos.map((img, i) => `
+          <div class="photo-tile" id="ptile-${i}" onclick="selectFoundPhoto(${i})">
+            <img src="${img.thumbData || img.thumb || img.url}" referrerpolicy="no-referrer" loading="lazy" alt="نتیجه" onerror="this.closest('.photo-tile').style.display='none'" />
+            <div class="photo-tile-cap">${escapeHtml(img.source || "وب")}</div>
+          </div>
+        `).join("");
+
+        // انتخاب خودکار اولین و مرتبط‌ترین عکس
+        selectFoundPhoto(0);
       } catch (err) {
-        document.getElementById("imgStage").innerHTML = `<div class="muted" style="padding:20px; text-align:center; line-height:1.85; font-size:11.5px;">${escapeHtml(err.message)}</div>`;
-        showToast("خطا در تولید عکس");
+        grid.innerHTML = "";
+        showToast(err.message);
       } finally {
         btn.disabled = false;
-        btn.textContent = "تولید عکس خبری";
+        btn.textContent = "جستجو";
       }
     }
 
-    async function renderWatermarkCanvas() {
+    async function selectFoundPhoto(idx) {
+      const item = foundPhotos[idx];
+      if (!item) return;
+      haptic();
+      selectedPhotoIdx = idx;
+
+      document.querySelectorAll(".photo-tile").forEach((el, i) => el.classList.toggle("selected", i === idx));
+      const stage = document.getElementById("imgStage");
+      stage.innerHTML = `<div class="muted" style="padding:20px;">در حال بارگذاری نسخه باکیفیت عکس...</div>`;
+      document.getElementById("selectedPhotoControls").classList.remove("hidden");
+
+      const sourceBtn = document.getElementById("sourceLinkBtn");
+      sourceBtn.href = item.pageUrl || item.url || "#";
+
+      try {
+        const res = await callNewsApi({
+          action: "proxy_image",
+          url: item.url,
+          fallbackUrl: item.thumb
+        });
+        lastRawImageSrc = res.imageBase64;
+        await renderWatermarkCanvas(item.source);
+      } catch {
+        // پشتیبان فوری با تصویر بندانگشتی
+        if (item.thumbData) {
+          lastRawImageSrc = item.thumbData;
+          await renderWatermarkCanvas(item.source);
+        } else {
+          stage.innerHTML = `<div class="muted" style="padding:20px;">این عکس قابل دانلود مستقیم نبود؛ روی یکی دیگر از عکس‌های پایین بزنید.</div>`;
+        }
+      }
+    }
+
+    async function renderWatermarkCanvas(sourceLabel) {
       if (!lastRawImageSrc) return;
       const stage = document.getElementById("imgStage");
+      const srcName = sourceLabel || (foundPhotos[selectedPhotoIdx]?.source || "");
       const img = new Image();
       img.crossOrigin = "anonymous";
       img.onload = () => {
@@ -1563,7 +1622,7 @@
         ctx.drawImage(img, 0, 0);
 
         const finish = () => {
-          stage.innerHTML = "";
+          stage.innerHTML = srcName ? `<span class="preview-badge">${escapeHtml(srcName)}</span>` : "";
           stage.appendChild(canvas);
         };
 
@@ -1573,7 +1632,7 @@
         }
 
         const pad = Math.round(canvas.width * 0.032);
-        const pillH = Math.round(Math.max(40, canvas.width * 0.066));
+        const pillH = Math.round(Math.max(34, canvas.width * 0.064));
         const pillW = Math.round(pillH * 5.2);
         const x = canvas.width - pillW - pad;
         const y = canvas.height - pillH - pad;
@@ -1616,11 +1675,12 @@
     function downloadGeneratedImage() {
       haptic();
       const canvas = document.getElementById("finalNewsCanvas");
-      if (!canvas) return;
+      if (!canvas) { showToast("ابتدا یک عکس انتخاب کنید"); return; }
       const a = document.createElement("a");
       a.download = "shirazlastnews-photo.png";
       a.href = canvas.toDataURL("image/png");
       a.click();
+      showToast("عکس آماده و دانلود شد");
     }
 
     // ==================== ARCHIVE ====================
