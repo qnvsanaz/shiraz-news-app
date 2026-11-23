@@ -675,19 +675,150 @@
       flex: 1;
     }
     .off-avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 15px;
+      position: relative;
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
       flex: 0 0 auto;
       background: linear-gradient(145deg, rgba(255, 45, 70, 0.24), rgba(255, 255, 255, 0.08));
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+      border: 1.5px solid rgba(255, 255, 255, 0.24);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 8px 18px rgba(0, 0, 0, 0.45);
       display: grid;
       place-items: center;
       font-size: 14px;
       font-weight: 900;
       color: #fff;
       letter-spacing: -0.5px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 0.14s var(--spring), border-color 0.2s;
+    }
+    .off-avatar:active { transform: scale(0.92); }
+    .off-avatar.has-photo {
+      background: #0d0d12;
+      border-color: rgba(255, 255, 255, 0.34);
+    }
+    .off-avatar.loading::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.22) 50%, transparent 100%);
+      background-size: 200% 100%;
+      animation: skelMove 1s infinite linear;
+    }
+    .off-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 18%;
+      display: block;
+    }
+    .off-cam-badge {
+      position: absolute;
+      bottom: 2px;
+      left: 2px;
+      width: 19px;
+      height: 19px;
+      border-radius: 50%;
+      background: rgba(10, 10, 14, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+    }
+    .photo-sync-bar {
+      background: var(--glass-subtle);
+      border: 1px solid var(--rim);
+      box-shadow: var(--specular);
+      border-radius: 20px;
+      padding: 11px 13px;
+      margin-bottom: 10px;
+    }
+    .photo-sync-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .sync-progress-track {
+      height: 4px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      margin-top: 9px;
+    }
+    .sync-progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #ff2d46, #ff6b7d);
+      box-shadow: 0 0 10px rgba(255, 45, 70, 0.65);
+      transition: width 0.28s var(--spring);
+    }
+    .face-picker-hero {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.42);
+      border: 1px solid var(--rim);
+      margin-bottom: 12px;
+    }
+    .face-hero-avatar {
+      width: 84px;
+      height: 84px;
+      border-radius: 22px;
+      overflow: hidden;
+      flex: 0 0 auto;
+      background: linear-gradient(145deg, rgba(255, 45, 70, 0.24), rgba(255, 255, 255, 0.08));
+      border: 1.5px solid var(--rim-strong);
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      font-weight: 900;
+    }
+    .face-hero-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 18%;
+    }
+    .face-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-top: 10px;
+      margin-bottom: 12px;
+    }
+    .face-opt {
+      aspect-ratio: 1 / 1;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #101016;
+      border: 1.5px solid var(--rim);
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.14s var(--spring), border-color 0.2s;
+    }
+    .face-opt:active { transform: scale(0.93); }
+    .face-opt:hover { border-color: var(--red); }
+    .face-opt img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 18%;
+      display: block;
+    }
+    .chip-mini-avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center 18%;
+      margin-left: 6px;
+      vertical-align: middle;
     }
     .off-info { min-width: 0; flex: 1; }
     .off-name {
@@ -1070,6 +1201,16 @@
             </div>
             <button class="pill-btn pill-red pill-sm" onclick="openAddOfficialModal()">+ مسئول جدید</button>
           </div>
+          <div class="photo-sync-bar">
+            <div class="photo-sync-top">
+              <div>
+                <div style="font-size:12.5px; font-weight:800;">عکس پروفایل چهره مسئولان</div>
+                <div id="photoSyncStatus" class="muted" style="font-size:11px;">روی عکس هر مسئول بزنید تا چهره را انتخاب کنید</div>
+              </div>
+              <button id="syncAllPhotosBtn" class="pill-btn pill-red pill-sm" onclick="toggleAutoFetchPhotos()">دریافت خودکار عکس‌ها</button>
+            </div>
+            <div class="sync-progress-track"><div id="photoSyncFill" class="sync-progress-fill"></div></div>
+          </div>
           <div class="field" style="margin-bottom:8px;">
             <input id="officialSearch" class="glass-input" type="text" placeholder="جستجوی نام، سمت یا دستگاه (مثلاً: شهرسازی، شورا، آبفا، فرماندار)..." oninput="renderOfficials()" />
           </div>
@@ -1185,6 +1326,51 @@
           <input id="offRole" class="glass-input" type="text" placeholder="مثال: شهردار شیراز" />
         </div>
         <button id="saveOfficialBtn" class="pill-btn pill-red" style="width:100%;" onclick="saveOfficial()">ذخیره در بانک مسئولان</button>
+      </div>
+    </div>
+
+    <!-- Sheet 4: Official Face / Profile Photo Picker -->
+    <div id="photoPickerSheet" class="sheet">
+      <div class="sheet-bar"></div>
+      <div class="sheet-head">
+        <span style="font-size:15px; font-weight:800;">انتخاب عکس چهره مسئول</span>
+        <button class="pill-btn pill-glass pill-sm" onclick="closeAllSheets()">بستن</button>
+      </div>
+      <div class="sheet-body">
+        <div class="face-picker-hero">
+          <div id="pickerHeroAvatar" class="face-hero-avatar"></div>
+          <div style="min-width:0; flex:1;">
+            <div id="pickerHeroName" style="font-size:14.5px; font-weight:900; margin-bottom:3px;"></div>
+            <div id="pickerHeroRole" class="muted" style="line-height:1.5;"></div>
+          </div>
+        </div>
+
+        <div class="search-box-row" style="margin-bottom:10px;">
+          <input
+            id="pickerCustomQuery"
+            class="glass-input"
+            style="padding:9px 12px; font-size:12.5px;"
+            type="text"
+            placeholder="جستجوی دقیق‌تر چهره..."
+            onkeydown="if(event.key==='Enter'){event.preventDefault(); searchPickerFaces();}"
+          />
+          <button class="pill-btn pill-red pill-sm" style="flex:0 0 auto; padding:0 14px;" onclick="searchPickerFaces()">جستجو</button>
+        </div>
+
+        <div class="dual-pills" style="margin-bottom:10px;">
+          <label class="pill-btn pill-glass pill-sm" style="margin:0;">
+            آپلود از گالری
+            <input id="officialGalleryInput" type="file" accept="image/*" class="hidden" onchange="handleOfficialGalleryPhoto(event)" />
+          </label>
+          <button class="pill-btn pill-glass pill-sm" onclick="openOfficialInPhotoTab()">عکس باکیفیت خبری</button>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:6px;">
+          <span class="muted" style="font-weight:700;">چهره‌های یافت‌شده (برای ثبت لمس کنید):</span>
+          <button id="pickerRemovePhotoBtn" class="pill-btn pill-glass pill-sm hidden" style="color:#ff5b6f; padding:4px 10px;" onclick="removeCurrentOfficialPhoto()">حذف عکس</button>
+        </div>
+
+        <div id="faceCandidatesGrid" class="face-grid"></div>
       </div>
     </div>
   </div>
@@ -1817,7 +2003,7 @@
       loadArchive();
     }
 
-    // ==================== OFFICIALS (FARS SENIOR DIRECTORY + PERSONAL SYNC) ====================
+    // ==================== OFFICIALS (FARS SENIOR DIRECTORY + REAL-FACE PROFILE PHOTOS) ====================
     const CAT_LABELS = {
       council: "شورای شهر شیراز",
       city: "شهرداری شیراز",
@@ -1833,331 +2019,639 @@
       {
             "name": "سید ابراهیم حسینی",
             "role": "رئیس شورای اسلامی شهر شیراز",
-            "cat": "council"
+            "cat": "council",
+            "photoQuery": "سید ابراهیم حسینی شورای شیراز"
       },
       {
             "name": "محمدتقی تذروی",
             "role": "نایب‌رئیس شورای اسلامی شهر شیراز",
-            "cat": "council"
+            "cat": "council",
+            "photoQuery": "محمدتقی تذروی شورای شیراز"
       },
       {
             "name": "سیده مریم حسینی",
             "role": "سخنگو و عضو شورای اسلامی شهر شیراز",
-            "cat": "council"
+            "cat": "council",
+            "photoQuery": "سیده مریم حسینی شورای شیراز"
       },
       {
             "name": "مسعود زارعی",
             "role": "عضو شورای اسلامی شهر شیراز و رئیس کمیسیون سلامت، محیط زیست و خدمات شهری",
-            "cat": "council"
+            "cat": "council",
+            "photoQuery": "مسعود زارعی شورای شیراز"
       },
       {
             "name": "علیرضا اسکندری",
             "role": "عضو شورای اسلامی شهر شیراز و رئیس کمیسیون اقتصادی و سرمایه‌گذاری",
-            "cat": "council"
+            "cat": "council",
+            "photoQuery": "علیرضا اسکندری شورای شیراز"
       },
       {
             "name": "مصطفی کیانی رحیمی",
             "role": "عضو شورای اسلامی شهر شیراز و رئیس کمیسیون شهرسازی، معماری و هوشمندسازی",
-            "cat": "council"
+            "cat": "council",
+            "photoQuery": "مصطفی کیانی رحیمی شیراز"
       },
       {
             "name": "محمود صفایی",
             "role": "عضو شورای اسلامی شهر شیراز و رئیس کمیسیون برنامه، بودجه، امور حقوقی و املاک",
-            "cat": "council"
+            "cat": "council",
+            "photoQuery": "محمود صفایی شورای شیراز"
       },
       {
             "name": "محمدرضا هاجری",
             "role": "عضو شورای اسلامی شهر شیراز و رئیس کمیسیون فرهنگی، گردشگری و سومین حرم اهل‌بیت (ع)",
-            "cat": "council"
+            "cat": "council",
+            "photoQuery": "محمدرضا هاجری شورای شیراز"
       },
       {
             "name": "رضا محمدیان",
             "role": "عضو شورای اسلامی شهر شیراز",
-            "cat": "council"
+            "cat": "council",
+            "photoQuery": "رضا محمدیان شورای شیراز"
       },
       {
             "name": "مهدی طاهری",
             "role": "عضو شورای اسلامی شهر شیراز",
-            "cat": "council"
+            "cat": "council",
+            "photoQuery": "مهدی طاهری شورای شیراز"
       },
       {
             "name": "افسانه خواست‌خدایی",
             "role": "عضو شورای اسلامی شهر شیراز",
-            "cat": "council"
+            "cat": "council",
+            "photoQuery": "افسانه خواست خدایی شیراز"
       },
       {
             "name": "ابراهیم کمالی",
             "role": "عضو شورای اسلامی شهر شیراز",
-            "cat": "council"
+            "cat": "council",
+            "photoQuery": "ابراهیم کمالی شورای شیراز"
       },
       {
             "name": "غلامحسن اسکندری",
             "role": "عضو شورای اسلامی شهر شیراز",
-            "cat": "council"
+            "cat": "council",
+            "photoQuery": "غلامحسن اسکندری شورای شیراز"
       },
       {
             "name": "محمدحسن اسدی",
             "role": "شهردار شیراز",
-            "cat": "city"
+            "cat": "city",
+            "photoQuery": "محمدحسن اسدی شهردار شیراز"
       },
       {
             "name": "محمد امین",
             "role": "معاون فنی و عمرانی شهرداری شیراز",
-            "cat": "city"
+            "cat": "city",
+            "photoQuery": "محمد امین شهرداری شیراز"
       },
       {
             "name": "فرزاد میرزایی",
             "role": "سرپرست معاونت شهرسازی و معماری شهرداری شیراز",
-            "cat": "city"
+            "cat": "city",
+            "photoQuery": "فرزاد میرزایی شهرداری شیراز"
       },
       {
             "name": "روح‌الله خوشبخت",
             "role": "معاون محیط زیست و خدمات شهری شهرداری شیراز",
-            "cat": "city"
+            "cat": "city",
+            "photoQuery": "روح الله خوشبخت شیراز"
       },
       {
             "name": "محمد فرخ‌زاده",
             "role": "معاون حمل‌ونقل و ترافیک شهرداری شیراز",
-            "cat": "city"
+            "cat": "city",
+            "photoQuery": "محمد فرخ زاده شیراز"
       },
       {
             "name": "حمیدرضا اسماعیلی",
             "role": "معاون مالی و اقتصادی شهرداری شیراز",
-            "cat": "city"
+            "cat": "city",
+            "photoQuery": "حمیدرضا اسماعیلی شهرداری شیراز"
       },
       {
             "name": "محمدعلی چوبینی",
             "role": "معاون فرهنگی، اجتماعی و ورزشی شهرداری شیراز",
-            "cat": "city"
+            "cat": "city",
+            "photoQuery": "محمدعلی چوبینی شهرداری شیراز"
       },
       {
             "name": "محمدهادی شه‌دوست شیرازی",
             "role": "معاون برنامه‌ریزی و توسعه سرمایه انسانی شهرداری شیراز",
-            "cat": "city"
+            "cat": "city",
+            "photoQuery": "محمدهادی شه دوست شیراز"
       },
       {
             "name": "هادی عیدی‌پور",
             "role": "رئیس سازمان آتش‌نشانی و خدمات ایمنی شهرداری شیراز",
-            "cat": "city"
+            "cat": "city",
+            "photoQuery": "هادی عیدی پور آتش نشانی"
       },
       {
             "name": "بهمن بهروزی",
             "role": "مدیرعامل شرکت آب و فاضلاب شیراز",
-            "cat": "city"
+            "cat": "city",
+            "photoQuery": "بهمن بهروزی آبفا شیراز"
       },
       {
             "name": "محمدرضا سلاحی",
             "role": "مدیرعامل شرکت توزیع نیروی برق شیراز",
-            "cat": "city"
+            "cat": "city",
+            "photoQuery": "محمدرضا سلاحی برق شیراز"
       },
       {
             "name": "حسینعلی امیری",
             "role": "استاندار فارس",
-            "cat": "gov"
+            "cat": "gov",
+            "photoQuery": "حسینعلی امیری استاندار فارس"
       },
       {
             "name": "سید احمد احمدی‌زاده",
             "role": "معاون سیاسی، امنیتی و اجتماعی استانداری فارس",
-            "cat": "gov"
+            "cat": "gov",
+            "photoQuery": "احمد احمدی زاده فارس"
       },
       {
             "name": "محمود رضایی کوچی",
             "role": "معاون هماهنگی امور عمرانی استانداری فارس",
-            "cat": "gov"
+            "cat": "gov",
+            "photoQuery": "محمود رضایی کوچی فارس"
       },
       {
             "name": "مسعود گودرزی",
             "role": "معاون هماهنگی امور اقتصادی استانداری فارس",
-            "cat": "gov"
+            "cat": "gov",
+            "photoQuery": "مسعود گودرزی استانداری فارس"
       },
       {
             "name": "مهدی پارسایی",
             "role": "معاون هماهنگی امور گردشگری و زیارت استانداری فارس",
-            "cat": "gov"
+            "cat": "gov",
+            "photoQuery": "مهدی پارسایی استانداری فارس"
       },
       {
             "name": "عبدالعلی کریمی",
             "role": "معاون توسعه مدیریت و منابع استانداری فارس",
-            "cat": "gov"
+            "cat": "gov",
+            "photoQuery": "عبدالعلی کریمی استانداری فارس"
       },
       {
             "name": "سید علاءالدین کراماتی",
             "role": "فرماندار شهرستان شیراز",
-            "cat": "gov"
+            "cat": "gov",
+            "photoQuery": "علاءالدین کراماتی فرماندار شیراز"
       },
       {
             "name": "غلامرضا غلامی",
             "role": "مدیرکل مدیریت بحران استانداری فارس",
-            "cat": "gov"
+            "cat": "gov",
+            "photoQuery": "غلامرضا غلامی بحران فارس"
       },
       {
             "name": "لطف‌الله دژکام",
             "role": "نماینده ولی‌فقیه در استان فارس و امام جمعه شیراز",
-            "cat": "security"
+            "cat": "security",
+            "photoQuery": "آیت الله لطف الله دژکام"
       },
       {
             "name": "سید صدرالله رجایی‌نسب",
             "role": "رئیس کل دادگستری استان فارس",
-            "cat": "security"
+            "cat": "security",
+            "photoQuery": "صدرالله رجایی نسب فارس"
       },
       {
             "name": "کامران میرحاجی",
             "role": "دادستان عمومی و انقلاب مرکز استان فارس",
-            "cat": "security"
+            "cat": "security",
+            "photoQuery": "کامران میرحاجی دادستان شیراز"
       },
       {
             "name": "عزیزالله ملکی",
             "role": "فرمانده انتظامی استان فارس",
-            "cat": "security"
+            "cat": "security",
+            "photoQuery": "سردار عزیزالله ملکی فارس"
       },
       {
             "name": "یدالله بوعلی",
             "role": "فرمانده سپاه فجر استان فارس",
-            "cat": "security"
+            "cat": "security",
+            "photoQuery": "سردار یدالله بوعلی فارس"
       },
       {
             "name": "محمد رستمی",
             "role": "فرمانده انتظامی شهرستان شیراز",
-            "cat": "security"
+            "cat": "security",
+            "photoQuery": "سرهنگ محمد رستمی شیراز"
       },
       {
             "name": "داریوش اکبری",
             "role": "رئیس پلیس راهنمایی و رانندگی استان فارس",
-            "cat": "security"
+            "cat": "security",
+            "photoQuery": "سرهنگ داریوش اکبری راهور"
       },
       {
             "name": "ابراهیم عزیزی",
             "role": "نماینده مردم شیراز و زرقان در مجلس شورای اسلامی",
-            "cat": "parliament"
+            "cat": "parliament",
+            "photoQuery": "ابراهیم عزیزی نماینده شیراز"
       },
       {
             "name": "جعفر قادری",
             "role": "نماینده مردم شیراز و زرقان در مجلس شورای اسلامی",
-            "cat": "parliament"
+            "cat": "parliament",
+            "photoQuery": "جعفر قادری نماینده شیراز"
       },
       {
             "name": "روح‌الله نجابت",
             "role": "نماینده مردم شیراز و زرقان در مجلس شورای اسلامی",
-            "cat": "parliament"
+            "cat": "parliament",
+            "photoQuery": "روح الله نجابت شیراز"
       },
       {
             "name": "سید اسماعیل حسینی",
             "role": "نماینده مردم شیراز و زرقان در مجلس شورای اسلامی",
-            "cat": "parliament"
+            "cat": "parliament",
+            "photoQuery": "اسماعیل حسینی نماینده شیراز"
       },
       {
             "name": "محمدمهدی عبدالهی",
             "role": "مدیرکل راه و شهرسازی استان فارس",
-            "cat": "directors"
+            "cat": "directors",
+            "photoQuery": "محمدمهدی عبدالهی راه فارس"
       },
       {
             "name": "علیرضا امیری",
             "role": "مدیرکل راهداری و حمل‌ونقل جاده‌ای استان فارس",
-            "cat": "directors"
+            "cat": "directors",
+            "photoQuery": "علیرضا امیری راهداری فارس"
       },
       {
             "name": "علی شبانی",
             "role": "مدیرعامل شرکت آب و فاضلاب استان فارس",
-            "cat": "directors"
+            "cat": "directors",
+            "photoQuery": "علی شبانی آبفا فارس"
       },
       {
             "name": "سیاوش بدری",
             "role": "مدیرعامل شرکت آب منطقه‌ای فارس",
-            "cat": "directors"
+            "cat": "directors",
+            "photoQuery": "سیاوش بدری آب فارس"
       },
       {
             "name": "حمیدرضا جلایر",
             "role": "مدیرعامل شرکت توزیع نیروی برق استان فارس",
-            "cat": "directors"
+            "cat": "directors",
+            "photoQuery": "حمیدرضا جلایر برق فارس"
       },
       {
             "name": "محمدرضا زارعیان",
             "role": "مدیرعامل شرکت گاز استان فارس",
-            "cat": "directors"
+            "cat": "directors",
+            "photoQuery": "محمدرضا زارعیان گاز فارس"
       },
       {
             "name": "احد بهجت‌حقیقی",
             "role": "رئیس سازمان جهاد کشاورزی استان فارس",
-            "cat": "directors"
+            "cat": "directors",
+            "photoQuery": "احد بهجت حقیقی فارس"
       },
       {
             "name": "کریم مجرب",
             "role": "مدیرکل صنعت، معدن و تجارت (صمت) استان فارس",
-            "cat": "directors"
+            "cat": "directors",
+            "photoQuery": "کریم مجرب صمت فارس"
       },
       {
             "name": "محسن پاپری زارعی",
             "role": "رئیس سازمان مدیریت و برنامه‌ریزی استان فارس",
-            "cat": "directors"
+            "cat": "directors",
+            "photoQuery": "محسن پاپری زارعی فارس"
       },
       {
             "name": "سید قاسم حسینی",
             "role": "مدیرکل هواشناسی استان فارس",
-            "cat": "directors"
+            "cat": "directors",
+            "photoQuery": "قاسم حسینی هواشناسی فارس"
       },
       {
             "name": "لیلا تاج‌گردون",
             "role": "مدیرکل حفاظت محیط زیست استان فارس",
-            "cat": "directors"
+            "cat": "directors",
+            "photoQuery": "لیلا تاج گردون فارس"
       },
       {
             "name": "شهرام منتصری",
             "role": "مدیرکل منابع طبیعی و آبخیزداری استان فارس",
-            "cat": "directors"
+            "cat": "directors",
+            "photoQuery": "شهرام منتصری منابع طبیعی"
       },
       {
             "name": "سید بصیر هاشمی",
             "role": "رئیس دانشگاه علوم پزشکی شیراز",
-            "cat": "social"
+            "cat": "social",
+            "photoQuery": "بصیر هاشمی علوم پزشکی"
       },
       {
             "name": "علیرضا افشاری‌فر",
             "role": "رئیس دانشگاه شیراز",
-            "cat": "social"
+            "cat": "social",
+            "photoQuery": "علیرضا افشاری فر شیراز"
       },
       {
             "name": "مسعود عابد",
             "role": "رئیس مرکز اورژانس و فوریت‌های پزشکی استان فارس",
-            "cat": "social"
+            "cat": "social",
+            "photoQuery": "مسعود عابد اورژانس فارس"
       },
       {
             "name": "محسن کلاری",
             "role": "مدیرکل آموزش و پرورش استان فارس",
-            "cat": "social"
+            "cat": "social",
+            "photoQuery": "محسن کلاری آموزش فارس"
       },
       {
             "name": "بهزاد مریدی",
             "role": "مدیرکل میراث فرهنگی، گردشگری و صنایع دستی استان فارس",
-            "cat": "social"
+            "cat": "social",
+            "photoQuery": "بهزاد مریدی میراث فارس"
       },
       {
             "name": "مهدی رنجبر",
             "role": "مدیرکل فرهنگ و ارشاد اسلامی استان فارس",
-            "cat": "social"
+            "cat": "social",
+            "photoQuery": "مهدی رنجبر ارشاد فارس"
       },
       {
             "name": "عبدالمجید دوراندیش",
             "role": "مدیرکل ورزش و جوانان استان فارس",
-            "cat": "social"
+            "cat": "social",
+            "photoQuery": "عبدالمجید دوراندیش ورزش فارس"
       },
       {
             "name": "حسین درویشی",
             "role": "مدیرعامل جمعیت هلال‌احمر استان فارس",
-            "cat": "social"
+            "cat": "social",
+            "photoQuery": "حسین درویشی هلال احمر"
       },
       {
             "name": "حمید گودرزی",
             "role": "مدیرکل بهزیستی استان فارس",
-            "cat": "social"
+            "cat": "social",
+            "photoQuery": "حمید گودرزی بهزیستی فارس"
       },
       {
             "name": "مرتضی موصلی",
             "role": "مدیرکل کمیته امداد امام خمینی (ره) استان فارس",
-            "cat": "social"
+            "cat": "social",
+            "photoQuery": "مرتضی موصلی کمیته امداد"
       }
 ];
 
+    const PHOTO_CACHE_KEY = "shiraz_official_photos_v1";
+    let officialPhotoMap = {};
+    try {
+      officialPhotoMap = JSON.parse(localStorage.getItem(PHOTO_CACHE_KEY) || "{}");
+    } catch {
+      officialPhotoMap = {};
+    }
+
     let selectedOfficialCat = "all";
+    let isAutoFetchingPhotos = false;
+    let cancelAutoFetch = false;
+    let fetchingOfficialKeys = new Set();
+    let failedOfficialKeys = new Set();
+    let activePickerOfficial = null;
+    let lazyPhotoQueue = [];
+    let lazyActiveWorkers = 0;
+    let officialAvatarObserver = null;
+
+    function getOfficialPhotoKey(name) {
+      return String(name || "").trim();
+    }
+
+    function savePhotoMapToStorage() {
+      try {
+        localStorage.setItem(PHOTO_CACHE_KEY, JSON.stringify(officialPhotoMap));
+      } catch {
+        // ignore storage quota error
+      }
+    }
+
+    function buildOfficialSearchQuery(o) {
+      if (o.photoQuery) return o.photoQuery;
+      const nameParts = String(o.name || "").trim().split(/\s+/).slice(0, 3).join(" ");
+      const cityHint = String(o.role || "").includes("شیراز") ? "شیراز" : "فارس";
+      return `${nameParts} ${cityHint}`.trim().slice(0, 40);
+    }
+
+    function compressFaceDataUrl(srcUrl, size = 180) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => {
+          try {
+            const canvas = document.createElement("canvas");
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext("2d");
+            const minSide = Math.min(img.width, img.height);
+            const sx = Math.max(0, (img.width - minSide) / 2);
+            const sy = img.height > img.width ? Math.round((img.height - minSide) * 0.14) : 0;
+            ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+            resolve(canvas.toDataURL("image/jpeg", 0.82));
+          } catch (err) {
+            reject(err);
+          }
+        };
+        img.onerror = () => reject(new Error("img load failed"));
+        img.src = srcUrl;
+      });
+    }
+
+    async function fetchAndCacheSingleOfficialPhoto(o) {
+      const key = getOfficialPhotoKey(o.name);
+      if (officialPhotoMap[key] || fetchingOfficialKeys.has(key)) return !!officialPhotoMap[key];
+      fetchingOfficialKeys.add(key);
+      updateSingleAvatarDom(key);
+
+      try {
+        const query = buildOfficialSearchQuery(o);
+        const res = await callNewsApi({ action: "search_images", query, category: "auto" });
+        const list = res.images || [];
+        const lastName = String(o.name || "").trim().split(/\s+/).pop() || "";
+        const best =
+          list.find(it => it.thumbData && lastName && String(it.title || "").includes(lastName)) ||
+          list.find(it => it.thumbData) ||
+          list[0];
+        if (!best) {
+          failedOfficialKeys.add(key);
+          return false;
+        }
+
+        let rawSrc = best.thumbData || null;
+        if (!rawSrc && (best.thumb || best.url)) {
+          try {
+            const proxied = await callNewsApi({ action: "proxy_image", url: best.thumb || best.url, fallbackUrl: best.url });
+            rawSrc = proxied.imageBase64;
+          } catch {
+            rawSrc = null;
+          }
+        }
+        if (!rawSrc) return false;
+
+        const compressed = await compressFaceDataUrl(rawSrc, 180);
+        officialPhotoMap[key] = compressed;
+        savePhotoMapToStorage();
+        return true;
+      } catch {
+        return false;
+      } finally {
+        fetchingOfficialKeys.delete(key);
+        updateSingleAvatarDom(key);
+        updatePhotoSyncStatusUI();
+      }
+    }
+
+    function updateSingleAvatarDom(key) {
+      document.querySelectorAll("[data-avatar-key]").forEach(el => {
+        if (el.getAttribute("data-avatar-key") !== key) return;
+        const photo = officialPhotoMap[key];
+        el.classList.toggle("loading", fetchingOfficialKeys.has(key));
+        if (photo) {
+          el.classList.add("has-photo");
+          el.innerHTML = `<img src="${photo}" class="off-avatar-img" alt="چهره" /><span class="off-cam-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></span>`;
+        }
+      });
+    }
+
+    function updatePhotoSyncStatusUI() {
+      const all = getMergedOfficials();
+      const total = all.length;
+      const done = all.filter(o => !!officialPhotoMap[getOfficialPhotoKey(o.name)]).length;
+      const pct = total ? Math.round((done / total) * 100) : 0;
+
+      const statusEl = document.getElementById("photoSyncStatus");
+      const fillEl = document.getElementById("photoSyncFill");
+      const btn = document.getElementById("syncAllPhotosBtn");
+
+      if (fillEl) fillEl.style.width = pct + "%";
+      if (statusEl) {
+        if (isAutoFetchingPhotos) {
+          statusEl.textContent = `در حال دریافت عکس چهره‌ها... (${done} از ${total})`;
+        } else if (done === total && total > 0) {
+          statusEl.textContent = `عکس چهره همه ${total} مسئول ذخیره شد • برای تغییر روی عکس بزنید`;
+        } else {
+          statusEl.textContent = `${done} از ${total} عکس آماده • روی عکس هر فرد برای انتخاب بزنید`;
+        }
+      }
+      if (btn) {
+        if (isAutoFetchingPhotos) {
+          btn.textContent = "توقف";
+        } else if (done === total && total > 0) {
+          btn.textContent = "تکمیل شد ✓";
+        } else {
+          btn.textContent = done > 0 ? "تکمیل بقیه عکس‌ها" : "دریافت خودکار عکس‌ها";
+        }
+      }
+    }
+
+    async function toggleAutoFetchPhotos() {
+      haptic();
+      if (isAutoFetchingPhotos) {
+        cancelAutoFetch = true;
+        showToast("دریافت خودکار متوقف شد");
+        return;
+      }
+
+      failedOfficialKeys.clear();
+      lazyPhotoQueue = [];
+      const all = getMergedOfficials();
+      const missing = all.filter(o => !officialPhotoMap[getOfficialPhotoKey(o.name)]);
+      if (!missing.length) {
+        showToast("عکس چهره همه مسئولان قبلاً ذخیره شده است");
+        return;
+      }
+
+      isAutoFetchingPhotos = true;
+      cancelAutoFetch = false;
+      updatePhotoSyncStatusUI();
+      showToast(`شروع دریافت عکس چهره ${missing.length} مسئول...`);
+
+      const BATCH = 3;
+      for (let i = 0; i < missing.length; i += BATCH) {
+        if (cancelAutoFetch) break;
+        const slice = missing.slice(i, i + BATCH);
+        await Promise.all(slice.map(o => fetchAndCacheSingleOfficialPhoto(o)));
+        if (i + BATCH < missing.length && !cancelAutoFetch) {
+          await new Promise(r => setTimeout(r, 180));
+        }
+      }
+
+      isAutoFetchingPhotos = false;
+      updatePhotoSyncStatusUI();
+      renderOfficials();
+      if (!cancelAutoFetch) showToast("دریافت عکس چهره مسئولان انجام شد");
+    }
+
+    function enqueueLazyOfficialPhoto(official) {
+      const key = getOfficialPhotoKey(official.name);
+      if (officialPhotoMap[key] || fetchingOfficialKeys.has(key) || failedOfficialKeys.has(key)) return;
+      if (lazyPhotoQueue.some(x => getOfficialPhotoKey(x.name) === key)) return;
+      lazyPhotoQueue.push(official);
+      pumpLazyPhotoQueue();
+    }
+
+    async function pumpLazyPhotoQueue() {
+      if (isAutoFetchingPhotos) return;
+      while (lazyActiveWorkers < 2 && lazyPhotoQueue.length > 0) {
+        const next = lazyPhotoQueue.shift();
+        if (!next) break;
+        const key = getOfficialPhotoKey(next.name);
+        if (officialPhotoMap[key] || fetchingOfficialKeys.has(key)) continue;
+        lazyActiveWorkers++;
+        fetchAndCacheSingleOfficialPhoto(next)
+          .finally(() => {
+            lazyActiveWorkers--;
+            pumpLazyPhotoQueue();
+          });
+      }
+    }
+
+    function observeOfficialAvatars() {
+      if (officialAvatarObserver) {
+        officialAvatarObserver.disconnect();
+        officialAvatarObserver = null;
+      }
+      const rootEl = document.getElementById("view-officials");
+      if (!rootEl || !rootEl.classList.contains("active") || !("IntersectionObserver" in window)) return;
+
+      const byKey = new Map();
+      (window._mergedOfficials || []).forEach(o => byKey.set(getOfficialPhotoKey(o.name), o));
+
+      officialAvatarObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const key = entry.target.getAttribute("data-avatar-key");
+          const official = byKey.get(key);
+          if (official && !officialPhotoMap[key] && !failedOfficialKeys.has(key)) {
+            enqueueLazyOfficialPhoto(official);
+          }
+          officialAvatarObserver?.unobserve(entry.target);
+        });
+      }, { root: rootEl, rootMargin: "140px 0px", threshold: 0.05 });
+
+      document.querySelectorAll("#officialsList [data-avatar-key]").forEach(el => {
+        const key = el.getAttribute("data-avatar-key");
+        if (!officialPhotoMap[key] && !failedOfficialKeys.has(key)) {
+          officialAvatarObserver.observe(el);
+        }
+      });
+    }
+
+    function autoWarmVisibleOfficialPhotos() {
+      observeOfficialAvatars();
+    }
 
     function selectOfficialCat(el) {
       haptic();
@@ -2174,7 +2668,6 @@
       const merged = [];
       const usedCustomIds = new Set();
 
-      // ۱. مسئولان ثبت‌شده شخصی که هم‌سمت مدیران پیش‌فرض نیستند، اول نمایش داده شوند
       cachedOfficials.forEach(c => {
         const matchesBuiltin = FARS_OFFICIALS_DIRECTORY.some(b => b.role.trim() === (c.role || "").trim());
         if (!matchesBuiltin) {
@@ -2183,14 +2676,28 @@
         }
       });
 
-      // ۲. لیست مدیران ارشد استان فارس (اگر کاربر نام مدیری را ویرایش کرده باشد، نسخه ویرایش‌شده جایگزین می‌شود)
       FARS_OFFICIALS_DIRECTORY.forEach((b, idx) => {
         const override = customByRole.get(b.role.trim());
         if (override && !usedCustomIds.has(override.id)) {
-          merged.push({ id: override.id, name: override.name, role: override.role, cat: b.cat, isCustom: true, edited: true });
+          merged.push({
+            id: override.id,
+            name: override.name,
+            role: override.role,
+            cat: b.cat,
+            photoQuery: override.name.trim() === b.name.trim() ? b.photoQuery : undefined,
+            isCustom: true,
+            edited: true
+          });
           usedCustomIds.add(override.id);
         } else {
-          merged.push({ id: "builtin_" + idx, name: b.name, role: b.role, cat: b.cat, isCustom: false });
+          merged.push({
+            id: "builtin_" + idx,
+            name: b.name,
+            role: b.role,
+            cat: b.cat,
+            photoQuery: b.photoQuery,
+            isCustom: false
+          });
         }
       });
 
@@ -2209,15 +2716,18 @@
       const { data } = await sb.from("officials").select("*").order("created_at", { ascending: false });
       cachedOfficials = data || [];
       renderOfficials();
+      const tabActive = document.getElementById("view-officials")?.classList.contains("active");
+      if (tabActive) autoWarmVisibleOfficialPhotos();
     }
 
     function renderOfficials() {
       const all = getMergedOfficials();
+      window._mergedOfficials = all;
 
-      // نمایش سریع‌ترین مسئولان در پنجره تنظیم خبر (اولویت با ثبت‌شده‌های خود خبرنگار + مدیران کلیدی استان)
-      document.getElementById("officialQuickChips").innerHTML = all.slice(0, 14).map(o =>
-        `<button type="button" class="chip-pill" onclick="pickOfficial('${escapeAttr(o.name + '، ' + o.role)}', false)">${escapeHtml(o.name)}</button>`
-      ).join("");
+      document.getElementById("officialQuickChips").innerHTML = all.slice(0, 14).map(o => {
+        const ph = officialPhotoMap[getOfficialPhotoKey(o.name)];
+        return `<button type="button" class="chip-pill" onclick="pickOfficial('${escapeAttr(o.name + '، ' + o.role)}', false)">${ph ? `<img src="${ph}" class="chip-mini-avatar" alt="" />` : ""}${escapeHtml(o.name)}</button>`;
+      }).join("");
 
       const q = (document.getElementById("officialSearch")?.value || "").trim().toLowerCase();
       const filtered = all.filter(o => {
@@ -2228,6 +2738,7 @@
 
       const countEl = document.getElementById("officialsCountLabel");
       if (countEl) countEl.textContent = `${filtered.length} مسئول آماده انتخاب`;
+      updatePhotoSyncStatusUI();
 
       const list = document.getElementById("officialsList");
       if (!filtered.length) {
@@ -2235,10 +2746,19 @@
         return;
       }
 
-      list.innerHTML = filtered.map(o => `
+      const camSvg = `<span class="off-cam-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></span>`;
+
+      list.innerHTML = filtered.map(o => {
+        const pKey = getOfficialPhotoKey(o.name);
+        const photo = officialPhotoMap[pKey];
+        const isLoading = fetchingOfficialKeys.has(pKey);
+        return `
         <div class="off-card">
           <div class="off-left">
-            <div class="off-avatar">${escapeHtml(getMonogram(o.name))}</div>
+            <div class="off-avatar ${photo ? "has-photo" : ""} ${isLoading ? "loading" : ""}" data-avatar-key="${escapeHtml(pKey)}" title="انتخاب یا تغییر عکس چهره" onclick="openOfficialPhotoPicker('${escapeAttr(o.name)}')">
+              ${photo ? `<img src="${photo}" class="off-avatar-img" alt="${escapeHtml(o.name)}" />` : escapeHtml(getMonogram(o.name))}
+              ${camSvg}
+            </div>
             <div class="off-info">
               <div class="off-name">${escapeHtml(o.name)}</div>
               <div class="off-role">${escapeHtml(o.role)}</div>
@@ -2253,7 +2773,123 @@
             }
           </div>
         </div>
-      `).join("");
+      `;
+      }).join("");
+      observeOfficialAvatars();
+    }
+
+    async function searchPickerFaces(customQuery) {
+      if (!activePickerOfficial) return;
+      const inputEl = document.getElementById("pickerCustomQuery");
+      const query = (customQuery || inputEl?.value || buildOfficialSearchQuery(activePickerOfficial)).trim();
+      const grid = document.getElementById("faceCandidatesGrid");
+      grid.innerHTML = `<div class="skel-tile" style="aspect-ratio:1/1;"></div><div class="skel-tile" style="aspect-ratio:1/1;"></div><div class="skel-tile" style="aspect-ratio:1/1;"></div>`;
+      try {
+        const res = await callNewsApi({ action: "search_images", query, category: "auto" });
+        const imgs = (res.images || []).slice(0, 9);
+        window._pickerCandidates = imgs;
+        if (!imgs.length) {
+          grid.innerHTML = `<div class="muted" style="grid-column:1/-1; text-align:center; padding:16px;">عکسی پیدا نشد؛ عبارت بالا را ساده‌تر کنید یا از گالری آپلود کنید.</div>`;
+          return;
+        }
+        grid.innerHTML = imgs.map((it, idx) => `
+          <div class="face-opt" onclick="chooseFaceCandidate(${idx})">
+            <img src="${it.thumbData || it.thumb || it.url}" referrerpolicy="no-referrer" alt="چهره" onerror="this.closest('.face-opt').style.display='none'" />
+          </div>
+        `).join("");
+      } catch (err) {
+        grid.innerHTML = `<div class="muted" style="grid-column:1/-1; text-align:center; padding:16px;">${escapeHtml(err.message)}</div>`;
+      }
+    }
+
+    async function openOfficialPhotoPicker(officialName) {
+      const all = window._mergedOfficials || getMergedOfficials();
+      const official = all.find(x => x.name === officialName);
+      if (!official) return;
+
+      activePickerOfficial = official;
+      const key = getOfficialPhotoKey(official.name);
+      const currentPhoto = officialPhotoMap[key];
+
+      const heroAvatar = document.getElementById("pickerHeroAvatar");
+      heroAvatar.innerHTML = currentPhoto
+        ? `<img src="${currentPhoto}" alt="${escapeHtml(official.name)}" />`
+        : escapeHtml(getMonogram(official.name));
+
+      document.getElementById("pickerHeroName").textContent = official.name;
+      document.getElementById("pickerHeroRole").textContent = official.role;
+      document.getElementById("pickerRemovePhotoBtn").classList.toggle("hidden", !currentPhoto);
+
+      const query = buildOfficialSearchQuery(official);
+      const qInput = document.getElementById("pickerCustomQuery");
+      if (qInput) qInput.value = query;
+      openSheet("photoPickerSheet");
+      await searchPickerFaces(query);
+    }
+
+    async function chooseFaceCandidate(idx) {
+      if (!activePickerOfficial) return;
+      const item = window._pickerCandidates?.[idx];
+      if (!item) return;
+      haptic();
+      showToast("در حال ذخیره عکس چهره...");
+
+      try {
+        let rawSrc = item.thumbData || null;
+        if (!rawSrc) {
+          const proxied = await callNewsApi({ action: "proxy_image", url: item.thumb || item.url, fallbackUrl: item.url });
+          rawSrc = proxied.imageBase64;
+        }
+        const compressed = await compressFaceDataUrl(rawSrc, 180);
+        const key = getOfficialPhotoKey(activePickerOfficial.name);
+        officialPhotoMap[key] = compressed;
+        savePhotoMapToStorage();
+        renderOfficials();
+        closeAllSheets();
+        showToast("عکس پروفایل " + activePickerOfficial.name + " ذخیره شد");
+      } catch {
+        showToast("ذخیره این عکس ممکن نشد؛ روی عکس دیگری بزنید");
+      }
+    }
+
+    function handleOfficialGalleryPhoto(e) {
+      const file = e.target.files?.[0];
+      if (!file || !activePickerOfficial) return;
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        try {
+          const compressed = await compressFaceDataUrl(String(reader.result), 180);
+          const key = getOfficialPhotoKey(activePickerOfficial.name);
+          officialPhotoMap[key] = compressed;
+          savePhotoMapToStorage();
+          renderOfficials();
+          closeAllSheets();
+          showToast("عکس از گالری ذخیره شد");
+        } catch {
+          showToast("خطا در پردازش عکس انتخابی");
+        }
+      };
+      reader.readAsDataURL(file);
+      e.target.value = "";
+    }
+
+    function removeCurrentOfficialPhoto() {
+      if (!activePickerOfficial) return;
+      haptic();
+      const key = getOfficialPhotoKey(activePickerOfficial.name);
+      delete officialPhotoMap[key];
+      savePhotoMapToStorage();
+      renderOfficials();
+      closeAllSheets();
+      showToast("عکس پروفایل حذف شد");
+    }
+
+    function openOfficialInPhotoTab() {
+      if (!activePickerOfficial) return;
+      const q = buildOfficialSearchQuery(activePickerOfficial);
+      document.getElementById("imgPromptInput").value = q;
+      switchTab("image");
+      searchNewsImages();
     }
 
     function pickOfficial(full, goStudio) {
