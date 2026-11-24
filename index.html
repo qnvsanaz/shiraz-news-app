@@ -1383,6 +1383,56 @@
     }
     @keyframes skelMove { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
+    /* Telegram Bot Requests Panel (Super Admin) */
+    .bot-req-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff334d, #b80f27);
+      border: 1px solid rgba(255, 160, 172, 0.5);
+      box-shadow: 0 0 12px rgba(255, 45, 70, 0.45);
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: 900;
+    }
+    .bot-req-card {
+      background: rgba(0, 0, 0, 0.44);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 18px;
+      padding: 12px;
+      margin-bottom: 9px;
+    }
+    .bot-req-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .bot-req-sub {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 10.8px;
+      color: var(--text-2);
+      margin-bottom: 9px;
+    }
+    .bot-req-inputs {
+      display: grid;
+      grid-template-columns: 1fr 112px;
+      gap: 7px;
+      margin-bottom: 9px;
+    }
+    .bot-req-actions {
+      display: flex;
+      gap: 7px;
+    }
+
     .hidden { display: none !important; }
     .muted { color: var(--text-2); font-size: 12px; }
   </style>
@@ -1594,6 +1644,21 @@
               <button class="pill-btn pill-glass pill-sm" onclick="toggleAdminMediaManager()" id="toggleMediaMgrBtn">مدیریت لیست</button>
             </div>
             <div id="adminMediaManagerList" class="hidden" style="margin-top:10px;"></div>
+          </div>
+
+          <!-- پنل اختصاصی مدیر ارشد برای تایید درخواست‌های عضویت از ربات تلگرام -->
+          <div id="adminBotRequestsPanel" class="photo-sync-bar hidden">
+            <div class="photo-sync-top">
+              <div>
+                <div style="font-size:12.5px; font-weight:800; display:flex; align-items:center; gap:6px;">
+                  <span>درخواست‌های ربات تلگرام</span>
+                  <span id="botReqCountBadge" class="bot-req-badge hidden">0</span>
+                </div>
+                <div id="botReqSubText" class="muted" style="font-size:11px;">خبرنگارانی که در @sarirnews_bot ثبت‌نام کرده‌اند</div>
+              </div>
+              <button type="button" class="pill-btn pill-glass pill-sm" onclick="loadTelegramBotRequests(true)">بروزرسانی</button>
+            </div>
+            <div id="adminBotRequestsList" style="margin-top:10px;"></div>
           </div>
 
           <!-- حالت قفل برای خبرنگاران یا روابط عمومی‌های تاییدنشده -->
@@ -1860,7 +1925,7 @@
           </div>
           <div class="field">
             <label>اولویت چینش در لیست (عدد کوچک‌تر بالاتر قرار می‌گیرد — مثلاً ۱ یعنی نفر اول)</label>
-            <input id="offSortOrder" class="glass-input" type="number" min="1" step="1" placeholder="مثلاً: 1" dir="ltr" />
+            <input id="offSortOrder" class="glass-input" type="text" inputmode="numeric" placeholder="مثلاً: 1" dir="ltr" />
           </div>
         </div>
         <button id="saveOfficialBtn" class="pill-btn pill-red" style="width:100%;" onclick="saveOfficial()">ذخیره در بانک مسئولان</button>
@@ -3540,6 +3605,24 @@
     let dispatchPhotoDataUrl = null;
     let isMediaManagerOpen = false;
     let dispatchHistoryRows = [];
+    let pendingBotRequests = [];
+
+    function toEnglishDigits(str) {
+      const map = {
+        "۰": "0", "۱": "1", "۲": "2", "۳": "3", "۴": "4",
+        "۵": "5", "۶": "6", "۷": "7", "۸": "8", "۹": "9",
+        "٠": "0", "١": "1", "٢": "2", "٣": "3", "٤": "4",
+        "٥": "5", "٦": "6", "٧": "7", "٨": "8", "٩": "9"
+      };
+      return String(str || "").replace(/[۰-۹٠-٩]/g, d => map[d] || d);
+    }
+
+    function normalizeBotMediaType(rawType) {
+      const t = String(rawType || "").trim().toLowerCase();
+      if (t === "newspaper") return "newspaper";
+      if (t === "news_site" || t === "website") return "news_site";
+      return "agency";
+    }
 
     function formatOfficialSignatureClient(rawOrg) {
       const clean = String(rawOrg || "").trim().replace(/^روابط\s*عمومی\s+/i, "").trim();
@@ -3593,6 +3676,9 @@
 
       renderDispatchView();
       loadDispatchHistory();
+      if (isAdminUser) {
+        loadTelegramBotRequests(false);
+      }
       if (showFeedback) showToast("وضعیت بروزرسانی شد");
     }
 
@@ -3603,6 +3689,7 @@
 
       document.getElementById("adminAddOutletTopBtn")?.classList.toggle("hidden", !isAdminUser);
       document.getElementById("adminMediaPanel")?.classList.toggle("hidden", !isAdminUser);
+      document.getElementById("adminBotRequestsPanel")?.classList.toggle("hidden", !isAdminUser);
       document.getElementById("adminCustomSenderWrap")?.classList.toggle("hidden", !isAdminUser);
 
       if (isAdminUser) {
@@ -3921,7 +4008,7 @@
       const id = document.getElementById("editMediaOutletId").value.trim();
       const name = document.getElementById("mediaOutletName").value.trim();
       const media_type = document.getElementById("mediaOutletType").value;
-      const chat_id = document.getElementById("mediaOutletChatId").value.trim();
+      const chat_id = toEnglishDigits(document.getElementById("mediaOutletChatId").value).replace(/\s+/g, "").trim();
       const is_active = !!document.getElementById("mediaOutletActive").checked;
 
       if (!name || !chat_id) {
@@ -3964,6 +4051,192 @@
         await loadDispatchData(false);
       } catch (err) {
         showToast("خطا در حذف رسانه: " + (err?.message || ""));
+      }
+    }
+
+    // ==================== ADMIN TELEGRAM BOT REQUESTS APPROVAL ====================
+    async function loadTelegramBotRequests(showFeedback) {
+      if (!isAdminUser) return;
+      const listEl = document.getElementById("adminBotRequestsList");
+      if (showFeedback && listEl) {
+        listEl.innerHTML = `<div class="muted" style="text-align:center; padding:8px;">در حال بررسی درخواست‌های جدید...</div>`;
+      }
+      try {
+        const { data, error } = await sb
+          .from("telegram_bot_requests")
+          .select("*")
+          .eq("status", "pending")
+          .order("updated_at", { ascending: false })
+          .limit(50);
+
+        if (error) {
+          pendingBotRequests = [];
+          if (listEl) {
+            listEl.innerHTML = `<div class="muted" style="text-align:center; padding:6px; font-size:11px;">جدول telegram_bot_requests هنوز در Supabase ساخته نشده است.</div>`;
+          }
+          return;
+        }
+
+        pendingBotRequests = data || [];
+        renderAdminBotRequestsList();
+        if (showFeedback) {
+          showToast(pendingBotRequests.length
+            ? `${pendingBotRequests.length} درخواست در انتظار تایید یافت شد`
+            : "درخواست جدیدی ثبت نشده است");
+        }
+      } catch {
+        if (showFeedback) showToast("خطا در دریافت درخواست‌های ربات");
+      }
+    }
+
+    function renderAdminBotRequestsList() {
+      const listEl = document.getElementById("adminBotRequestsList");
+      const badgeEl = document.getElementById("botReqCountBadge");
+      const subEl = document.getElementById("botReqSubText");
+      if (!listEl || !isAdminUser) return;
+
+      const count = pendingBotRequests.length;
+      if (badgeEl) {
+        badgeEl.textContent = String(count);
+        badgeEl.classList.toggle("hidden", count === 0);
+      }
+      if (subEl) {
+        subEl.textContent = count > 0
+          ? `${count} درخواست جدید منتظر تایید مدیر ارشد است`
+          : "خبرنگارانی که در @sarirnews_bot ثبت‌نام کنند اینجا نمایش داده می‌شوند";
+      }
+
+      if (!count) {
+        listEl.innerHTML = `<div class="muted" style="text-align:center; padding:6px; font-size:11px;">درخواست جدیدی در انتظار تایید نیست.</div>`;
+        return;
+      }
+
+      listEl.innerHTML = pendingBotRequests.map((r, idx) => {
+        const reporterName = (r.reporter_name || r.tg_name || "کاربر تلگرام").trim();
+        const mediaName = (r.media_name || "").trim();
+        const defaultLabel = mediaName
+          ? (r.chat_type === "private" && reporterName && !mediaName.includes(reporterName)
+              ? `${mediaName} — ${reporterName}`
+              : mediaName)
+          : reporterName;
+        const mType = normalizeBotMediaType(r.media_type);
+        const dt = r.updated_at ? new Date(r.updated_at) : null;
+        const timeStr = dt
+          ? dt.toLocaleDateString("fa-IR") + " " + dt.toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" })
+          : "";
+
+        return `
+          <div class="bot-req-card">
+            <div class="bot-req-meta">
+              <span style="font-size:13px; font-weight:800;">${escapeHtml(reporterName)}</span>
+              <span class="muted" style="font-size:10.5px;">${escapeHtml(timeStr)}</span>
+            </div>
+            <div class="bot-req-sub">
+              <span style="direction:ltr;">ID: ${escapeHtml(r.chat_id)}</span>
+              ${r.username ? `<span style="direction:ltr; color:#38bdf8;">@${escapeHtml(r.username)}</span>` : ""}
+              ${mediaName ? `<span>رسانه: <strong style="color:#fff;">${escapeHtml(mediaName)}</strong></span>` : ""}
+            </div>
+            <div class="bot-req-inputs">
+              <input id="botReqName_${idx}" class="glass-input" style="padding:8px 10px; font-size:12px; border-radius:12px;" type="text" value="${escapeHtml(defaultLabel)}" placeholder="عنوان نمایشی در لیست رسانه‌ها..." />
+              <select id="botReqType_${idx}" class="glass-input" style="padding:8px 8px; font-size:11.5px; border-radius:12px;">
+                <option value="agency" ${mType === "agency" ? "selected" : ""}>خبرگزاری</option>
+                <option value="newspaper" ${mType === "newspaper" ? "selected" : ""}>روزنامه</option>
+                <option value="news_site" ${mType === "news_site" ? "selected" : ""}>پایگاه خبری</option>
+              </select>
+            </div>
+            <div class="bot-req-actions">
+              <button type="button" id="botApproveBtn_${idx}" class="pill-btn pill-red pill-sm" style="flex:1;" onclick="approveTelegramBotRequest(${idx})">تایید و افزودن به رسانه‌ها ✓</button>
+              <button type="button" class="pill-btn pill-glass pill-sm" style="color:#ff6b7d;" onclick="rejectTelegramBotRequest(${idx})">رد</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function approveTelegramBotRequest(idx) {
+      haptic();
+      if (!isAdminUser) return;
+      const reqItem = pendingBotRequests[idx];
+      if (!reqItem) return;
+
+      const name = (document.getElementById("botReqName_" + idx)?.value || "").trim();
+      const media_type = normalizeBotMediaType(document.getElementById("botReqType_" + idx)?.value);
+      const chat_id = toEnglishDigits(reqItem.chat_id).replace(/\s+/g, "").trim();
+
+      if (!name || !chat_id) {
+        showToast("عنوان نمایشی رسانه را وارد کنید");
+        return;
+      }
+
+      const btn = document.getElementById("botApproveBtn_" + idx);
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = "در حال ثبت...";
+      }
+
+      try {
+        // بررسی جلوگیری از ثبت تکراری در صورت وجود قبلی همین Chat ID
+        const existingOutlet = adminMediaOutlets.find(
+          o => toEnglishDigits(o.chat_id).replace(/\s+/g, "").trim() === chat_id
+        );
+
+        if (existingOutlet) {
+          const { error: upErr } = await sb
+            .from("media_outlets")
+            .update({ name, media_type, is_active: true, updated_at: new Date().toISOString() })
+            .eq("id", existingOutlet.id);
+          if (upErr) throw upErr;
+        } else {
+          const { error: insErr } = await sb
+            .from("media_outlets")
+            .insert({ name, media_type, chat_id, is_active: true });
+          if (insErr) throw insErr;
+        }
+
+        const { error: reqErr } = await sb
+          .from("telegram_bot_requests")
+          .update({ status: "approved", updated_at: new Date().toISOString() })
+          .eq("chat_id", reqItem.chat_id);
+        if (reqErr) throw reqErr;
+
+        // ارسال اختیاری پیام تبریک تایید در تلگرام (در صورت فعال بودن در news-api)
+        try {
+          await callNewsApi({
+            action: "notify_outlet_approved",
+            chatId: chat_id,
+            outletName: name,
+            reporterName: reqItem.reporter_name || reqItem.tg_name || ""
+          });
+        } catch {}
+
+        showToast(`«${name}» تایید شد و به لیست رسانه‌ها اضافه شد ✓`);
+        await loadDispatchData(false);
+      } catch (err) {
+        showToast("خطا در تایید درخواست: " + (err?.message || ""));
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "تایید و افزودن به رسانه‌ها ✓";
+        }
+      }
+    }
+
+    async function rejectTelegramBotRequest(idx) {
+      haptic();
+      if (!isAdminUser) return;
+      const reqItem = pendingBotRequests[idx];
+      if (!reqItem) return;
+
+      try {
+        const { error } = await sb
+          .from("telegram_bot_requests")
+          .update({ status: "rejected", updated_at: new Date().toISOString() })
+          .eq("chat_id", reqItem.chat_id);
+        if (error) throw error;
+        pendingBotRequests = pendingBotRequests.filter((_, i) => i !== idx);
+        renderAdminBotRequestsList();
+        showToast("درخواست رد شد");
+      } catch (err) {
+        showToast("خطا در رد درخواست: " + (err?.message || ""));
       }
     }
 
@@ -4739,8 +5012,8 @@
         if (publishGlobal) {
           const targetKey = sharedKey || ("shared_" + Date.now());
           const catVal = document.getElementById("offCategory")?.value || "gov";
-          const orderRaw = document.getElementById("offSortOrder")?.value;
-          const sortOrderVal = orderRaw !== "" && orderRaw !== undefined ? Number(orderRaw) : undefined;
+          const orderRaw = toEnglishDigits(document.getElementById("offSortOrder")?.value || "").replace(/[^0-9]/g, "");
+          const sortOrderVal = orderRaw !== "" ? Number(orderRaw) : undefined;
           await upsertSharedOfficial(targetKey, name, role, undefined, catVal, sortOrderVal);
           showToast("تغییرات برای تمام کاربران منتشر شد");
         } else if (editId) {
